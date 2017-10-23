@@ -1,0 +1,41 @@
+{
+  "name": "ostark/upper",
+  "description": "A cache plugin for Craft - supporting multiple Edge Caches",
+  "type": "craft-plugin",
+  "version": "1.0.0",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "craft-plugin",
+    "upper"
+  ],
+  "support": {
+    "docs": "https://github.com/ostark/upper/blob/master/README.md",
+    "issues": "https://github.com/ostark/upper/issues"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Oliver Stark",
+      "homepage": "https://www.fortrabbit.com"
+    }
+  ],
+  "require": {
+    "craftcms/cms": "~3.0.0-beta.23",
+    "guzzlehttp/guzzle": "^6.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "ostark\\upper\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "Upper",
+    "handle": "upper",
+    "schemaVersion": "0.1.0",
+    "hasCpSettings": false,
+    "hasCpSection": false,
+    "changelogUrl": "https://raw.githubusercontent.com/ostark/upper/master/CHANGELOG.md"
+  }
+}
