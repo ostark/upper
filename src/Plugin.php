@@ -9,7 +9,9 @@ use ostark\upper\drivers\CachePurgeInterface;
 use ostark\upper\models\Settings;
 
 /**
- * @method    Settings getSettings()
+ * Class Plugin
+ *
+ * @package ostark\upper
  */
 class Plugin extends BasePlugin
 {

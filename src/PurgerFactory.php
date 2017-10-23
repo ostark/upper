@@ -10,7 +10,8 @@ class PurgerFactory extends Component
     /**
      * @param array $config
      *
-     * @return \ostark\upper\drivers\CachePurgeInterface
+     * @return object
+     * @throws \yii\base\InvalidConfigException
      */
     public static function create(array $config = [])
     {

@@ -1,6 +1,10 @@
 <?php namespace ostark\upper;
 
-
+/**
+ * Class TagCollection
+ *
+ * @package ostark\upper
+ */
 class TagCollection
 {
     protected $tags = [];

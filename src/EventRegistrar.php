@@ -18,7 +18,11 @@ use ostark\upper\events\CacheResponseEvent;
 use ostark\upper\jobs\PurgeByKeys;
 use yii\base\Event;
 
-
+/**
+ * Class EventRegistrar
+ *
+ * @package ostark\upper
+ */
 class EventRegistrar
 {
 
