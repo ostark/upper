@@ -7,7 +7,6 @@ use ostark\upper\behaviors\CacheControlBehavior;
 use ostark\upper\behaviors\TagHeaderBehavior;
 use ostark\upper\drivers\CachePurgeInterface;
 use ostark\upper\models\Settings;
-use yii\queue\closure\Behavior;
 
 /**
  * @method    Settings getSettings()
@@ -44,7 +43,7 @@ class Plugin extends BasePlugin
         parent::init();
 
         // Config pre-check
-        if (!isset($this->getSettings()->driver)) {
+        if (!$this->getSettings()->drivers || !$this->getSettings()->driver) {
             return false;
         }
 

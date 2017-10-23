@@ -61,7 +61,7 @@ class Settings extends Model
     public function rules()
     {
         return [
-            [['driver', 'drivers', 'localTagMap'], 'required'],
+            [['driver', 'drivers'], 'required'],
             // ...
         ];
     }

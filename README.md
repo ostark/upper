@@ -3,7 +3,7 @@
 
 # The pep pill for your Craft site
 
-This plugin speeds up Craft dramatically using a **Cache Proxy** in front of your webserver. 
+Upper speeds up Craft dramatically using a **Cache Proxy** in front of your webserver. 
 
 The Plugin adds the neccessary `Cache-Control` and `XKEY/Surrogate-Key/Cache-Tag` headers to your pages. 
 When Entries or Sections get updated in the Control Panel it takes care of the cache invalidation. 
@@ -14,8 +14,8 @@ If you need an introduction to HTTP Caching, I highly recommend [this article](h
 
 * [KeyCDN](https://www.keycdn.com) (CDN/SaaS)
 * [Fastly](https://www.fastly.com) (CDN/SaaS)
-* Varnish (your own proxy)
-* Dummy (does nothing, loggs purge actions)
+* Varnish with XKEY support (your own proxy)
+* Dummy (does nothing)
 
 ## Installation
 

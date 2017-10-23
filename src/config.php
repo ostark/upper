@@ -1,19 +1,14 @@
 <?php
 /**
- * Upper config.php
- *
- * This file exists only as a template for the Upper settings.
- * It does nothing on its own.
- *
- * Don't edit this file, instead copy it to 'craft/config' as 'upper.php'
- * and make your changes there to override default settings.
+ * Don't edit the config.php.
+ * Instead modify the projects/config/upper.php and use ENV VARS
  *
  */
 
 return [
 
     // Which driver?
-    'driver'        => getenv('UPPER_DRIVER') ?? 'dummy',
+    'driver'        => getenv('UPPER_DRIVER') ?: 'dummy',
 
     // Default for Cache-control s-maxage
     'defaultMaxAge' => 3600 * 24 * 7,
