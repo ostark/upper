@@ -26,12 +26,15 @@ If you need an introduction to HTTP Caching, I highly recommend [this article](h
 
 
 ### Fastly Setup
+
+```
 UPPER_DRIVER=fastly
 FASTLY_API_TOKEN=<REPLACE-ME>
 FASTLY_SERVICE_ID=<REPLACE-ME>
 ```
 
 ### KeyCDN Setup
+
 ```
 UPPER_DRIVER=keycdn
 KEYCDN_API_KEY=<REPLACE-ME>
@@ -40,6 +43,7 @@ KEYCDN_ZONE_ID=<REPLACE-ME>
 ```
 
 ### Varnish Setup
+
 ```
 UPPER_DRIVER=varnish
 VARNISH_URL=<REPLACE-ME>
@@ -48,6 +52,7 @@ VARNISH_URL=<REPLACE-ME>
 ### Tuning
 
 With `Cache-Control` headers you can disabled caching for certain templates:
+
 ```
 {% header "Cache-Control: private, no-cache" %}
 ```
