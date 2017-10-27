@@ -15,7 +15,7 @@ use craft\services\Structures;
 use craft\utilities\ClearCaches;
 use craft\web\View;
 use ostark\upper\events\CacheResponseEvent;
-use ostark\upper\jobs\PurgeByKeys;
+use ostark\upper\jobs\PurgeCacheJob;
 use yii\base\Event;
 
 /**
@@ -171,22 +171,22 @@ class EventRegistrar
             if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
-            $keys = ($event->isNew)
-                ? [Plugin::TAG_PREFIX_SECTION . $event->element->sectionId]
-                : [Plugin::TAG_PREFIX_ELEMENT . $event->element->getId()];
+            $tag = ($event->isNew)
+                ? Plugin::TAG_PREFIX_SECTION . $event->element->sectionId
+                : Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
         }
 
         if ($event instanceof SectionEvent) {
-            $keys = [Plugin::TAG_PREFIX_SECTION . $event->section->id];
+            $tag = Plugin::TAG_PREFIX_SECTION . $event->section->id;
         }
 
         if ($event instanceof MoveElementEvent or $event instanceof ElementStructureEvent) {
-            $keys = [Plugin::TAG_PREFIX_STRUCTURE . $event->structureId];
+            $tag = Plugin::TAG_PREFIX_STRUCTURE . $event->structureId;
         }
 
         // Push to queue
-        \Craft::$app->getQueue()->push(new PurgeByKeys([
-                'keys' => $keys
+        \Craft::$app->getQueue()->push(new PurgeCacheJob([
+                'tag' => $tag
             ]
         ));
     }

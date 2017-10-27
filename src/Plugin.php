@@ -68,8 +68,6 @@ class Plugin extends BasePlugin
         \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
         \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
 
-        $this->getPurger()->purgeTag('se5');
-
     }
 
 
