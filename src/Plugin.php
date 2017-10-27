@@ -60,9 +60,15 @@ class Plugin extends BasePlugin
         EventRegistrar::registerUpdateEvents();
         EventRegistrar::registerDashboardEvents();
 
+        if ($this->getSettings()->useLocalTags) {
+            EventRegistrar::registerFallback();
+        }
+
         // Attach Behaviors
         \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
         \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
+
+        $this->getPurger()->getUrls('se3');
 
     }
 

@@ -132,6 +132,36 @@ class EventRegistrar
     }
 
 
+    public static function registerFallback()
+    {
+
+        Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, function (CacheResponseEvent $event) {
+
+            // Insert item
+            \Craft::$app->getDb()->createCommand()
+                ->upsert(
+                // Table
+                    Plugin::CACHE_TABLE,
+
+                    // Identifier
+                    ['url' => $event->requestUrl],
+
+                    // Data
+                    [
+                        'url'     => $event->requestUrl,
+                        'body'    => $event->output,
+                        'headers' => json_encode($event->headers),
+                        'tags'    => implode(" ", $event->tags),
+                        'siteId'  => \Craft::$app->getSites()->currentSite->id
+                    ]
+                )
+                ->execute();
+
+        });
+
+    }
+
+
     /**
      * @param \yii\base\Event $event
      */

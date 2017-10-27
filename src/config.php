@@ -13,6 +13,10 @@ return [
     // Default for Cache-control s-maxage
     'defaultMaxAge' => 3600 * 24 * 7,
 
+    // Store tags locally and purge Urls
+    // In case the cache driver does not support tag purging
+    'useLocalTags' => true,
+
     // Drivers settings
     'drivers'       => [
 
