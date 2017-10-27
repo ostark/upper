@@ -2,6 +2,7 @@
 
 use ostark\upper\Plugin;
 use yii\base\Object;
+use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -11,6 +12,11 @@ use yii\helpers\ArrayHelper;
  */
 class AbstractPurger extends Object
 {
+    /**
+     * @var bool
+     */
+    public $useLocalTags;
+
     public function __construct($config)
     {
         // assign config to object properties
@@ -18,7 +24,39 @@ class AbstractPurger extends Object
     }
 
 
-    public function getUrls($tag)
+    /**
+     * @param string $tag
+     *
+     * @return bool
+     */
+    public function purgeUrlsByTag(string $tag)
+    {
+        try {
+            if ($urls = $this->getTaggedUrls($tag)) {
+                $this->purgeUrls(array_values($urls));
+                $this->clearLocalCache(array_keys($urls));
+                return true;
+            }
+        } catch (Exception $e) {
+            \Craft::warning("Failed to purge '$tag'.", "upper");
+        }
+    }
+
+    /**
+     * Get cached urls by given tag
+     *
+     * Example result
+     * [
+     *   '2481f019-27a4-4338-8784-10d1781b' => '/services/development'
+     *   'a139aa60-9b56-43b0-a9f5-bfaa7c68' => '/services/app-development'
+     * ]
+     *
+     * @param $tag
+     *
+     * @return array
+     * @throws \yii\db\Exception
+     */
+    public function getTaggedUrls($tag)
     {
         if (!\Craft::$app->getDb()->getIsMysql()) {
             return;
@@ -29,24 +67,32 @@ class AbstractPurger extends Object
             \Craft::$app->getDb()->quoteTableName(Plugin::CACHE_TABLE),
             $tag
         );
-
         // Execute the sql
-        $results = \Craft::$app->getDb()->createCommand($sql)->queryAll();
+        $results = \Craft::$app->getDb()
+            ->createCommand($sql)
+            ->queryAll();
 
-        if (count($results)) {
-            $results = ArrayHelper::map($results, 'uid', 'url');
+        if (count($results) === 0) {
+            return [];
         }
 
-        /*
-         * [
-            '7cadd899-3d21-4d67-bb74-b30084df' => '/'
-            '2481f019-27a4-4338-8784-10d1781b' => '/services/development'
-            'a139aa60-9b56-43b0-a9f5-bfaa7c68' => '/services/app-development'
-          ]
-         */
-
-        return $results;
+        return ArrayHelper::map($results, 'uid', 'url');
 
     }
+
+    /**
+     * @param array $uids
+     *
+     * @return int
+     * @throws \yii\db\Exception
+     */
+    public function clearLocalCache(array $uids)
+    {
+        return \Craft::$app->getDb()->createCommand()
+            ->delete(Plugin::CACHE_TABLE, ['uid' => $uids])
+            ->execute();
+
+    }
+
 
 }

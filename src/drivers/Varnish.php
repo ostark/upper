@@ -21,27 +21,43 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
 
 
     /**
-     * @param array $keys
+     * @param string $tag
      */
-    public function purgeByKeys(array $keys)
+    public function purgeTag(string $tag)
     {
-        $this->sendPurgeRequest([
+        if ($this->useLocalTags) {
+            return $this->purgeUrlsByTag($tag);
+        }
+
+        return $this->sendPurgeRequest([
                 'base_uri' => $this->purgeUrl,
-                'headers'  => [$this->purgeHeaderName => implode(" ", $keys)]
+                'headers'  => [$this->purgeHeaderName => $tag]
             ]
         );
     }
 
     /**
-     * @param string $url
+     * @param array $urls
+     *
+     * @return bool
      */
-    public function purgeByUrl(string $url)
+    public function purgeUrls(array $urls)
     {
-        $this->sendPurgeRequest([
-                'base_uri' => $this->purgeUrl . $url,
-                'url'      => $url
-            ]
-        );
+        foreach ($urls as $url) {
+
+            $success = $this->sendPurgeRequest([
+                    'base_uri' => $this->purgeUrl . $url,
+                    'url'      => $url
+                ]
+            );
+
+            if (!$success) {
+                return false;
+            }
+        }
+
+        return true;
+
     }
 
     public function purgeAll()

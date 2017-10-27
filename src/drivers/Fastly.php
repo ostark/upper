@@ -44,28 +44,28 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
 
 
     /**
-     * Purge cache by keys
+     * Purge cache by tag
      *
-     * @param array $keys
+     * @param string $tag
      *
      * @return bool
      */
-    public function purgeByKeys(array $keys)
+    public function purgeTag(string $tag)
     {
         return $this->sendRequest('POST', 'purge', [
-                'Surrogate-Key' => implode(' ', $keys)
+                'Surrogate-Key' => $tag
             ]
         );
     }
 
     /**
-     * Purge cache by url
+     * Purge cache by urls
      *
-     * @param string $url
+     * @param array $urls
      *
      * @return bool
      */
-    public function purgeByUrl(string $url)
+    public function purgeUrls(array $urls)
     {
         if (strpos($this->domain, 'http') === false) {
             throw new \InvalidArgumentException("'domain' is not configured for fastly driver");
@@ -75,7 +75,13 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
             throw new \InvalidArgumentException("'domain' must include the protocol, e.g. http://www.foo.com");
         }
 
-        return $this->sendRequest('PURGE', $this->domain . $url);
+        foreach ($urls as $url) {
+            if (!$this->sendRequest('PURGE', $this->domain . $url)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 

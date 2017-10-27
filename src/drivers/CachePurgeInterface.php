@@ -9,18 +9,18 @@
 interface CachePurgeInterface
 {
     /**
-     * @param array $keys
+     * @param string $tag
      *
      * @return bool
      */
-    public function purgeByKeys(array $keys);
+    public function purgeTag(string $tag);
 
     /**
-     * @param string $url
+     * @param array $urls
      *
      * @return bool
      */
-    public function purgeByUrl(string $url);
+    public function purgeUrls(array $urls);
 
 
     /**
