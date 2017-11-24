@@ -49,6 +49,10 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeAll()
     {
+        if ($this->useLocalTags) {
+            $this->clearLocalCache();
+        }
+
         $this->log("Dummy::purgeAll() was called.");
 
         return true;

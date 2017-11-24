@@ -34,7 +34,7 @@ class AbstractPurger extends Object
         try {
             if ($urls = $this->getTaggedUrls($tag)) {
                 $this->purgeUrls(array_values($urls));
-                $this->clearLocalCache(array_keys($urls));
+                $this->invalidateLocalCache(array_keys($urls));
                 return true;
             }
         } catch (Exception $e) {
@@ -68,9 +68,6 @@ class AbstractPurger extends Object
             $tag
         );
 
-        // What about \Craft::$app->getDb()->getIsPgsql()?
-        // 'SELECT title FROM %s WHERE to_tsvector(tags) @@ to_tsquery("%s")'
-
         // Execute the sql
         $results = \Craft::$app->getDb()
             ->createCommand($sql)
@@ -90,7 +87,7 @@ class AbstractPurger extends Object
      * @return int
      * @throws \yii\db\Exception
      */
-    public function clearLocalCache(array $uids)
+    public function invalidateLocalCache(array $uids)
     {
         return \Craft::$app->getDb()->createCommand()
             ->delete(Plugin::CACHE_TABLE, ['uid' => $uids])
@@ -98,5 +95,17 @@ class AbstractPurger extends Object
 
     }
 
+
+    /***
+     * @return int
+     * @throws \yii\db\Exception
+     */
+    public function clearLocalCache()
+    {
+        return \Craft::$app->getDb()->createCommand()
+            ->delete(Plugin::CACHE_TABLE)
+            ->execute();
+
+    }
 
 }

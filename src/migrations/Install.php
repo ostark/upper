@@ -16,6 +16,10 @@ class Install extends Migration
      */
     public function safeUp()
     {
+        if (!$this->getDb()->getIsMysql()) {
+            return false;
+        }
+
         $this->createTable(Plugin::CACHE_TABLE, [
             'uid'         => $this->string(32)->notNull()->unique(),
             'url'         => $this->string(255)->notNull(),
@@ -27,16 +31,8 @@ class Install extends Migration
             'dateUpdated' => $this->dateTime()->null()
         ]);
 
-        // Mysql full text index
-        if ($this->getDb()->getIsMysql()) {
-            $this->createIndex('url_idx', Plugin::CACHE_TABLE, 'url', true);
-            $this->execute("ALTER TABLE " . Plugin::CACHE_TABLE . " ADD FULLTEXT INDEX tags_fulltext (tags ASC)");
-        }
-
-        // Pgsql full text index
-        // if ($this->getDb()->getIsPgsql()) {
-        //    $this->execute("CREATE INDEX tags_fulltext ON " . Plugin::CACHE_TABLE . " USING GIN (tags)");
-        // }
+        $this->createIndex('url_idx', Plugin::CACHE_TABLE, 'url', true);
+        $this->execute("ALTER TABLE " . Plugin::CACHE_TABLE . " ADD FULLTEXT INDEX tags_fulltext (tags ASC)");
 
     }
 

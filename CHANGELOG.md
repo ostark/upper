@@ -1,7 +1,9 @@
 # Changelog
-## [1.1.0] - 2017-10-23
+## [1.1.0] - 2017-11-24
 ### Added
-- DB fallback (mysql) 
+- Added DB fallback (mysql) 
+- Added Config `useLocalTags option 
+- Add `X-Upper-Cache` header with cache date or `BYPASS`
 
 ### Changed
 - Requires Craft 3.0.0-RC1

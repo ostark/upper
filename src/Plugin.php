@@ -34,6 +34,9 @@ class Plugin extends BasePlugin
     // DB
     const CACHE_TABLE = '{{%upper_cache}}';
 
+    // Header
+    const INFO_HEADER_NAME = 'X-UPPER-CACHE';
+
     public $schemaVersion = '1.0.0';
 
 

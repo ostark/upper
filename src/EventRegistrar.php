@@ -90,6 +90,7 @@ class EventRegistrar
 
             // Don't cache if private | no-cache set already
             if ($response->hasCacheControlDirective('private') || $response->hasCacheControlDirective('no-cache')) {
+                $headers->set(Plugin::INFO_HEADER_NAME, 'BYPASS');
                 return;
             }
 
@@ -99,6 +100,7 @@ class EventRegistrar
             // Set Headers
             $response->setTagHeader($settings->getTagHeaderName(), $tags, $settings->getHeaderTagDelimiter());
             $response->setSharedMaxAge($maxAge);
+            $headers->set(Plugin::INFO_HEADER_NAME, "AT: " . date(\DateTime::ISO8601));
 
             $plugin->trigger($plugin::EVENT_AFTER_SET_TAG_HEADER, new CacheResponseEvent([
                     'tags'       => $tags,
@@ -151,8 +153,6 @@ class EventRegistrar
                         'url'     => $event->requestUrl,
                         'body'    => $event->output,
                         'headers' => json_encode($event->headers),
-
-                        // Does this work with \Craft::$app->getDb()->getIsPgsql()?
                         'tags'    => implode(" ", $event->tags),
                         // ^^ full text index
 
