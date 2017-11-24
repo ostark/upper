@@ -14,27 +14,31 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
     public $logPurgeActions = true;
 
     /**
-     * @param array $keys
+     * @param string $tag
      *
      * @return bool
      */
-    public function purgeByKeys(array $keys)
+    public function purgeTag(string $tag)
     {
-        $joinedKeys = implode(', ', $keys);
-        $this->log("Dummy::purgeByUrl([{$joinedKeys}]) was called.");
+        $this->log("Dummy::purgeTag($tag) was called.");
+
+        if ($this->useLocalTags) {
+            $this->purgeUrlsByTag($tag);
+        }
 
         return true;
     }
 
 
     /**
-     * @param string $url
+     * @param array $urls
      *
      * @return bool
      */
-    public function purgeByUrl(string $url)
+    public function purgeUrls(array $urls)
     {
-        $this->log("Dummy::purgeByUrl('{$url}'') was called.");
+        $joinedUrls = implode(',', $urls);
+        $this->log("Dummy::purgeUrls([$joinedUrls]') was called.");
 
         return true;
     }
@@ -45,6 +49,10 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeAll()
     {
+        if ($this->useLocalTags) {
+            $this->clearLocalCache();
+        }
+
         $this->log("Dummy::purgeAll() was called.");
 
         return true;

@@ -44,6 +44,10 @@ class Settings extends Model
      */
     public $defaultMaxAge = null;
 
+    /**
+     * @var bool
+     */
+    public $useLocalTags = true;
 
     // Public Methods
     // =========================================================================

@@ -34,6 +34,9 @@ class Plugin extends BasePlugin
     // DB
     const CACHE_TABLE = '{{%upper_cache}}';
 
+    // Header
+    const INFO_HEADER_NAME = 'X-UPPER-CACHE';
+
     public $schemaVersion = '1.0.0';
 
 
@@ -59,6 +62,10 @@ class Plugin extends BasePlugin
         EventRegistrar::registerFrontendEvents();
         EventRegistrar::registerUpdateEvents();
         EventRegistrar::registerDashboardEvents();
+
+        if ($this->getSettings()->useLocalTags) {
+            EventRegistrar::registerFallback();
+        }
 
         // Attach Behaviors
         \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);

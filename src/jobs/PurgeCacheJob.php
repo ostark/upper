@@ -5,25 +5,29 @@ use craft\queue\BaseJob;
 use ostark\upper\Plugin;
 
 /**
- * Class PurgeByKeys
+ * Class PurgeCache
  *
  * @package ostark\upper\jobs
  */
-class PurgeByKeys extends BaseJob
+class PurgeCacheJob extends BaseJob
 {
     /**
-     * @var array keys
+     * @var string tag
      */
-    public $keys = [];
+    public $tag;
 
     /**
      * @inheritdoc
      */
     public function execute($queue)
     {
+        if (!$this->tag) {
+            return false;
+        }
+
         // Get registered purger
         $purger = Plugin::getInstance()->getPurger();
-        $purger->purgeByKeys($this->keys);
+        $purger->purgeTag($this->tag);
 
     }
 
@@ -33,8 +37,6 @@ class PurgeByKeys extends BaseJob
      */
     protected function defaultDescription(): string
     {
-        $keys = implode(', ', $this->keys);
-
-        return Craft::t('upper', 'Purge Keys: {keys}', ['keys' => $keys]);
+        return Craft::t('upper', 'Purge Tag: {tag}', ['tag' => $this->tag]);
     }
 }

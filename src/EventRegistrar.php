@@ -15,7 +15,7 @@ use craft\services\Structures;
 use craft\utilities\ClearCaches;
 use craft\web\View;
 use ostark\upper\events\CacheResponseEvent;
-use ostark\upper\jobs\PurgeByKeys;
+use ostark\upper\jobs\PurgeCacheJob;
 use yii\base\Event;
 
 /**
@@ -90,6 +90,7 @@ class EventRegistrar
 
             // Don't cache if private | no-cache set already
             if ($response->hasCacheControlDirective('private') || $response->hasCacheControlDirective('no-cache')) {
+                $headers->set(Plugin::INFO_HEADER_NAME, 'BYPASS');
                 return;
             }
 
@@ -99,6 +100,7 @@ class EventRegistrar
             // Set Headers
             $response->setTagHeader($settings->getTagHeaderName(), $tags, $settings->getHeaderTagDelimiter());
             $response->setSharedMaxAge($maxAge);
+            $headers->set(Plugin::INFO_HEADER_NAME, "AT: " . date(\DateTime::ISO8601));
 
             $plugin->trigger($plugin::EVENT_AFTER_SET_TAG_HEADER, new CacheResponseEvent([
                     'tags'       => $tags,
@@ -132,6 +134,38 @@ class EventRegistrar
     }
 
 
+    public static function registerFallback()
+    {
+
+        Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, function (CacheResponseEvent $event) {
+
+            // Insert item
+            \Craft::$app->getDb()->createCommand()
+                ->upsert(
+                // Table
+                    Plugin::CACHE_TABLE,
+
+                    // Identifier
+                    ['url' => $event->requestUrl],
+
+                    // Data
+                    [
+                        'url'     => $event->requestUrl,
+                        'body'    => $event->output,
+                        'headers' => json_encode($event->headers),
+                        'tags'    => implode(" ", $event->tags),
+                        // ^^ full text index
+
+                        'siteId'  => \Craft::$app->getSites()->currentSite->id
+                    ]
+                )
+                ->execute();
+
+        });
+
+    }
+
+
     /**
      * @param \yii\base\Event $event
      */
@@ -141,22 +175,22 @@ class EventRegistrar
             if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
-            $keys = ($event->isNew)
-                ? [Plugin::TAG_PREFIX_SECTION . $event->element->sectionId]
-                : [Plugin::TAG_PREFIX_ELEMENT . $event->element->getId()];
+            $tag = ($event->isNew)
+                ? Plugin::TAG_PREFIX_SECTION . $event->element->sectionId
+                : Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
         }
 
         if ($event instanceof SectionEvent) {
-            $keys = [Plugin::TAG_PREFIX_SECTION . $event->section->id];
+            $tag = Plugin::TAG_PREFIX_SECTION . $event->section->id;
         }
 
         if ($event instanceof MoveElementEvent or $event instanceof ElementStructureEvent) {
-            $keys = [Plugin::TAG_PREFIX_STRUCTURE . $event->structureId];
+            $tag = Plugin::TAG_PREFIX_STRUCTURE . $event->structureId;
         }
 
         // Push to queue
-        \Craft::$app->getQueue()->push(new PurgeByKeys([
-                'keys' => $keys
+        \Craft::$app->getQueue()->push(new PurgeCacheJob([
+                'tag' => $tag
             ]
         ));
     }

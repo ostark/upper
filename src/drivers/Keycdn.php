@@ -1,6 +1,7 @@
 <?php namespace ostark\upper\drivers;
 
 use GuzzleHttp\Client;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class Keycdn Driver
@@ -22,27 +23,32 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
 
 
     /**
-     * @param array $keys
+     * @param string $tag
      *
      * @return bool
      */
-    public function purgeByKeys(array $keys)
+    public function purgeTag(string $tag)
     {
         return $this->sendRequest('DELETE', 'purgetag', [
-                'tags' => $keys
+                'tags' => [$tag]
             ]
         );
     }
 
     /**
-     * @param string $url
+     * @param array $urls
      *
      * @return bool
      */
-    public function purgeByUrl(string $url)
+    public function purgeUrls(array $urls)
     {
+        // prefix urls
+        $zoneUrls = array_map(function ($url) {
+            return $this->zoneUrl . $url;
+        }, $urls);
+
         return $this->sendRequest('DELETE', 'purgeurl', [
-                'urls' => [$this->zoneUrl . $url]
+                'urls' => $zoneUrls
             ]
         );
     }
@@ -55,6 +61,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
     {
         return $this->sendRequest('GET', 'purge', []);
     }
+
 
     /**
      * @param string $method HTTP verb
