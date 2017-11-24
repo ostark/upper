@@ -2,7 +2,7 @@
   "name": "ostark/upper",
   "description": "A cache plugin for Craft - supporting multiple Edge Caches",
   "type": "craft-plugin",
-  "version": "1.1.0 ",
+  "version": "1.1.0",
   "keywords": [
     "craft",
     "cms",
@@ -22,7 +22,7 @@
     }
   ],
   "require": {
-    "craftcms/cms": "~3.0.0-beta.23",
+    "craftcms/cms": "dev-release/3.0.0-RC1 as 3.0.0-RC1",
     "guzzlehttp/guzzle": "^6.2"
   },
   "autoload": {

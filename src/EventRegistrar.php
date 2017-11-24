@@ -151,7 +151,11 @@ class EventRegistrar
                         'url'     => $event->requestUrl,
                         'body'    => $event->output,
                         'headers' => json_encode($event->headers),
+
+                        // Does this work with \Craft::$app->getDb()->getIsPgsql()?
                         'tags'    => implode(" ", $event->tags),
+                        // ^^ full text index
+
                         'siteId'  => \Craft::$app->getSites()->currentSite->id
                     ]
                 )

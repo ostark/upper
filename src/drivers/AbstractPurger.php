@@ -67,6 +67,10 @@ class AbstractPurger extends Object
             \Craft::$app->getDb()->quoteTableName(Plugin::CACHE_TABLE),
             $tag
         );
+
+        // What about \Craft::$app->getDb()->getIsPgsql()?
+        // 'SELECT title FROM %s WHERE to_tsvector(tags) @@ to_tsquery("%s")'
+
         // Execute the sql
         $results = \Craft::$app->getDb()
             ->createCommand($sql)

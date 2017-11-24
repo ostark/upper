@@ -1,7 +1,10 @@
 # Changelog
-## 1.1.0 (WIP)
+## [1.1.0] - 2017-10-23
 ### Added
-- 
+- DB fallback (mysql) 
+
+### Changed
+- Requires Craft 3.0.0-RC1
 
 ## [1.0.0] - 2017-10-23
 ### Added
