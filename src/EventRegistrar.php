@@ -71,6 +71,12 @@ class EventRegistrar
             if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
+
+            // Tag with GlobalSet handle
+            if ($event->element instanceof \craft\elements\GlobalSet) {
+                Plugin::getInstance()->getTagCollection()->add($event->element->handle);
+            }
+
             // Add to collection
             Plugin::getInstance()->getTagCollection()->addTagsFromElement($event->row);
 
@@ -175,9 +181,18 @@ class EventRegistrar
             if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
-            $tag = ($event->isNew)
-                ? Plugin::TAG_PREFIX_SECTION . $event->element->sectionId
-                : Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
+
+            if ($event->element instanceof \craft\elements\GlobalSet) {
+                $tag = $event->element->handle;
+            }
+
+            else {
+                $tag = ($event->isNew)
+                    ? Plugin::TAG_PREFIX_SECTION . $event->element->sectionId
+                    : Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
+            }
+
+
         }
 
         if ($event instanceof SectionEvent) {
