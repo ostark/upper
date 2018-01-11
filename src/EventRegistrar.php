@@ -186,6 +186,10 @@ class EventRegistrar
                 $tag = $event->element->handle;
             }
 
+            elseif ($event->element instanceof \craft\elements\Asset && $event->isNew) {
+                $tag = $event->element->volumeId;
+            }
+
             else {
                 $tag = ($event->isNew)
                     ? Plugin::TAG_PREFIX_SECTION . $event->element->sectionId
