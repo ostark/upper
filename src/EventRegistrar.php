@@ -142,6 +142,9 @@ class EventRegistrar
 
     public static function registerFallback()
     {
+        if (!\Craft::$app->getDb()->getIsMysql()) {
+            return;
+        };
 
         Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, function (CacheResponseEvent $event) {
 

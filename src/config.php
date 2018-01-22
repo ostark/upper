@@ -15,6 +15,7 @@ return [
 
     // Store tags locally and purge Urls
     // In case the cache driver does not support tag purging
+    // MySql only so far
     'useLocalTags' => true,
 
     // Drivers settings

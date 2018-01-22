@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.2] - 2018-01-22
+### Fixed
+- Prevent DB fallback when using PostgreSQL
+
 ## [1.1.1] - 2017-12-05
 ### Changed
 - Requires Craft 3.0.0-RC1

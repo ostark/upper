@@ -89,6 +89,10 @@ class AbstractPurger extends Object
      */
     public function invalidateLocalCache(array $uids)
     {
+        if (!\Craft::$app->getDb()->getIsMysql()) {
+            return 0;
+        };
+
         return \Craft::$app->getDb()->createCommand()
             ->delete(Plugin::CACHE_TABLE, ['uid' => $uids])
             ->execute();
@@ -102,6 +106,10 @@ class AbstractPurger extends Object
      */
     public function clearLocalCache()
     {
+        if (!\Craft::$app->getDb()->getIsMysql()) {
+            return 0;
+        };
+
         return \Craft::$app->getDb()->createCommand()
             ->delete(Plugin::CACHE_TABLE)
             ->execute();
