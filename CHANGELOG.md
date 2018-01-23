@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.1.3] - 2018-01-23
+### Fixed
+- Fixed install bug when using PostgreSQL
+
 ## [1.1.2] - 2018-01-22
 ### Fixed
 - Prevent DB fallback when using PostgreSQL

@@ -4,7 +4,6 @@ use craft\db\Migration;
 use ostark\upper\Plugin;
 
 
-
 /**
  * Install migration.
  */
@@ -17,7 +16,7 @@ class Install extends Migration
     public function safeUp()
     {
         if (!$this->getDb()->getIsMysql()) {
-            return false;
+            return;
         }
 
         $this->createTable(Plugin::CACHE_TABLE, [
