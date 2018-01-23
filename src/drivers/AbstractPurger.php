@@ -33,6 +33,7 @@ class AbstractPurger extends BaseObject
     {
         try {
             if ($urls = $this->getTaggedUrls($tag)) {
+
                 $this->purgeUrls(array_values($urls));
                 $this->invalidateLocalCache(array_keys($urls));
 
@@ -41,6 +42,8 @@ class AbstractPurger extends BaseObject
         } catch (Exception $e) {
             \Craft::warning("Failed to purge '$tag'.", "upper");
         }
+
+        return false;
     }
 
     /**
@@ -98,7 +101,7 @@ class AbstractPurger extends BaseObject
     }
 
 
-    /***
+    /**
      * @return int
      * @throws \yii\db\Exception
      */

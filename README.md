@@ -14,6 +14,7 @@ If you need an introduction to HTTP Caching, I highly recommend [this article](h
 
 * [KeyCDN](https://www.keycdn.com) (CDN/SaaS)
 * [Fastly](https://www.fastly.com) (CDN/SaaS)
+* [Cloudflare](https://www.cloudflare.com) (CDN/SaaS - unreleased)
 * Varnish with XKEY support (your own proxy)
 * Dummy (does nothing)
 
@@ -31,6 +32,7 @@ If you need an introduction to HTTP Caching, I highly recommend [this article](h
 UPPER_DRIVER=fastly
 FASTLY_API_TOKEN=<REPLACE-ME>
 FASTLY_SERVICE_ID=<REPLACE-ME>
+FASTLY_DOMAIN=http://<REPLACE-ME>
 ```
 
 ### KeyCDN Setup
@@ -41,7 +43,19 @@ KEYCDN_API_KEY=<REPLACE-ME>
 KEYCDN_ZONE_URL=<REPLACE-ME>.kxcdn.com
 KEYCDN_ZONE_ID=<REPLACE-ME>
 ```
+### Cloudflare Setup
 
+```
+UPPER_DRIVER=cloudflare
+CLOUDFLARE_API_KEY=<REPLACE-ME>
+CLOUDFLARE_API_EMAIL=<REPLACE-ME>
+CLOUDFLARE_ZONE_ID=<REPLACE-ME>
+CLOUDFLARE_DOMAIN=https://<REPLACE-ME>
+```
+
+If you don't use Cloudflare Enterprise with native `Cache-Tag` support, make sure to enable `useLocalTags` in your `config/upper.php` file (default), otherwise disable it.
+
+ 
 ### Varnish Setup
 
 ```

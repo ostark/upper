@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+### Added
+- Added Cloudflare driver
+
 ## [1.2.0] - 2018-01-23
 ### Added
 - Added DB fallback for pgsql
