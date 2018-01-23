@@ -1,7 +1,6 @@
 <?php namespace ostark\upper\drivers;
 
 use GuzzleHttp\Client;
-use yii\helpers\ArrayHelper;
 
 /**
  * Class Keycdn Driver

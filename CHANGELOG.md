@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0] - 2018-01-23
+### Added
+- Added DB fallback for pgsql
+ 
+### Fixed
+- PHP 7.2 issue (Object is reserved word)
+
 ## [1.1.3] - 2018-01-23
 ### Fixed
 - Fixed install bug when using PostgreSQL

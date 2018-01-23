@@ -3,7 +3,6 @@
 use craft\db\Migration;
 use ostark\upper\Plugin;
 
-
 /**
  * Install migration.
  */
@@ -15,23 +14,45 @@ class Install extends Migration
      */
     public function safeUp()
     {
-        if (!$this->getDb()->getIsMysql()) {
-            return;
+
+        // mysql with fulltext field tags
+        if ($this->getDb()->getIsMysql()) {
+
+            $this->createTable(Plugin::CACHE_TABLE, [
+                'uid'         => $this->string(32)->notNull()->unique(),
+                'url'         => $this->string(255)->notNull(),
+                'body'        => $this->mediumText()->defaultValue(null),
+                'headers'     => $this->text()->defaultValue(null),
+                'tags'        => $this->string(255)->notNull(),
+                'siteId'      => $this->integer(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->null()
+            ]);
+
+            $this->createIndex('url_idx', Plugin::CACHE_TABLE, 'url', true);
+            $this->execute("ALTER TABLE " . Plugin::CACHE_TABLE . " ADD FULLTEXT INDEX tags_fulltext (tags ASC)");
+
         }
 
-        $this->createTable(Plugin::CACHE_TABLE, [
-            'uid'         => $this->string(32)->notNull()->unique(),
-            'url'         => $this->string(255)->notNull(),
-            'body'        => $this->mediumText()->defaultValue(null),
-            'headers'     => $this->text()->defaultValue(null),
-            'tags'        => $this->string(255)->notNull(),
-            'siteId'      => $this->integer(),
-            'dateCreated' => $this->dateTime()->notNull(),
-            'dateUpdated' => $this->dateTime()->null()
-        ]);
+        // pgsql with array field tags
+        elseif ($this->getDb()->getIsPgsql()) {
 
-        $this->createIndex('url_idx', Plugin::CACHE_TABLE, 'url', true);
-        $this->execute("ALTER TABLE " . Plugin::CACHE_TABLE . " ADD FULLTEXT INDEX tags_fulltext (tags ASC)");
+            $this->createTable(Plugin::CACHE_TABLE, [
+                'uid'         => $this->string(40)->notNull()->unique(),
+                'url'         => $this->string(255)->notNull(),
+                'body'        => $this->mediumText()->defaultValue(null),
+                'headers'     => $this->text()->defaultValue(null),
+                'tags'        => 'varchar[]',
+                'siteId'      => $this->integer(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->null(),
+                'PRIMARY KEY(uid)',
+            ]);
+
+            $this->createIndex('url_idx', Plugin::CACHE_TABLE, 'url', true);
+            $this->execute("CREATE INDEX tags_array ON " . Plugin::CACHE_TABLE . " USING GIN(tags)");
+
+        }
 
     }
 

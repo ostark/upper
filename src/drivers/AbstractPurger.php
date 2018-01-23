@@ -1,7 +1,7 @@
 <?php namespace ostark\upper\drivers;
 
 use ostark\upper\Plugin;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
 
@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
  *
  * @package ostark\upper\drivers
  */
-class AbstractPurger extends Object
+class AbstractPurger extends BaseObject
 {
     /**
      * @var bool
@@ -35,6 +35,7 @@ class AbstractPurger extends Object
             if ($urls = $this->getTaggedUrls($tag)) {
                 $this->purgeUrls(array_values($urls));
                 $this->invalidateLocalCache(array_keys($urls));
+
                 return true;
             }
         } catch (Exception $e) {
@@ -58,14 +59,16 @@ class AbstractPurger extends Object
      */
     public function getTaggedUrls($tag)
     {
-        if (!\Craft::$app->getDb()->getIsMysql()) {
-            return;
-        };
+        // Use fulltext for mysql or array field for pgsql
+        $sql = \Craft::$app->getDb()->getIsMysql()
+            ? "SELECT uid, url FROM %s WHERE MATCH(tags) AGAINST (%s IN BOOLEAN MODE)"
+            : "SELECT uid, url FROM %s WHERE tags @> (ARRAY[%s]::varchar[])";
 
+        // Replace table name and tag
         $sql = sprintf(
-            'SELECT uid, url FROM %s WHERE MATCH(tags) AGAINST ("%s" IN BOOLEAN MODE)',
+            $sql,
             \Craft::$app->getDb()->quoteTableName(Plugin::CACHE_TABLE),
-            $tag
+            \Craft::$app->getDb()->quoteValue($tag)
         );
 
         // Execute the sql
@@ -89,14 +92,9 @@ class AbstractPurger extends Object
      */
     public function invalidateLocalCache(array $uids)
     {
-        if (!\Craft::$app->getDb()->getIsMysql()) {
-            return 0;
-        };
-
         return \Craft::$app->getDb()->createCommand()
             ->delete(Plugin::CACHE_TABLE, ['uid' => $uids])
             ->execute();
-
     }
 
 
@@ -106,10 +104,6 @@ class AbstractPurger extends Object
      */
     public function clearLocalCache()
     {
-        if (!\Craft::$app->getDb()->getIsMysql()) {
-            return 0;
-        };
-
         return \Craft::$app->getDb()->createCommand()
             ->delete(Plugin::CACHE_TABLE)
             ->execute();

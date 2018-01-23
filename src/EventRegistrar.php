@@ -97,6 +97,7 @@ class EventRegistrar
             // Don't cache if private | no-cache set already
             if ($response->hasCacheControlDirective('private') || $response->hasCacheControlDirective('no-cache')) {
                 $headers->set(Plugin::INFO_HEADER_NAME, 'BYPASS');
+
                 return;
             }
 
@@ -142,11 +143,18 @@ class EventRegistrar
 
     public static function registerFallback()
     {
-        if (!\Craft::$app->getDb()->getIsMysql()) {
-            return;
-        };
 
         Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, function (CacheResponseEvent $event) {
+
+            // not tagged?
+            if (0 == count($event->tags)) {
+                return;
+            }
+
+            // fulltext or array
+            $tags = \Craft::$app->getDb()->getIsMysql()
+                ? implode(" ", $event->tags)
+                : str_replace(['[', ']'], ['{', '}'], json_encode($event->tags));
 
             // Insert item
             \Craft::$app->getDb()->createCommand()
@@ -162,9 +170,7 @@ class EventRegistrar
                         'url'     => $event->requestUrl,
                         'body'    => $event->output,
                         'headers' => json_encode($event->headers),
-                        'tags'    => implode(" ", $event->tags),
-                        // ^^ full text index
-
+                        'tags'    => $tags,
                         'siteId'  => \Craft::$app->getSites()->currentSite->id
                     ]
                 )
@@ -187,18 +193,13 @@ class EventRegistrar
 
             if ($event->element instanceof \craft\elements\GlobalSet) {
                 $tag = $event->element->handle;
-            }
-
-            elseif ($event->element instanceof \craft\elements\Asset && $event->isNew) {
+            } elseif ($event->element instanceof \craft\elements\Asset && $event->isNew) {
                 $tag = $event->element->volumeId;
-            }
-
-            else {
+            } else {
                 $tag = ($event->isNew)
                     ? Plugin::TAG_PREFIX_SECTION . $event->element->sectionId
                     : Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
             }
-
 
         }
 
