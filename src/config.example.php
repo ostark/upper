@@ -2,7 +2,6 @@
 /**
  * Don't edit the config.example.php.
  * Instead modify the projects/config/upper.php and use ENV VARS
- *
  */
 
 return [
