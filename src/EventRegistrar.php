@@ -107,14 +107,13 @@ class EventRegistrar
             // Set Headers
             $response->setTagHeader($settings->getTagHeaderName(), $tags, $settings->getHeaderTagDelimiter());
             $response->setSharedMaxAge($maxAge);
-            $headers->set(Plugin::INFO_HEADER_NAME, "AT: " . date(\DateTime::ISO8601));
+            $headers->set(Plugin::INFO_HEADER_NAME, "CACHED: " . date(\DateTime::ISO8601));
 
             $plugin->trigger($plugin::EVENT_AFTER_SET_TAG_HEADER, new CacheResponseEvent([
                     'tags'       => $tags,
                     'maxAge'     => $maxAge,
                     'requestUrl' => \Craft::$app->getRequest()->getUrl(),
-                    'headers'    => $response->getHeaders()->toArray(),
-                    'output'     => $event->output
+                    'headers'    => $response->getHeaders()->toArray()
                 ]
             ));
         });
@@ -122,7 +121,7 @@ class EventRegistrar
     }
 
 
-    public static function registerDashboardEvents()
+    public static function registerCpEvents()
     {
         // Register cache purge checkbox
         Event::on(
@@ -131,7 +130,7 @@ class EventRegistrar
             function (RegisterCacheOptionsEvent $event) {
                 $event->options[] = [
                     'key'    => 'upper-purge-all',
-                    'label'  => \Craft::t('upper', 'Cache Proxy (Upper Plugin)'),
+                    'label'  => \Craft::t('upper', 'Upper') . ' - ' . Plugin::getInstance()->getSettings()->driver,
                     'action' => function () {
                         Plugin::getInstance()->getPurger()->purgeAll();
                     },
@@ -168,9 +167,8 @@ class EventRegistrar
                     // Data
                     [
                         'url'     => $event->requestUrl,
-                        'body'    => $event->output,
-                        'headers' => json_encode($event->headers),
                         'tags'    => $tags,
+                        'headers' => json_encode($event->headers),
                         'siteId'  => \Craft::$app->getSites()->currentSite->id
                     ]
                 )

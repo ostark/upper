@@ -2,7 +2,12 @@
 
 ## Unreleased
 ### Added
-- Added Cloudflare driver
+- Added Cloudflare support
+
+## Changed
+- Custom exceptions for KeyCDN, Fastly, Cloudflare API calls
+- HTML body is not stored in DB anymore when `useLocalTags` is enabled
+- Renamed `EventRegistrar::registerDashboardEvents()` to `EventRegistrar::registerCpEvents()`
 
 ## [1.2.0] - 2018-01-23
 ### Added

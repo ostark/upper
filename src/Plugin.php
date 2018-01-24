@@ -60,8 +60,8 @@ class Plugin extends BasePlugin
 
         // Register event handlers
         EventRegistrar::registerFrontendEvents();
+        EventRegistrar::registerCpEvents();
         EventRegistrar::registerUpdateEvents();
-        EventRegistrar::registerDashboardEvents();
 
         if ($this->getSettings()->useLocalTags) {
             EventRegistrar::registerFallback();
