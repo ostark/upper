@@ -8,7 +8,10 @@
     "cms",
     "craftcms",
     "craft-plugin",
-    "upper"
+    "cache",
+    "cloudflare",
+    "fastly",
+    "keycdn"
   ],
   "support": {
     "docs": "https://github.com/ostark/upper/blob/master/README.md",

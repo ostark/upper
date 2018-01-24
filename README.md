@@ -43,6 +43,7 @@ KEYCDN_API_KEY=<REPLACE-ME>
 KEYCDN_ZONE_URL=<REPLACE-ME>.kxcdn.com
 KEYCDN_ZONE_ID=<REPLACE-ME>
 ```
+
 ### Cloudflare Setup
 
 ```
@@ -82,5 +83,5 @@ With `Cache-Control` headers you can disabled caching for certain templates:
 
 ## Disclaimer
 
-Even if the name of the plugin and some wordings are intentional, the author does not glorify any drug abuse.
+Even if the name of the plugin and some wordings are intentional, the author does not glorify any drug abuse. 🍻
 The plugin is inspired by the [joshangell/Falcon](https://github.com/joshangell/Falcon).

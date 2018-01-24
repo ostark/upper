@@ -115,13 +115,12 @@ class Plugin extends BasePlugin
      */
     protected function afterInstall()
     {
-        $configSourceFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.php';
+        $configSourceFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.example.php';
         $configTargetFile = \Craft::$app->getConfig()->configDir . DIRECTORY_SEPARATOR . $this->handle . '.php';
 
         if (!file_exists($configTargetFile)) {
             copy($configSourceFile, $configTargetFile);
         }
     }
-
 
 }

@@ -128,9 +128,10 @@ class EventRegistrar
             ClearCaches::class,
             ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
             function (RegisterCacheOptionsEvent $event) {
+                $driver = ucfirst(Plugin::getInstance()->getSettings()->driver);
                 $event->options[] = [
                     'key'    => 'upper-purge-all',
-                    'label'  => \Craft::t('upper', 'Upper') . ' - ' . Plugin::getInstance()->getSettings()->driver,
+                    'label'  => \Craft::t('upper', 'Upper ({driver})', ['driver' => $driver]),
                     'action' => function () {
                         Plugin::getInstance()->getPurger()->purgeAll();
                     },
