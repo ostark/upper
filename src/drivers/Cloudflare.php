@@ -1,6 +1,8 @@
 <?php namespace ostark\upper\drivers;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use ostark\upper\exceptions\CloudflareApiException;
 
 /**
  * Class Cloudflare Driver
@@ -31,7 +33,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
     public function purgeTag(string $tag)
     {
         if ($this->useLocalTags) {
-            $this->purgeUrlsByTag($tag);
+             return $this->purgeUrlsByTag($tag);
         }
 
         return $this->sendRequest('DELETE', 'purge_cache', [
@@ -44,6 +46,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      * @param array $urls
      *
      * @return bool
+     * @throws \ostark\upper\exceptions\CloudflareApiException
      */
     public function purgeUrls(array $urls)
     {
@@ -65,6 +68,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
     /**
      * @return bool
+     * @throws \yii\db\Exception
      */
     public function purgeAll()
     {
@@ -84,6 +88,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      * @param array  $params
      *
      * @return bool
+     * @throws \ostark\upper\exceptions\CloudflareApiException
      */
     protected function sendRequest($method = 'DELETE', string $type, array $params = [])
     {
@@ -96,14 +101,23 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
             ]
         ]);
 
-        $uri     = "zones/{$this->zoneId}/$type";
-        $options = (count($params)) ? ['json' => $params] : [];
+        try {
 
-        $response = $client->request($method, $uri, $options);
+            $uri     = "zones/{$this->zoneId}/$type";
+            $options = (count($params)) ? ['json' => $params] : [];
+            $client->request($method, $uri, $options);
 
-        return (in_array($response->getStatusCode(), [200]))
-            ? true
-            : false;
+        } catch (BadResponseException $e) {
 
+            throw CloudflareApiException::create(
+                $e->getRequest(),
+                $e->getResponse()
+            );
+        }
+
+        return true;
     }
+
+
+
 }

@@ -1,6 +1,8 @@
 <?php namespace ostark\upper\drivers;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use ostark\upper\exceptions\KeycdnApiException;
 
 /**
  * Class Keycdn Driver
@@ -68,6 +70,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
      * @param array  $params
      *
      * @return bool
+     * @throws \ostark\upper\exceptions\KeycdnApiException
      */
     protected function sendRequest($method = 'DELETE', string $type, array $params = [])
     {
@@ -80,14 +83,21 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
             ]
         ]);
 
-        $uri     = "zones/{$type}/{$this->zoneId}.json";
-        $options = (count($params)) ? ['json' => $params] : [];
+        try {
 
-        $response = $client->request($method, $uri, $options);
+            $uri     = "zones/{$type}/{$this->zoneId}.json";
+            $options = (count($params)) ? ['json' => $params] : [];
+            $client->request($method, $uri, $options);
 
-        return (in_array($response->getStatusCode(), [204, 200]))
-            ? true
-            : false;
+        } catch (BadResponseException $e) {
+
+            throw KeycdnApiException::create(
+                $e->getRequest(),
+                $e->getResponse()
+            );
+        }
+
+        return true;
 
     }
 }

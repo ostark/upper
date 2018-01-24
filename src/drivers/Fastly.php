@@ -1,6 +1,8 @@
 <?php namespace ostark\upper\drivers;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use ostark\upper\exceptions\FastlyApiException;
 
 /**
  * Class Keycdn Driver
@@ -103,6 +105,7 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
      * @param array  $headers
      *
      * @return bool
+     * @throws \ostark\upper\exceptions\FastlyApiException
      */
     protected function sendRequest(string $method = 'PURGE', string $uri, array $headers = [])
     {
@@ -114,17 +117,24 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
             ])
         ]);
 
-        // PURGE requests don't use the API_ENDPOINT
-        if ($method !== 'PURGE') {
+        // Prepend the service endpoint
+        if (in_array($method, ['POST','GET'])) {
             $uri = "service/{$this->serviceId}/{$uri}";
         }
 
-        $response = $client->request($method, $uri);
+        try {
 
-        return (in_array($response->getStatusCode(), [204, 200]))
-            ? true
-            : false;
+            $client->request($method, $uri);
 
+        } catch (BadResponseException $e) {
+
+            throw FastlyApiException::create(
+                $e->getRequest(),
+                $e->getResponse()
+            );
+        }
+
+        return true;
     }
 }
 
