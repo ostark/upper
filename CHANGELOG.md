@@ -1,8 +1,7 @@
 # Changelog
-
-## Unreleased
+## [1.3.0] - 2018-02-23
 ### Added
-- Added Cloudflare support
+- Added **Cloudflare** support
 
 ## Changed
 - Custom exceptions for KeyCDN, Fastly, Cloudflare API calls

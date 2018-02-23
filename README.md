@@ -54,6 +54,8 @@ CLOUDFLARE_ZONE_ID=<REPLACE-ME>
 CLOUDFLARE_DOMAIN=https://<REPLACE-ME>
 ```
 
+By default, Cloudflare's CDN  does not cache HTML content. You need to create a [**Cache Level: Cache Everything**](https://support.cloudflare.com/hc/en-us/articles/202775670-How-Do-I-Tell-Cloudflare-What-to-Cache-) Page Rule to enable caching for "pages".
+
 If you don't use Cloudflare Enterprise with native `Cache-Tag` support, make sure to enable `useLocalTags` in your `config/upper.php` file (default), otherwise disable it.
 
  
