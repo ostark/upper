@@ -14,7 +14,7 @@ If you need an introduction to HTTP Caching, I highly recommend [this article](h
 
 * [KeyCDN](https://www.keycdn.com) (CDN/SaaS)
 * [Fastly](https://www.fastly.com) (CDN/SaaS)
-* [Cloudflare](https://www.cloudflare.com) (CDN/SaaS - unreleased)
+* [Cloudflare](https://www.cloudflare.com) (CDN/SaaS)
 * Varnish with XKEY support (your own proxy)
 * Dummy (does nothing)
 
