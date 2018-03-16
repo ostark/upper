@@ -1,4 +1,9 @@
 # Changelog
+
+## [1.3.1] - 2018-03-16
+### Fixed
+- Category Elements are now supported
+
 ## [1.3.0] - 2018-02-23
 ### Added
 - Added **Cloudflare** support

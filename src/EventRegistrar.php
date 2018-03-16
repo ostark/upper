@@ -186,6 +186,7 @@ class EventRegistrar
     protected static function handleUpdateEvent(Event $event)
     {
         if ($event instanceof ElementEvent) {
+
             if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
@@ -195,7 +196,7 @@ class EventRegistrar
             } elseif ($event->element instanceof \craft\elements\Asset && $event->isNew) {
                 $tag = $event->element->volumeId;
             } else {
-                $tag = ($event->isNew)
+                $tag = ($event->isNew && isset($event->element->sectionId))
                     ? Plugin::TAG_PREFIX_SECTION . $event->element->sectionId
                     : Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
             }
