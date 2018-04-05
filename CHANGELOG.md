@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.2] - 2018-04-05
+### Changed
+- Changed version constraint to `craftcms/cms: ^3.0.0`
+
 ## [1.3.1] - 2018-03-16
 ### Fixed
 - Category Elements are now supported

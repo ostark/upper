@@ -72,7 +72,7 @@ class Plugin extends BasePlugin
         \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
 
     }
-
+    
 
     // ServiceLocators
     // =========================================================================
