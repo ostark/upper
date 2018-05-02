@@ -19,7 +19,7 @@ class Install extends Migration
         if ($this->getDb()->getIsMysql()) {
 
             $this->createTable(Plugin::CACHE_TABLE, [
-                'uid'         => $this->string(32)->notNull()->unique(),
+                'uid'         => $this->string(40)->notNull()->unique(),
                 'url'         => $this->string(255)->notNull(),
                 'headers'     => $this->text()->defaultValue(null),
                 'tags'        => $this->string(255)->notNull(),

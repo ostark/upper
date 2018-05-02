@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.3] - 2018-05-02
+### Changed
+- Adjusted the length of the uid on mysql (cache tag fallback) 
+
 ## [1.3.2] - 2018-04-05
 ### Changed
 - Changed version constraint to `craftcms/cms: ^3.0.0`
