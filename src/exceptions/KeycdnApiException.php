@@ -25,14 +25,16 @@ class KeycdnApiException extends \Exception
         }
 
         // Extract error message from body
-        $json = json_decode($response->getBody());
+        $json   = json_decode($response->getBody());
+        $status = $response->getStatusCode();
+
         if (json_last_error() !== JSON_ERROR_NONE) {
-            return new static("Unable to access error message, uri: '$uri'", $response->getStatusCode());
+            return new static("KeyCDN API error ($status) on: '$uri'", $status);
         }
 
         // Error message
         if (isset($json->status) && $json->status === 'error') {
-            return new static($json->description . ", uri: '$uri'", $response->getStatusCode());
+            return new static($json->description . ", uri: '$uri'", $status);
         }
 
         // Unknown
