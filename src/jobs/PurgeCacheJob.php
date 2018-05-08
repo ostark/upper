@@ -37,6 +37,6 @@ class PurgeCacheJob extends BaseJob
      */
     protected function defaultDescription(): string
     {
-        return Craft::t('upper', 'Purge Tag: {tag}', ['tag' => $this->tag]);
+        return Craft::t('upper', 'Upper Purge: {tag}', ['tag' => $this->tag]);
     }
 }

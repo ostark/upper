@@ -25,10 +25,12 @@ class CloudflareApiException extends \Exception
         }
 
         // Extract error message from body
-        $json = json_decode($response->getBody());
+        $status = $response->getStatusCode();
+        $json   = json_decode($response->getBody());
         if (json_last_error() !== JSON_ERROR_NONE) {
-            return new static("Unable to access error message, uri: '$uri'", $response->getStatusCode());
+            return new static("Cloudflare API error ($status) on: '$uri'", $status);
         }
+
 
         // Error message
         if (isset($json->errors) && count($json->errors) >= 1) {

@@ -21,13 +21,14 @@ class FastlyApiException extends \Exception
         $uri = $request->getUri();
 
         if (is_null($response)) {
-            return new static("No response error, uri: '$uri'");
+            return new static("Cloudflare no response error, uri: '$uri'");
         }
 
         // Extract error message from body
-        $json = json_decode($response->getBody());
+        $status = $response->getStatusCode();
+        $json   = json_decode($response->getBody());
         if (json_last_error() !== JSON_ERROR_NONE) {
-            return new static("Authentication failed, uri: '$uri'", $response->getStatusCode());
+            return new static("Cloudflare API error ($status) on: '$uri'", $status);
         }
 
         // Error message

@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.4] - 2018-05-08
+### Changed
+- API request exception: Show at least http status if no message is available 
+
 ## [1.3.3] - 2018-05-02
 ### Changed
 - Adjusted the length of the uid on mysql (cache tag fallback) 

@@ -25,9 +25,8 @@ class KeycdnApiException extends \Exception
         }
 
         // Extract error message from body
-        $json   = json_decode($response->getBody());
         $status = $response->getStatusCode();
-
+        $json   = json_decode($response->getBody());
         if (json_last_error() !== JSON_ERROR_NONE) {
             return new static("KeyCDN API error ($status) on: '$uri'", $status);
         }
