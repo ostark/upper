@@ -22,7 +22,7 @@ class Install extends Migration
                 'uid'         => $this->string(40)->notNull()->unique(),
                 'url'         => $this->string(255)->notNull(),
                 'headers'     => $this->text()->defaultValue(null),
-                'tags'        => $this->string(255)->notNull(),
+                'tags'        => $this->longText()->notNull(),
                 'siteId'      => $this->integer(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->null()
