@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.5] - 2018-05-26
+### Changed
+- DB fallback: Changed `tags` field form `varchar(255) to `text` to allow more tags
+
 ## [1.3.4] - 2018-05-08
 ### Changed
 - API request exception: Show at least http status if no message is available 
