@@ -3,6 +3,12 @@
 
 # The pep pill for your Craft site
 
+[![Latest Stable Version](https://poser.pugx.org/ostark/upper/v/stable)](https://packagist.org/packages/ostark/upper)
+[![Total Downloads](https://poser.pugx.org/ostark/upper/downloads)](https://packagist.org/packages/ostark/upper)
+[![Monthly Downloads](https://poser.pugx.org/ostark/upper/d/monthly)](https://packagist.org/packages/ostark/upper)
+
+
+
 Upper speeds up Craft dramatically using a **Cache Proxy** in front of your webserver. 
 
 The Plugin adds the neccessary `Cache-Control` and `XKEY/Surrogate-Key/Cache-Tag` headers to your pages. 
