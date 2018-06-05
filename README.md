@@ -16,6 +16,13 @@ When Entries or Sections get updated in the Control Panel it takes care of the c
 
 If you need an introduction to HTTP Caching, I highly recommend [this article](https://blog.fortrabbit.com/mastering-http-caching). 
 
+## Sponsor
+
+Development happens in my free time, but also during working hours. 
+Thanks [fortrabbit.com](https://www.fortrabbit.com/craft-hosting)!
+
+If you are looking additional integrations (Cache Drivers), feel free to contribute or [raise an issue](https://github.com/ostark/upper/issues).
+
 ## Supported Cache Drivers
 
 * [KeyCDN](https://www.keycdn.com) (CDN/SaaS)
