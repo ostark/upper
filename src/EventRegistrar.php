@@ -158,25 +158,29 @@ class EventRegistrar
 
             $urlHash = md5($event->requestUrl);
 
-            // Insert item
-            \Craft::$app->getDb()->createCommand()
-                ->upsert(
-                // Table
-                    Plugin::CACHE_TABLE,
+            try {
+                // Insert item
+                \Craft::$app->getDb()->createCommand()
+                    ->upsert(
+                    // Table
+                        Plugin::CACHE_TABLE,
 
-                    // Identifier
-                    ['urlHash' => $urlHash],
+                        // Identifier
+                        ['urlHash' => $urlHash],
 
-                    // Data
-                    [
-                        'urlHash' => $urlHash,
-                        'url'     => $event->requestUrl,
-                        'tags'    => $tags,
-                        'headers' => json_encode($event->headers),
-                        'siteId'  => \Craft::$app->getSites()->currentSite->id
-                    ]
-                )
-                ->execute();
+                        // Data
+                        [
+                            'urlHash' => $urlHash,
+                            'url'     => $event->requestUrl,
+                            'tags'    => $tags,
+                            'headers' => json_encode($event->headers),
+                            'siteId'  => \Craft::$app->getSites()->currentSite->id
+                        ]
+                    )
+                    ->execute();
+            } catch (\Exception $e) {
+                \Craft::warning("Failed to register fallback.", "upper");
+            }
 
         });
 
