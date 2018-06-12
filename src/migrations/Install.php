@@ -20,7 +20,7 @@ class Install extends Migration
 
             $this->createTable(Plugin::CACHE_TABLE, [
                 'uid'         => $this->string(40)->notNull()->unique(),
-                'url'         => $this->string(255)->notNull(),
+                'url'         => $this->text()->notNull(),
                 'headers'     => $this->text()->defaultValue(null),
                 'tags'        => $this->text()->notNull(),
                 'siteId'      => $this->integer(),
@@ -38,7 +38,7 @@ class Install extends Migration
 
             $this->createTable(Plugin::CACHE_TABLE, [
                 'uid'         => $this->string(40)->notNull()->unique(),
-                'url'         => $this->string(255)->notNull(),
+                'url'         => $this->text()->notNull(),
                 'headers'     => $this->text()->defaultValue(null),
                 'tags'        => 'varchar[]',
                 'siteId'      => $this->integer(),
