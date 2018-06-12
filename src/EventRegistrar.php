@@ -156,6 +156,8 @@ class EventRegistrar
                 ? implode(" ", $event->tags)
                 : str_replace(['[', ']'], ['{', '}'], json_encode($event->tags));
 
+            $urlHash = md5($event->requestUrl);
+
             // Insert item
             \Craft::$app->getDb()->createCommand()
                 ->upsert(
@@ -163,10 +165,11 @@ class EventRegistrar
                     Plugin::CACHE_TABLE,
 
                     // Identifier
-                    ['url' => $event->requestUrl],
+                    ['urlHash' => $urlHash],
 
                     // Data
                     [
+                        'urlHash' => $urlHash,
                         'url'     => $event->requestUrl,
                         'tags'    => $tags,
                         'headers' => json_encode($event->headers),
