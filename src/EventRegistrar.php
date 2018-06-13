@@ -156,6 +156,7 @@ class EventRegistrar
                 ? implode(" ", $event->tags)
                 : str_replace(['[', ']'], ['{', '}'], json_encode($event->tags));
 
+            // in order to have a unique (collitions are possible) identifier by url with a fixed length
             $urlHash = md5($event->requestUrl);
 
             try {
