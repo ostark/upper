@@ -37,7 +37,7 @@ class Plugin extends BasePlugin
     // Header
     const INFO_HEADER_NAME = 'X-UPPER-CACHE';
 
-    public $schemaVersion = '1.0.0';
+    public $schemaVersion = '1.0.1';
 
 
     /**

@@ -2,7 +2,7 @@
   "name": "ostark/upper",
   "description": "A cache plugin for Craft - supporting multiple Edge Caches",
   "type": "craft-plugin",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "keywords": [
     "craft",
     "cms",
@@ -36,7 +36,6 @@
   "extra": {
     "name": "Upper",
     "handle": "upper",
-    "schemaVersion": "0.1.0",
     "hasCpSettings": false,
     "hasCpSection": false,
     "changelogUrl": "https://raw.githubusercontent.com/ostark/upper/master/CHANGELOG.md"

@@ -1,8 +1,14 @@
 # Changelog
 
+## [1.3.6] - 2018-06-18
+### Changed
+- DB fallback: Schema - changed `url` field from `varchar(255) to `text` to allow longer urls
+- DB fallback: Schema - Added `urlHash`
+
+
 ## [1.3.5] - 2018-05-26
 ### Changed
-- DB fallback: Changed `tags` field form `varchar(255) to `text` to allow more tags
+- DB fallback: Schema - changed `tags` field from `varchar(255) to `text` to allow more tags
 
 ## [1.3.4] - 2018-05-08
 ### Changed
