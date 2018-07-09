@@ -24,6 +24,7 @@ return [
             'tagHeaderName'   => 'XKEY',
             'purgeHeaderName' => 'XKEY-PURGE',
             'purgeUrl'        => getenv('VARNISH_URL') ?: 'http://127.0.0.1:80/',
+            'headers'         => ['Host' => getenv('VARNISH_HOST')]
         ],
 
         // Fastly config

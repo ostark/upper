@@ -19,6 +19,10 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
      */
     public $purgeUrl;
 
+    /**
+     * @var array
+     */
+    public $headers;
 
     /**
      * @param string $tag
@@ -31,7 +35,7 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
 
         return $this->sendPurgeRequest([
                 'base_uri' => $this->purgeUrl,
-                'headers'  => [$this->purgeHeaderName => $tag]
+                'headers'  => $this->headers + [$this->purgeHeaderName => $tag]
             ]
         );
     }
@@ -47,7 +51,8 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
 
             $success = $this->sendPurgeRequest([
                     'base_uri' => $this->purgeUrl . $url,
-                    'url'      => $url
+                    'url'      => $url,
+                    'headers'  => $this->headers
                 ]
             );
 
