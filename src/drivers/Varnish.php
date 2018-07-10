@@ -22,7 +22,7 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
     /**
      * @var array
      */
-    public $headers;
+    public $headers = [];
 
     /**
      * @param string $tag
@@ -65,10 +65,30 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
 
     }
 
+
+    /**
+     * Purge entire cache
+     *
+     * Requires a custom vcl config
+     *
+     * @see https://varnish-cache.org/docs/6.0/users-guide/purging.html#bans
+     *
+     * @return bool
+     */
     public function purgeAll()
     {
-        // TODO: Implement purgeAll() method.
+        $options = [
+            'base_uri' => $this->purgeUrl,
+            'headers'  => $this->headers
+        ];
+
+        $response = (new Client($options))->request('BAN');
+
+        return (in_array($response->getStatusCode(), [204, 200]))
+            ? true
+            : false;
     }
+
 
     protected function sendPurgeRequest(array $options = [])
     {

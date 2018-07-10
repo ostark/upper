@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.7] - 2018-07-10
+### Added
+- Varnish: `headers` config option 
+- Varnish: purgeAll() 
+
 ## [1.3.6] - 2018-06-18
 ### Changed
 - DB fallback: Schema - changed `url` field from `varchar(255) to `text` to allow longer urls
