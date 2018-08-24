@@ -2,6 +2,7 @@
 
 use Craft;
 use craft\base\Model;
+use yii\helpers\Inflector;
 
 /**
  * Upper Settings Model
@@ -72,8 +73,7 @@ class Settings extends Model
     public function rules()
     {
         return [
-            [['driver', 'drivers'], 'required'],
-            // ...
+            [['driver', 'drivers','keyPrefix'], 'required'],
         ];
     }
 
@@ -102,7 +102,12 @@ class Settings extends Model
      */
     public function getKeyPrefix()
     {
-        return $this->keyPrefix;
+        if (!$this->keyPrefix) {
+            return '';
+        }
+
+        $clean = Inflector::slug($this->keyPrefix,'');
+        return substr($clean, 0, 8);
     }
 
     /**

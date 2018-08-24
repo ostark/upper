@@ -200,40 +200,48 @@ class EventRegistrar
                 return;
             }
 
+            $tags = [];
+
             if ($event->element instanceof \craft\elements\GlobalSet && is_string($event->element->handle)) {
-                $tag = $event->element->handle;
+                $tags[] = $event->element->handle;
             } elseif ($event->element instanceof \craft\elements\Asset && $event->isNew) {
-                $tag = (string) $event->element->volumeId;
+                $tags[] = (string)$event->element->volumeId;
             } else {
-                $tag = ($event->isNew && isset($event->element->sectionId))
-                    ? Plugin::TAG_PREFIX_SECTION . $event->element->sectionId
-                    : Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
+                if (isset($event->element->sectionId)) {
+                    $tags[] = Plugin::TAG_PREFIX_SECTION . $event->element->sectionId;
+                }
+                if (!$event->isNew) {
+                    $tags[] = Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
+                }
             }
 
         }
 
         if ($event instanceof SectionEvent) {
-            $tag = Plugin::TAG_PREFIX_SECTION . $event->section->id;
+            $tags[] = Plugin::TAG_PREFIX_SECTION . $event->section->id;
         }
 
         if ($event instanceof MoveElementEvent or $event instanceof ElementStructureEvent) {
-            $tag = Plugin::TAG_PREFIX_STRUCTURE . $event->structureId;
+            $tags[] = Plugin::TAG_PREFIX_STRUCTURE . $event->structureId;
         }
 
-        if (!isset($tag)) {
+        if (count($tags) === 0) {
             $type = get_class($event);
             \Craft::warning("Unabled to find tag. Unknown Event '$type'.", "upper");
 
             return;
         }
 
-        $tag = Plugin::getInstance()->getTagCollection()->prepareTag($tag);
+        foreach ($tags as $tag) {
+            $tag = Plugin::getInstance()->getTagCollection()->prepareTag($tag);
+            // Push to queue
+            \Craft::$app->getQueue()->push(new PurgeCacheJob([
+                    'tag' => $tag
+                ]
+            ));
+        }
 
-        // Push to queue
-        \Craft::$app->getQueue()->push(new PurgeCacheJob([
-                'tag' => $tag
-            ]
-        ));
+
     }
 
 }

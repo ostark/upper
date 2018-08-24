@@ -19,7 +19,7 @@ return [
     // Optional key prefix, to prevent collisions in case you're using the
     // same cache store for several Craft installations.
     // Keep it nice and short for the sake of readability when debugging.
-    // And don't use spaces ...
+    // 1-8 characters, special chars get removed
     'keyPrefix'     => getenv('UPPER_KEY_PREFIX') ?: '',
 
     // Drivers settings
