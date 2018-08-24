@@ -90,21 +90,11 @@ class Plugin extends BasePlugin
      */
     public function getTagCollection(): TagCollection
     {
-        return $this->get('tagCollection');
-    }
+        /* @var $collection \ostark\upper\TagCollection */
+        $collection = $this->get('tagCollection');
+        $collection->setKeyPrefix($this->getSettings()->keyPrefix);
 
-    // Public Methods
-    // =========================================================================
-
-    /**
-     * Prepends tag with configured prefix.
-     * To prevent key collision if you use the same
-     * cache server for several Craft installations.
-     *
-     * @return string
-     */
-    public function prepareTag($tag) {
-        return $this->getSettings()->getKeyPrefix().$tag;
+        return $collection;
     }
 
 

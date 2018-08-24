@@ -20,7 +20,7 @@ return [
     // same cache store for several Craft installations.
     // Keep it nice and short for the sake of readability when debugging.
     // And don't use spaces ...
-    'keyPrefix' => '',
+    'keyPrefix'     => getenv('UPPER_KEY_PREFIX') ?: '',
 
     // Drivers settings
     'drivers'       => [

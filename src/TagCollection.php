@@ -9,9 +9,11 @@ class TagCollection
 {
     protected $tags = [];
 
+    protected $keyPrefix = '';
+
     public function add(string $tag)
     {
-        $this->tags[] = Plugin::getInstance()->prepareTag($tag);
+        $this->tags[] = $this->prepareTag($tag);
     }
 
     public function getAll()
@@ -31,6 +33,29 @@ class TagCollection
 
         $this->unique();
     }
+
+    /**
+     * @param string $keyPrefix
+     */
+    public function setKeyPrefix($keyPrefix)
+    {
+        $this->keyPrefix = $keyPrefix;
+    }
+
+    /**
+     * Prepends tag with configured prefix.
+     * To prevent key collision if you use the same
+     * cache server for several Craft installations.
+     *
+     * @param string $tag
+     *
+     * @return string
+     */
+    public function prepareTag($tag)
+    {
+        return $this->keyPrefix . $tag;
+    }
+
 
     protected function extractTags(array $elementRawQueryResult = null): array
     {

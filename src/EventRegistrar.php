@@ -128,7 +128,7 @@ class EventRegistrar
             ClearCaches::class,
             ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
             function (RegisterCacheOptionsEvent $event) {
-                $driver = ucfirst(Plugin::getInstance()->getSettings()->driver);
+                $driver           = ucfirst(Plugin::getInstance()->getSettings()->driver);
                 $event->options[] = [
                     'key'    => 'upper-purge-all',
                     'label'  => \Craft::t('upper', 'Upper ({driver})', ['driver' => $driver]),
@@ -219,7 +219,7 @@ class EventRegistrar
             $tag = Plugin::TAG_PREFIX_STRUCTURE . $event->structureId;
         }
 
-        $tag = Plugin::getInstance()->prepareTag($tag);
+        $tag = Plugin::getInstance()->getTagCollection()->prepareTag($tag);
 
         // Push to queue
         \Craft::$app->getQueue()->push(new PurgeCacheJob([
