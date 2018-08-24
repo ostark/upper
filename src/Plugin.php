@@ -93,6 +93,9 @@ class Plugin extends BasePlugin
         return $this->get('tagCollection');
     }
 
+    // Public Methods
+    // =========================================================================
+
     /**
      * Prepends tag with configured prefix.
      * To prevent key collision if you use the same
