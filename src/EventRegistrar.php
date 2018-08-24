@@ -219,6 +219,8 @@ class EventRegistrar
             $tag = Plugin::TAG_PREFIX_STRUCTURE . $event->structureId;
         }
 
+        $tag = Plugin::getInstance()->prepareTag($tag);
+
         // Push to queue
         \Craft::$app->getQueue()->push(new PurgeCacheJob([
                 'tag' => $tag

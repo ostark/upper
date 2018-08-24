@@ -1,5 +1,8 @@
 # Changelog
 
+## [Unreleased]
+- Added config `keyPrefix` option to prevent key collisions.
+
 ## [1.3.7] - 2018-07-10
 ### Added
 - Varnish: `headers` config option 
