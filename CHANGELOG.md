@@ -1,7 +1,9 @@
 # Changelog
 
-## [Unreleased]
+## [1.4.0] - 2018-08-24
 - Added config `keyPrefix` option to prevent key collisions.
+- Always purge section on `Elements::EVENT_AFTER_SAVE_ELEMENT` to make sure status change (disabled>>enabled) clears lists of entries 
+- Code cleanup
 
 ## [1.3.7] - 2018-07-10
 ### Added
