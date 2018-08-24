@@ -16,6 +16,12 @@ return [
     // In case the cache driver does not support tag purging
     'useLocalTags'  => true,
 
+    // Optional key prefix, to prevent collisions in case you're using the
+    // same cache store for several Craft installations.
+    // Keep it nice and short for the sake of readability when debugging.
+    // And don't use spaces ...
+    'keyPrefix' => '',
+
     // Drivers settings
     'drivers'       => [
 

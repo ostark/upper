@@ -49,6 +49,13 @@ class Settings extends Model
      */
     public $useLocalTags = true;
 
+    /**
+     * Key prefix
+     *
+     * @var string
+     */
+    public $keyPrefix = '';
+
     // Public Methods
     // =========================================================================
 
@@ -84,6 +91,18 @@ class Settings extends Model
     public function getHeaderTagDelimiter()
     {
         return $this->drivers[$this->driver]['tagHeaderDelimiter'] ?? ' ';
+    }
+
+    /**
+     * Get key prefix.
+     * To prevent key collision if you use the same
+     * cache server for several Craft installations.
+     *
+     * @return string
+     */
+    public function getKeyPrefix()
+    {
+        return $this->keyPrefix;
     }
 
     /**

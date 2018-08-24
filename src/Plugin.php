@@ -72,7 +72,6 @@ class Plugin extends BasePlugin
         \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
 
     }
-    
 
     // ServiceLocators
     // =========================================================================
@@ -92,6 +91,17 @@ class Plugin extends BasePlugin
     public function getTagCollection(): TagCollection
     {
         return $this->get('tagCollection');
+    }
+
+    /**
+     * Prepends tag with configured prefix.
+     * To prevent key collision if you use the same
+     * cache server for several Craft installations.
+     *
+     * @return string
+     */
+    public function prepareTag($tag) {
+        return $this->getSettings()->keyPrefix.$tag;
     }
 
 

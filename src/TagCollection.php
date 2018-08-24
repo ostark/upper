@@ -11,7 +11,7 @@ class TagCollection
 
     public function add(string $tag)
     {
-        $this->tags[] = $tag;
+        $this->tags[] = Plugin::getInstance()->prepareTag($tag);
     }
 
     public function getAll()
