@@ -17,14 +17,6 @@ class CacheControlBehavior extends Behavior
     protected $cacheControl = [];
 
 
-    public function events()
-    {
-        return [
-            Response::EVENT_AFTER_SEND => 'beforeSendHeaders',
-        ];
-    }
-
-
     /**
      * Adds a custom Cache-Control directive.
      *
@@ -169,6 +161,4 @@ class CacheControlBehavior extends Behavior
 
         return implode(', ', $parts);
     }
-
-
 }
