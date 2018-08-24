@@ -12,6 +12,8 @@ use ostark\upper\models\Settings;
  * Class Plugin
  *
  * @package ostark\upper
+ *
+ * @method models\Settings getSettings()
  */
 class Plugin extends BasePlugin
 {
@@ -90,7 +92,7 @@ class Plugin extends BasePlugin
      */
     public function getTagCollection(): TagCollection
     {
-        /* @var $collection \ostark\upper\TagCollection */
+        /* @var \ostark\upper\TagCollection $collection */
         $collection = $this->get('tagCollection');
         $collection->setKeyPrefix($this->getSettings()->keyPrefix);
 

@@ -32,7 +32,7 @@ class KeycdnApiException extends \Exception
         }
 
         // Error message
-        if (isset($json->status) && $json->status === 'error') {
+        if (isset($json->status, $json->description) && $json->status === 'error') {
             return new static($json->description . ", uri: '$uri'", $status);
         }
 

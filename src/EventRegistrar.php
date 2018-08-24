@@ -85,8 +85,9 @@ class EventRegistrar
         // Add the tags to the response header
         Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, function (TemplateEvent $event) {
 
-            $plugin   = Plugin::getInstance();
+            /** @var \yii\web\Response $response */
             $response = \Craft::$app->getResponse();
+            $plugin   = Plugin::getInstance();
             $tags     = $plugin->getTagCollection()->getAll();
             $settings = $plugin->getSettings();
             $headers  = $response->getHeaders();
@@ -154,7 +155,7 @@ class EventRegistrar
             // fulltext or array
             $tags = \Craft::$app->getDb()->getIsMysql()
                 ? implode(" ", $event->tags)
-                : str_replace(['[', ']'], ['{', '}'], json_encode($event->tags));
+                : str_replace(['[', ']'], ['{', '}'], json_encode($event->tags) ?: '[]');
 
             // in order to have a unique (collitions are possible) identifier by url with a fixed length
             $urlHash = md5($event->requestUrl);
@@ -199,10 +200,10 @@ class EventRegistrar
                 return;
             }
 
-            if ($event->element instanceof \craft\elements\GlobalSet) {
+            if ($event->element instanceof \craft\elements\GlobalSet && is_string($event->element->handle)) {
                 $tag = $event->element->handle;
             } elseif ($event->element instanceof \craft\elements\Asset && $event->isNew) {
-                $tag = $event->element->volumeId;
+                $tag = (string) $event->element->volumeId;
             } else {
                 $tag = ($event->isNew && isset($event->element->sectionId))
                     ? Plugin::TAG_PREFIX_SECTION . $event->element->sectionId
@@ -217,6 +218,13 @@ class EventRegistrar
 
         if ($event instanceof MoveElementEvent or $event instanceof ElementStructureEvent) {
             $tag = Plugin::TAG_PREFIX_STRUCTURE . $event->structureId;
+        }
+
+        if (!isset($tag)) {
+            $type = get_class($event);
+            \Craft::warning("Unabled to find tag. Unknown Event '$type'.", "upper");
+
+            return;
         }
 
         $tag = Plugin::getInstance()->getTagCollection()->prepareTag($tag);

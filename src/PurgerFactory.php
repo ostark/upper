@@ -30,7 +30,6 @@ class PurgerFactory extends Component
 
         // tagHeaderName and tagHeaderDelimiter are not relevant to the Purger
         unset($driverConfig['tagHeaderName'], $driverConfig['tagHeaderDelimiter']);
-
         return \Craft::createObject($driverClass,[$driverConfig + ['useLocalTags' => $config['useLocalTags']]]);
 
     }

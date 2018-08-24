@@ -6,6 +6,7 @@ use yii\base\Behavior;
  * Class TagHeaderBehavior
  *
  * @package ostark\upper\behaviors
+ * @property \yii\web\Response $owner
  */
 class TagHeaderBehavior extends Behavior
 {
@@ -37,7 +38,7 @@ class TagHeaderBehavior extends Behavior
 
         foreach ($tags as $tag) {
             // add multiple
-            $headers->add($name, $tags);
+            $headers->add($name, $tag);
         }
 
         return true;

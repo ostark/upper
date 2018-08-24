@@ -28,10 +28,17 @@
     "craftcms/cms": "^3.0.0",
     "guzzlehttp/guzzle": "^6.2"
   },
+  "require-dev": {
+    "phpstan/phpstan": "^0.10.2"
+  },
   "autoload": {
     "psr-4": {
       "ostark\\upper\\": "src/"
     }
+  },
+  "scripts": {
+    "ps": "phpstan analyse src --level=5 -c phpstan.neon",
+    "stan": "@ps"
   },
   "extra": {
     "name": "Upper",
@@ -39,6 +46,5 @@
     "hasCpSettings": false,
     "hasCpSection": false,
     "changelogUrl": "https://raw.githubusercontent.com/ostark/upper/master/CHANGELOG.md"
-
   }
 }

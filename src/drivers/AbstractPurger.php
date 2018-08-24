@@ -55,7 +55,7 @@ class AbstractPurger extends BaseObject
      *   'a139aa60-9b56-43b0-a9f5-bfaa7c68' => '/services/app-development'
      * ]
      *
-     * @param $tag
+     * @param string $tag
      *
      * @return array
      * @throws \yii\db\Exception
