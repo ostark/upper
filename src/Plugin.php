@@ -101,7 +101,7 @@ class Plugin extends BasePlugin
      * @return string
      */
     public function prepareTag($tag) {
-        return $this->getSettings()->keyPrefix.$tag;
+        return $this->getSettings()->getKeyPrefix().$tag;
     }
 
 
