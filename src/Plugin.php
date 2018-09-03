@@ -1,12 +1,19 @@
 <?php namespace ostark\upper;
 
-
-use Craft;
+use craft\base\Element;
 use craft\base\Plugin as BasePlugin;
+use craft\elements\db\ElementQuery;
+use craft\services\Elements;
+use craft\services\Sections;
+use craft\services\Structures;
+use craft\utilities\ClearCaches;
+use craft\web\View;
+use ostark\upper;
 use ostark\upper\behaviors\CacheControlBehavior;
 use ostark\upper\behaviors\TagHeaderBehavior;
 use ostark\upper\drivers\CachePurgeInterface;
 use ostark\upper\models\Settings;
+use yii\base\Event;
 
 /**
  * Class Plugin
@@ -44,6 +51,8 @@ class Plugin extends BasePlugin
 
     /**
      * Initialize Plugin
+     *
+     * @throws \yii\base\InvalidConfigException
      */
     public function init()
     {
@@ -60,14 +69,8 @@ class Plugin extends BasePlugin
             'tagCollection' => TagCollection::class
         ]);
 
-        // Register event handlers
-        EventRegistrar::registerFrontendEvents();
-        EventRegistrar::registerCpEvents();
-        EventRegistrar::registerUpdateEvents();
-
-        if ($this->getSettings()->useLocalTags) {
-            EventRegistrar::registerFallback();
-        }
+        // Register all handlers
+        $this->registerEventHandlers();
 
         // Attach Behaviors
         \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
@@ -99,6 +102,31 @@ class Plugin extends BasePlugin
         return $collection;
     }
 
+    /**
+     * @return bool
+     */
+    public function isRequestCacheable()
+    {
+        // No need to continue when in cli mode
+        if (\Craft::$app instanceof \craft\console\Application) {
+            return false;
+        }
+
+        // HTTP request object
+        $request = \Craft::$app->getRequest();
+
+        // Don't cache CP, LivePreview, Non-GET requests
+        if ($request->getIsCpRequest() ||
+            $request->getIsLivePreview() ||
+            !$request->getIsGet()
+        ) {
+            return false;
+        }
+
+        return true;
+
+    }
+
 
     // Protected Methods
     // =========================================================================
@@ -126,6 +154,34 @@ class Plugin extends BasePlugin
         if (!file_exists($configTargetFile)) {
             copy($configSourceFile, $configTargetFile);
         }
+    }
+
+    /**
+     *
+     */
+    protected function registerEventHandlers()
+    {
+        // Frontend events
+        if ($this->isRequestCacheable()) {
+            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, [upper\handler\CollectTags::class, 'handle']);
+            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, [upper\handler\CacheTagResponse::class, 'handle']);
+        }
+
+        // DB Fallback
+        if ($this->getSettings()->useLocalTags) {
+            Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, [upper\handler\Fallback::class, 'handle']);
+        }
+
+        // Update events
+        Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, [upper\handler\UpdateEvent::class, 'handle']);
+        Event::on(Elements::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, [upper\handler\UpdateEvent::class, 'handle']);
+        Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, [upper\handler\UpdateEvent::class, 'handle']);
+        Event::on(Elements::class, Structures::EVENT_AFTER_MOVE_ELEMENT, [upper\handler\UpdateEvent::class, 'handle']);
+        Event::on(Elements::class, Sections::EVENT_AFTER_SAVE_SECTION, [upper\handler\UpdateEvent::class, 'handle']);
+
+        // Register option (checkbox) in the CP
+        Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, [upper\handler\RegisterCacheOptions::class, 'handle']);
+
     }
 
 }

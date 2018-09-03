@@ -15,6 +15,11 @@ use craft\services\Structures;
 use craft\utilities\ClearCaches;
 use craft\web\View;
 use ostark\upper\events\CacheResponseEvent;
+use ostark\upper\events\handler\CacheTagResponse;
+use ostark\upper\events\handler\CollectTags;
+use ostark\upper\events\handler\Fallback;
+use ostark\upper\events\handler\RegisterCacheOptions;
+use ostark\upper\events\handler\UpdateEvent;
 use ostark\upper\jobs\PurgeCacheJob;
 use yii\base\Event;
 
@@ -28,6 +33,13 @@ class EventRegistrar
 
     public static function registerUpdateEvents()
     {
+        Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, [UpdateEvent::class, 'handle']);
+        Event::on(Elements::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, [UpdateEvent::class, 'handle']);
+        Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, [UpdateEvent::class, 'handle']);
+        Event::on(Elements::class, Structures::EVENT_AFTER_MOVE_ELEMENT, [UpdateEvent::class, 'handle']);
+        Event::on(Elements::class, Sections::EVENT_AFTER_SAVE_SECTION, [UpdateEvent::class, 'handle']);
+
+        /*
         Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, function ($event) {
             static::handleUpdateEvent($event);
         });
@@ -43,11 +55,20 @@ class EventRegistrar
         Event::on(Sections::class, Sections::EVENT_AFTER_SAVE_SECTION, function ($event) {
             static::handleUpdateEvent($event);
         });
+        */
 
     }
 
     public static function registerFrontendEvents()
     {
+
+
+
+        return false;
+
+
+
+
         // No need to continue when in cli mode
         if (\Craft::$app instanceof \craft\console\Application) {
             return false;
@@ -124,8 +145,16 @@ class EventRegistrar
 
     public static function registerCpEvents()
     {
-        // Register cache purge checkbox
+
         Event::on(
+            ClearCaches::class,
+            ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
+            [RegisterCacheOptions::class, 'handle']
+        );
+
+
+        // Register cache purge checkbox
+        /*Event::on(
             ClearCaches::class,
             ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
             function (RegisterCacheOptionsEvent $event) {
@@ -139,12 +168,16 @@ class EventRegistrar
                 ];
             }
         );
+        */
     }
 
 
     public static function registerFallback()
     {
 
+        Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, [Fallback::class, 'handle']);
+
+        /*
         Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, function (CacheResponseEvent $event) {
 
             // not tagged?
@@ -186,6 +219,7 @@ class EventRegistrar
 
         });
 
+        */
     }
 
 
