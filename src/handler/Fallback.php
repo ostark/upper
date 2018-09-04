@@ -14,7 +14,10 @@ class Fallback extends AbstractSelfHandler implements EventHandlerInterface
     protected $event;
 
 
-    public function handle()
+    /**
+     * @param \yii\base\Event $event
+     */
+    public function __invoke(\yii\base\Event $event)
     {
         // not tagged?
         if (0 == count($this->event->tags)) {

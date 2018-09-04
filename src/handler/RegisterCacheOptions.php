@@ -8,7 +8,10 @@ class RegisterCacheOptions extends AbstractSelfHandler implements EventHandlerIn
      */
     protected $event;
 
-    public function handle()
+    /**
+     * @param \yii\base\Event $event
+     */
+    public function __invoke(\yii\base\Event $event)
     {
         $driver                 = ucfirst($this->plugin->getSettings()->driver);
         $this->event->options[] = [

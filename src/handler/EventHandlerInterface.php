@@ -3,8 +3,6 @@
 interface EventHandlerInterface
 {
 
-    function __construct(\yii\base\Event $event);
-
-    function handle();
+    function __invoke(\yii\base\Event $event);
 
 }

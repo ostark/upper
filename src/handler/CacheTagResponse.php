@@ -3,7 +3,10 @@
 
 class CacheTagResponse extends AbstractSelfHandler implements EventHandlerInterface
 {
-    public function handle()
+    /**
+     * @param \yii\base\Event $event
+     */
+    public function __invoke(\yii\base\Event $event)
     {
 
 

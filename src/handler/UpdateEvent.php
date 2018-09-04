@@ -6,7 +6,10 @@ use ostark\upper\Plugin;
 
 class UpdateEvent extends AbstractSelfHandler implements EventHandlerInterface
 {
-    public function handle()
+    /**
+     * @param \yii\base\Event $event
+     */
+    public function __invoke(\yii\base\Event $event)
     {
         if ($this->event instanceof ElementEvent) {
 

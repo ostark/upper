@@ -163,24 +163,24 @@ class Plugin extends BasePlugin
     {
         // Frontend events
         if ($this->isRequestCacheable()) {
-            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, [upper\handler\CollectTags::class, 'handle']);
-            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, [upper\handler\CacheTagResponse::class, 'handle']);
+            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handler\CollectTags());
+            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\handler\CacheTagResponse());
         }
 
         // DB Fallback
         if ($this->getSettings()->useLocalTags) {
-            Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, [upper\handler\Fallback::class, 'handle']);
+            Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\handler\Fallback());
         }
 
         // Update events
-        Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, [upper\handler\UpdateEvent::class, 'handle']);
-        Event::on(Elements::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, [upper\handler\UpdateEvent::class, 'handle']);
-        Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, [upper\handler\UpdateEvent::class, 'handle']);
-        Event::on(Elements::class, Structures::EVENT_AFTER_MOVE_ELEMENT, [upper\handler\UpdateEvent::class, 'handle']);
-        Event::on(Elements::class, Sections::EVENT_AFTER_SAVE_SECTION, [upper\handler\UpdateEvent::class, 'handle']);
+        Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, new upper\handler\UpdateEvent());
+        Event::on(Elements::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, new upper\handler\UpdateEvent());
+        Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, new upper\handler\UpdateEvent());
+        Event::on(Elements::class, Structures::EVENT_AFTER_MOVE_ELEMENT, new upper\handler\UpdateEvent());
+        Event::on(Elements::class, Sections::EVENT_AFTER_SAVE_SECTION, new upper\handler\UpdateEvent());
 
         // Register option (checkbox) in the CP
-        Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, [upper\handler\RegisterCacheOptions::class, 'handle']);
+        Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handler\RegisterCacheOptions());
 
     }
 

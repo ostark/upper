@@ -18,11 +18,9 @@ abstract class AbstractSelfHandler
     /**
      * AbstractSelfHandler constructor.
      *
-     * @param \yii\base\Event $event
      */
-    public function __construct(Event $event)
+    public function __construct()
     {
-        $this->event = $event;
         $this->plugin = Plugin::getInstance();
     }
 
