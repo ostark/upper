@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0] - UNRELEASED
+
+
+
+
+
+
+## [1.4.1] - 2018-09-06
+### Fixed
+- initialize `$tags` earlier
+
 ## [1.4.0] - 2018-08-24
 - Added config `keyPrefix` option to prevent key collisions.
 - Always purge section on `Elements::EVENT_AFTER_SAVE_ELEMENT` to make sure status change (disabled>>enabled) clears lists of entries 
