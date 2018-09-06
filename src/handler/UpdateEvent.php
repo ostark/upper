@@ -1,6 +1,9 @@
 <?php namespace ostark\upper\handler;
 
 use craft\events\ElementEvent;
+use craft\events\ElementStructureEvent;
+use craft\events\MoveElementEvent;
+use craft\events\SectionEvent;
 use ostark\upper\jobs\PurgeCacheJob;
 use ostark\upper\Plugin;
 
@@ -11,13 +14,13 @@ class UpdateEvent extends AbstractSelfHandler implements EventHandlerInterface
      */
     public function __invoke(\yii\base\Event $event)
     {
+        $tags = [];
+
         if ($this->event instanceof ElementEvent) {
 
             if (!$this->plugin->getSettings()->isCachableElement(get_class($this->event->element))) {
                 return;
             }
-
-            $tags = [];
 
             if ($this->event->element instanceof \craft\elements\GlobalSet && is_string($this->event->element->handle)) {
                 $tags[] = $this->event->element->handle;
