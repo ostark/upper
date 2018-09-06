@@ -9,28 +9,22 @@ class Fallback extends AbstractSelfHandler implements EventHandlerInterface
 {
 
     /**
-     * @var \ostark\upper\events\CacheResponseEvent $event
+     * @param \ostark\upper\events\CacheResponseEvent $event
      */
-    protected $event;
-
-
-    /**
-     * @param \yii\base\Event $event
-     */
-    public function __invoke(\yii\base\Event $event)
+    public function __invoke($event)
     {
         // not tagged?
-        if (0 == count($this->event->tags)) {
+        if (0 == count($event->tags)) {
             return;
         }
 
         // fulltext or array
         $tags = \Craft::$app->getDb()->getIsMysql()
-            ? implode(" ", $this->event->tags)
-            : str_replace(['[', ']'], ['{', '}'], json_encode($this->event->tags) ?: '[]');
+            ? implode(" ", $event->tags)
+            : str_replace(['[', ']'], ['{', '}'], json_encode($event->tags) ?: '[]');
 
         // in order to have a unique (collitions are possible) identifier by url with a fixed length
-        $urlHash = md5($this->event->requestUrl);
+        $urlHash = md5($event->requestUrl);
 
         try {
             // Insert item
@@ -45,9 +39,9 @@ class Fallback extends AbstractSelfHandler implements EventHandlerInterface
                     // Data
                     [
                         'urlHash' => $urlHash,
-                        'url'     => $this->event->requestUrl,
+                        'url'     => $event->requestUrl,
                         'tags'    => $tags,
-                        'headers' => json_encode($this->event->headers),
+                        'headers' => json_encode($event->headers),
                         'siteId'  => \Craft::$app->getSites()->currentSite->id
                     ]
                 )

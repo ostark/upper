@@ -1,8 +1,10 @@
 <?php namespace ostark\upper\handler;
 
+use yii\base\Configurable;
+
 interface EventHandlerInterface
 {
 
-    function __invoke(\yii\base\Event $event);
+    function __invoke($event);
 
 }

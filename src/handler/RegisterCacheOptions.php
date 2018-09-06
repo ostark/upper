@@ -1,26 +1,24 @@
 <?php namespace ostark\upper\handler;
 
 
+use ostark\upper\Plugin;
+
 class RegisterCacheOptions extends AbstractSelfHandler implements EventHandlerInterface
 {
-    /**
-     * @var \craft\events\RegisterCacheOptionsEvent $event
-     */
-    protected $event;
 
     /**
-     * @param \yii\base\Event $event
+     * @param \craft\events\RegisterCacheOptionsEvent $event
      */
-    public function __invoke(\yii\base\Event $event)
+    public function __invoke($event)
     {
-        $driver                 = ucfirst($this->plugin->getSettings()->driver);
-        $this->event->options[] = [
+        $driver = ucfirst($this->plugin->getSettings()->driver);
+
+        $event->options[] = [
             'key'    => 'upper-purge-all',
             'label'  => \Craft::t('upper', 'Upper ({driver})', ['driver' => $driver]),
             'action' => function () {
                 Plugin::getInstance()->getPurger()->purgeAll();
             },
         ];
-
     }
 }
