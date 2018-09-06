@@ -194,13 +194,13 @@ class EventRegistrar
      */
     protected static function handleUpdateEvent(Event $event)
     {
+        $tags = [];
+
         if ($event instanceof ElementEvent) {
 
             if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
-
-            $tags = [];
 
             if ($event->element instanceof \craft\elements\GlobalSet && is_string($event->element->handle)) {
                 $tags[] = $event->element->handle;
@@ -214,7 +214,6 @@ class EventRegistrar
                     $tags[] = Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
                 }
             }
-
         }
 
         if ($event instanceof SectionEvent) {
@@ -240,7 +239,6 @@ class EventRegistrar
                 ]
             ));
         }
-
 
     }
 
