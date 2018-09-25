@@ -1,5 +1,7 @@
 <?php namespace ostark\upper\handler;
 
+use craft\elements\Asset;
+use craft\elements\GlobalSet;
 use craft\events\ElementEvent;
 use craft\events\ElementStructureEvent;
 use craft\events\MoveElementEvent;
@@ -7,7 +9,7 @@ use craft\events\SectionEvent;
 use ostark\upper\jobs\PurgeCacheJob;
 use ostark\upper\Plugin;
 
-class UpdateEvent extends AbstractSelfHandler implements EventHandlerInterface
+class Update extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
     /**
      * @param \yii\base\Event $event
@@ -22,17 +24,18 @@ class UpdateEvent extends AbstractSelfHandler implements EventHandlerInterface
                 return;
             }
 
-            if ($event->element instanceof \craft\elements\GlobalSet && is_string($event->element->handle)) {
+            if ($event->element instanceof GlobalSet && is_string($event->element->handle)) {
                 $tags[] = $event->element->handle;
-            } elseif ($event->element instanceof \craft\elements\Asset && $event->isNew) {
+            } elseif ($event->element instanceof Asset && $event->isNew) {
                 $tags[] = (string)$event->element->volumeId;
             } else {
-                if (isset($event->element->sectionId)) {
-                    $tags[] = Plugin::TAG_PREFIX_SECTION . $event->element->sectionId;
-                }
                 if (!$event->isNew) {
                     $tags[] = Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
                 }
+                if (isset($event->element->sectionId)) {
+                    $tags[] = Plugin::TAG_PREFIX_SECTION . $event->element->sectionId;
+                }
+
             }
 
         }
@@ -47,7 +50,7 @@ class UpdateEvent extends AbstractSelfHandler implements EventHandlerInterface
 
         if (count($tags) === 0) {
             $type = get_class($event);
-            \Craft::warning("Unabled to find tag. Unknown Event '$type'.", "upper");
+            \Craft::warning("Unable to find tag. Unknown Event '$type'.", "upper");
 
             return;
         }

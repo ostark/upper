@@ -2,7 +2,7 @@
 
 use yii\base\Configurable;
 
-interface EventHandlerInterface
+interface InvokeEventHandlerInterface
 {
 
     function __invoke($event);

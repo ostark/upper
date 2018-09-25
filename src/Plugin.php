@@ -89,7 +89,6 @@ class Plugin extends BasePlugin
         return $this->get('purger');
     }
 
-
     /**
      * @return \ostark\upper\TagCollection
      */
@@ -102,10 +101,63 @@ class Plugin extends BasePlugin
         return $collection;
     }
 
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * Creates and returns the model used to store the plugin’s settings.
+     *
+     * @return \craft\base\Model|null
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
+    }
+
+
+    /**
+     *
+     */
+    protected function registerEventHandlers()
+    {
+        // Frontend events
+        if ($this->isRequestCacheable()) {
+
+            // Extract tags form Elements and store them in a TagCollection
+            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handler\CollectTags());
+
+            // Add tags from TagCollection as a response header
+            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\handler\CacheTagResponse());
+
+            // Store url tags mapping in DB
+            if ($this->getSettings()->useLocalTags) {
+                Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\handler\LocalTagMapping());
+            }
+        }
+
+        // CP requests
+        if (\Craft::$app->getRequest()->getIsCpRequest()) {
+
+            // Handler object (with __invoke() method)
+            $updateHandler = new upper\handler\Update();
+
+            // Update events
+            Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, $updateHandler);
+            Event::on(Elements::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $updateHandler);
+            Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, $updateHandler);
+            Event::on(Elements::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $updateHandler);
+            Event::on(Elements::class, Sections::EVENT_AFTER_SAVE_SECTION, $updateHandler);
+
+            // Register option (checkbox) in the CP
+            Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handler\RegisterCacheOptions());
+
+        }
+    }
+
     /**
      * @return bool
      */
-    public function isRequestCacheable()
+    protected function isRequestCacheable()
     {
         // No need to continue when in cli mode
         if (\Craft::$app instanceof \craft\console\Application) {
@@ -127,21 +179,6 @@ class Plugin extends BasePlugin
 
     }
 
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * Creates and returns the model used to store the plugin’s settings.
-     *
-     * @return \craft\base\Model|null
-     */
-    protected function createSettingsModel()
-    {
-        return new Settings();
-    }
-
-
     /**
      * Is called after the plugin is installed.
      * Copies example config to project's config folder
@@ -154,34 +191,6 @@ class Plugin extends BasePlugin
         if (!file_exists($configTargetFile)) {
             copy($configSourceFile, $configTargetFile);
         }
-    }
-
-    /**
-     *
-     */
-    protected function registerEventHandlers()
-    {
-        // Frontend events
-        if ($this->isRequestCacheable()) {
-            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handler\CollectTags());
-            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\handler\CacheTagResponse());
-        }
-
-        // DB Fallback
-        if ($this->getSettings()->useLocalTags) {
-            Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\handler\Fallback());
-        }
-
-        // Update events
-        Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, new upper\handler\UpdateEvent());
-        Event::on(Elements::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, new upper\handler\UpdateEvent());
-        Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, new upper\handler\UpdateEvent());
-        Event::on(Elements::class, Structures::EVENT_AFTER_MOVE_ELEMENT, new upper\handler\UpdateEvent());
-        Event::on(Elements::class, Sections::EVENT_AFTER_SAVE_SECTION, new upper\handler\UpdateEvent());
-
-        // Register option (checkbox) in the CP
-        Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handler\RegisterCacheOptions());
-
     }
 
 }

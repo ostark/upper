@@ -3,7 +3,7 @@
 use ostark\upper\Plugin;
 use yii\base\Event;
 
-abstract class AbstractSelfHandler
+abstract class AbstractPluginEventHandler
 {
     /**
      * @var \yii\base\Event

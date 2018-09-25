@@ -26,10 +26,13 @@ class PurgerFactory extends Component
         }
 
         $driverConfig = $config['drivers'][$config['driver']];
+
+        // Predefined or custom driver class?
         $driverClass = $driverConfig['class'] ?? self::DRIVERS_NAMESPACE . '\\' . ucfirst($config['driver']);
 
         // tagHeaderName and tagHeaderDelimiter are not relevant to the Purger
         unset($driverConfig['tagHeaderName'], $driverConfig['tagHeaderDelimiter']);
+
         return \Craft::createObject($driverClass,[$driverConfig + ['useLocalTags' => $config['useLocalTags']]]);
 
     }

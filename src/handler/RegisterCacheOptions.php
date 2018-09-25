@@ -3,7 +3,7 @@
 
 use ostark\upper\Plugin;
 
-class RegisterCacheOptions extends AbstractSelfHandler implements EventHandlerInterface
+class RegisterCacheOptions extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
 
     /**

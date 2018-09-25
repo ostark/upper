@@ -4,7 +4,7 @@
 use craft\events\PopulateElementEvent;
 use ostark\upper\Plugin;
 
-class CollectTags extends AbstractSelfHandler implements EventHandlerInterface
+class CollectTags extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
     /**
      * @param \craft\events\PopulateElementEvent $event

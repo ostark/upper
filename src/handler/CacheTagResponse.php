@@ -6,7 +6,7 @@ use ostark\upper\events\CacheResponseEvent;
 use ostark\upper\Plugin;
 use yii\base\Event;
 
-class CacheTagResponse extends AbstractSelfHandler implements EventHandlerInterface
+class CacheTagResponse extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
     /***
      * @param \yii\base\Event $event

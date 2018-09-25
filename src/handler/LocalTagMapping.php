@@ -3,9 +3,9 @@
 use ostark\upper\Plugin;
 
 /**
- * Class Fallback
+ * Class LocalTagMapping
  */
-class Fallback extends AbstractSelfHandler implements EventHandlerInterface
+class LocalTagMapping extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
 
     /**
