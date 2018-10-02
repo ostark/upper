@@ -21,6 +21,13 @@ class CollectTags extends AbstractPluginEventHandler implements InvokeEventHandl
             Plugin::getInstance()->getTagCollection()->add($event->element->handle);
         }
 
+        // Avoid tagging sections for single entry
+        if (array_key_exists('uri', $event->row)) {
+            if ($this->plugin->requestUri == $event->row['uri']) {
+                $event->row['sectionId'] = null;
+            }
+        }
+
         // Add to collection
         Plugin::getInstance()->getTagCollection()->addTagsFromElement($event->row);
     }

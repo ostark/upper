@@ -48,6 +48,8 @@ class Plugin extends BasePlugin
 
     public $schemaVersion = '1.0.1';
 
+    public $requestUri;
+
 
     /**
      * Initialize Plugin
@@ -122,6 +124,9 @@ class Plugin extends BasePlugin
     {
         // Frontend events
         if ($this->isRequestCacheable()) {
+
+            // Set current uri for fast access later
+            $this->requestUri = \Craft::$app->getRequest()->getPathInfo();
 
             // Extract tags form Elements and store them in a TagCollection
             Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handler\CollectTags());
