@@ -40,9 +40,7 @@ class Update extends AbstractPluginEventHandler implements InvokeEventHandlerInt
                 if (isset($event->element->sectionId)) {
                     $tags[] = Plugin::TAG_PREFIX_SECTION . $event->element->sectionId;
                 }
-
             }
-
         }
 
         if ($event instanceof SectionEvent) {

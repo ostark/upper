@@ -142,17 +142,17 @@ class Plugin extends BasePlugin
      */
     protected function registerCPEventHandlers()
     {
-        if (\Craft::$app->getRequest()->getIsCpRequest()) {
+        if (\Craft::$app->getRequest()->getIsCpRequest() || \Craft::$app instanceof \craft\console\Application) {
 
             // Handler object (with __invoke() method)
             $updateHandler = new upper\handler\Update();
 
             // Update events
+            Event::on(Element::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $updateHandler);
             Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, $updateHandler);
-            Event::on(Elements::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $updateHandler);
             Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, $updateHandler);
-            Event::on(Elements::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $updateHandler);
-            Event::on(Elements::class, Sections::EVENT_AFTER_SAVE_SECTION, $updateHandler);
+            Event::on(Sections::class, Sections::EVENT_AFTER_SAVE_SECTION, $updateHandler);
+            Event::on(Structures::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $updateHandler);
 
             // Register option (checkbox) in the CP
             Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handler\RegisterCacheOptions());
