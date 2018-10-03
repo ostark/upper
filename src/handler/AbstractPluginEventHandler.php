@@ -1,8 +1,12 @@
 <?php namespace ostark\upper\handler;
 
 use ostark\upper\Plugin;
-use yii\base\Event;
 
+/**
+ * Class AbstractPluginEventHandler
+ *
+ * @package ostark\upper\handler
+ */
 abstract class AbstractPluginEventHandler
 {
     /**

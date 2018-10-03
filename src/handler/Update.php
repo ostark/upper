@@ -9,6 +9,11 @@ use craft\events\SectionEvent;
 use ostark\upper\jobs\PurgeCacheJob;
 use ostark\upper\Plugin;
 
+/**
+ * Class Update
+ *
+ * @package ostark\upper\handler
+ */
 class Update extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
     /**
@@ -20,7 +25,7 @@ class Update extends AbstractPluginEventHandler implements InvokeEventHandlerInt
 
         if ($event instanceof ElementEvent) {
 
-            if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
+            if (!$this->plugin->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
 
@@ -56,7 +61,7 @@ class Update extends AbstractPluginEventHandler implements InvokeEventHandlerInt
         }
 
         foreach ($tags as $tag) {
-            $tag = Plugin::getInstance()->getTagCollection()->prepareTag($tag);
+            $tag = $this->plugin->getTagCollection()->prepareTag($tag);
             // Push to queue
             \Craft::$app->getQueue()->push(new PurgeCacheJob([
                     'tag' => $tag

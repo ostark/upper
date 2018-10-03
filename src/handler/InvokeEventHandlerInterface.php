@@ -1,7 +1,10 @@
 <?php namespace ostark\upper\handler;
 
-use yii\base\Configurable;
-
+/**
+ * Interface InvokeEventHandlerInterface
+ *
+ * @package ostark\upper\handler
+ */
 interface InvokeEventHandlerInterface
 {
 

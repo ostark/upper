@@ -71,56 +71,22 @@ class Plugin extends BasePlugin
             'tagCollection' => TagCollection::class
         ]);
 
-        // Register all handlers
-        $this->registerEventHandlers();
+        // Register event handlers
+        $this->registerFrontendEventHandlers();
+        $this->registerCPEventHandlers();
 
         // Attach Behaviors
         \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
         \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
-
     }
 
     // ServiceLocators
     // =========================================================================
 
     /**
-     * @return \ostark\upper\drivers\CachePurgeInterface
+     * Frontend related handlers
      */
-    public function getPurger(): CachePurgeInterface
-    {
-        return $this->get('purger');
-    }
-
-    /**
-     * @return \ostark\upper\TagCollection
-     */
-    public function getTagCollection(): TagCollection
-    {
-        /* @var \ostark\upper\TagCollection $collection */
-        $collection = $this->get('tagCollection');
-        $collection->setKeyPrefix($this->getSettings()->getKeyPrefix());
-
-        return $collection;
-    }
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * Creates and returns the model used to store the plugin’s settings.
-     *
-     * @return \craft\base\Model|null
-     */
-    protected function createSettingsModel()
-    {
-        return new Settings();
-    }
-
-
-    /**
-     *
-     */
-    protected function registerEventHandlers()
+    protected function registerFrontendEventHandlers()
     {
         // Frontend events
         if ($this->isRequestCacheable()) {
@@ -128,7 +94,7 @@ class Plugin extends BasePlugin
             // Set current uri for fast access later
             $this->requestUri = \Craft::$app->getRequest()->getPathInfo();
 
-            // Extract tags form Elements and store them in a TagCollection
+            // Extract tags from Elements and store them in a TagCollection
             Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handler\CollectTags());
 
             // Add tags from TagCollection as a response header
@@ -139,27 +105,11 @@ class Plugin extends BasePlugin
                 Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\handler\LocalTagMapping());
             }
         }
-
-        // CP requests
-        if (\Craft::$app->getRequest()->getIsCpRequest()) {
-
-            // Handler object (with __invoke() method)
-            $updateHandler = new upper\handler\Update();
-
-            // Update events
-            Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, $updateHandler);
-            Event::on(Elements::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $updateHandler);
-            Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, $updateHandler);
-            Event::on(Elements::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $updateHandler);
-            Event::on(Elements::class, Sections::EVENT_AFTER_SAVE_SECTION, $updateHandler);
-
-            // Register option (checkbox) in the CP
-            Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handler\RegisterCacheOptions());
-
-        }
     }
 
     /**
+     * Checks whether a request is cacheable or not
+     *
      * @return bool
      */
     protected function isRequestCacheable()
@@ -182,6 +132,61 @@ class Plugin extends BasePlugin
 
         return true;
 
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * Control panel related handlers
+     */
+    protected function registerCPEventHandlers()
+    {
+        if (\Craft::$app->getRequest()->getIsCpRequest()) {
+
+            // Handler object (with __invoke() method)
+            $updateHandler = new upper\handler\Update();
+
+            // Update events
+            Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, $updateHandler);
+            Event::on(Elements::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $updateHandler);
+            Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, $updateHandler);
+            Event::on(Elements::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $updateHandler);
+            Event::on(Elements::class, Sections::EVENT_AFTER_SAVE_SECTION, $updateHandler);
+
+            // Register option (checkbox) in the CP
+            Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handler\RegisterCacheOptions());
+        }
+    }
+
+    /**
+     * @return \ostark\upper\drivers\CachePurgeInterface
+     */
+    public function getPurger(): CachePurgeInterface
+    {
+        return $this->get('purger');
+    }
+
+    /**
+     * @return \ostark\upper\TagCollection
+     */
+    public function getTagCollection(): TagCollection
+    {
+        /* @var \ostark\upper\TagCollection $collection */
+        $collection = $this->get('tagCollection');
+        $collection->setKeyPrefix($this->getSettings()->getKeyPrefix());
+
+        return $collection;
+    }
+
+    /**
+     * Creates and returns the model used to store the plugin’s settings.
+     *
+     * @return \craft\base\Model|null
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
     }
 
     /**

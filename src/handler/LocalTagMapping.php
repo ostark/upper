@@ -4,6 +4,8 @@ use ostark\upper\Plugin;
 
 /**
  * Class LocalTagMapping
+ *
+ * @package ostark\upper\handler
  */
 class LocalTagMapping extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
@@ -49,7 +51,6 @@ class LocalTagMapping extends AbstractPluginEventHandler implements InvokeEventH
         } catch (\Exception $e) {
             \Craft::warning("Failed to register fallback.", "upper");
         }
-
 
     }
 }

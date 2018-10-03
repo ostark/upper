@@ -1,8 +1,10 @@
 <?php namespace ostark\upper\handler;
 
-
-use ostark\upper\Plugin;
-
+/**
+ * Class RegisterCacheOptions
+ *
+ * @package ostark\upper\handler
+ */
 class RegisterCacheOptions extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
 
@@ -17,7 +19,7 @@ class RegisterCacheOptions extends AbstractPluginEventHandler implements InvokeE
             'key'    => 'upper-purge-all',
             'label'  => \Craft::t('upper', 'Upper ({driver})', ['driver' => $driver]),
             'action' => function () {
-                Plugin::getInstance()->getPurger()->purgeAll();
+                $this->plugin->getPurger()->purgeAll();
             },
         ];
     }

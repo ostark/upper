@@ -1,11 +1,13 @@
 <?php namespace ostark\upper\handler;
 
-
-
 use ostark\upper\events\CacheResponseEvent;
 use ostark\upper\Plugin;
-use yii\base\Event;
 
+/**
+ * Class CacheTagResponse
+ *
+ * @package ostark\upper\handler
+ */
 class CacheTagResponse extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
     /***
@@ -18,9 +20,8 @@ class CacheTagResponse extends AbstractPluginEventHandler implements InvokeEvent
 
         /** @var \yii\web\Response|\ostark\upper\behaviors\CacheControlBehavior|\ostark\upper\behaviors\TagHeaderBehavior $response */
         $response = \Craft::$app->getResponse();
-        $plugin   = Plugin::getInstance();
-        $tags     = $plugin->getTagCollection()->getAll();
-        $settings = $plugin->getSettings();
+        $tags     = $this->plugin->getTagCollection()->getAll();
+        $settings = $this->plugin->getSettings();
         $headers  = $response->getHeaders();
 
         // Make existing cache-control headers accessible
@@ -41,7 +42,7 @@ class CacheTagResponse extends AbstractPluginEventHandler implements InvokeEvent
         $response->setSharedMaxAge($maxAge);
         $headers->set(Plugin::INFO_HEADER_NAME, "CACHED: " . date(\DateTime::ISO8601));
 
-        $plugin->trigger($plugin::EVENT_AFTER_SET_TAG_HEADER, new CacheResponseEvent([
+        $this->plugin->trigger(Plugin::EVENT_AFTER_SET_TAG_HEADER, new CacheResponseEvent([
                 'tags'       => $tags,
                 'maxAge'     => $maxAge,
                 'requestUrl' => \Craft::$app->getRequest()->getUrl(),

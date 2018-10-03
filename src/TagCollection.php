@@ -11,6 +11,11 @@ class TagCollection
 
     protected $keyPrefix = '';
 
+    public function __construct()
+    {
+        \Craft::warning('TagCollection::__construct()', 'upper');
+    }
+
     public function add(string $tag)
     {
         $this->tags[] = $this->prepareTag($tag);

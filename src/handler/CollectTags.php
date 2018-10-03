@@ -1,9 +1,10 @@
 <?php namespace ostark\upper\handler;
 
-
-use craft\events\PopulateElementEvent;
-use ostark\upper\Plugin;
-
+/**
+ * Class CollectTags
+ *
+ * @package ostark\upper\handler
+ */
 class CollectTags extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
     /**
@@ -12,13 +13,13 @@ class CollectTags extends AbstractPluginEventHandler implements InvokeEventHandl
     public function __invoke($event)
     {
         // Don't collect MatrixBlock and User elements for now
-        if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
+        if (!$this->plugin->getSettings()->isCachableElement(get_class($event->element))) {
             return;
         }
 
         // Tag with GlobalSet handle
         if ($event->element instanceof \craft\elements\GlobalSet) {
-            Plugin::getInstance()->getTagCollection()->add($event->element->handle);
+            $this->plugin->getTagCollection()->add($event->element->handle);
         }
 
         // Avoid tagging sections for single entry
@@ -29,6 +30,6 @@ class CollectTags extends AbstractPluginEventHandler implements InvokeEventHandl
         }
 
         // Add to collection
-        Plugin::getInstance()->getTagCollection()->addTagsFromElement($event->row);
+        $this->plugin->getTagCollection()->addTagsFromElement($event->row);
     }
 }
