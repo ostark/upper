@@ -1,5 +1,6 @@
 <?php namespace ostark\upper;
 
+use Craft;
 use craft\base\Element;
 use craft\base\Plugin as BasePlugin;
 use craft\elements\db\ElementQuery;
@@ -7,6 +8,7 @@ use craft\services\Elements;
 use craft\services\Sections;
 use craft\services\Structures;
 use craft\utilities\ClearCaches;
+use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use ostark\upper;
 use ostark\upper\behaviors\CacheControlBehavior;
@@ -67,7 +69,7 @@ class Plugin extends BasePlugin
 
         // Register plugin components
         $this->setComponents([
-            'purger'        => PurgerFactory::create($this->getSettings()->toArray()),
+            'purger'        => PurgerFactory::create($this->getSettings()),
             'tagCollection' => TagCollection::class
         ]);
 
@@ -84,6 +86,30 @@ class Plugin extends BasePlugin
     // =========================================================================
 
     /**
+     * @return \ostark\upper\drivers\CachePurgeInterface
+     */
+    public function getPurger(): CachePurgeInterface
+    {
+        return $this->get('purger');
+    }
+
+    /**
+     * @return \ostark\upper\TagCollection
+     */
+    public function getTagCollection(): TagCollection
+    {
+        /* @var \ostark\upper\TagCollection $collection */
+        $collection = $this->get('tagCollection');
+        $collection->setKeyPrefix($this->getSettings()->getKeyPrefix());
+
+        return $collection;
+    }
+
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
      * Frontend related handlers
      */
     protected function registerFrontendEventHandlers()
@@ -95,14 +121,18 @@ class Plugin extends BasePlugin
             $this->requestUri = \Craft::$app->getRequest()->getPathInfo();
 
             // Extract tags from Elements and store them in a TagCollection
-            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handler\CollectTags());
+            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
 
             // Add tags from TagCollection as a response header
-            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\handler\CacheTagResponse());
+            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\handlers\CacheTagResponse());
+
+            // Controls tagging in template
+            //Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, );
+
 
             // Store url tags mapping in DB
             if ($this->getSettings()->useLocalTags) {
-                Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\handler\LocalTagMapping());
+                Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\handlers\LocalTagMapping());
             }
         }
     }
@@ -131,21 +161,17 @@ class Plugin extends BasePlugin
         }
 
         return true;
-
     }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * Control panel related handlers
      */
     protected function registerCPEventHandlers()
     {
-        if (\Craft::$app->getRequest()->getIsCpRequest() || \Craft::$app instanceof \craft\console\Application) {
+        if (\Craft::$app->getRequest()->getIsCpRequest()) {
 
             // Handler object (with __invoke() method)
-            $updateHandler = new upper\handler\Update();
+            $updateHandler = new upper\handlers\Update();
 
             // Update events
             Event::on(Element::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $updateHandler);
@@ -155,29 +181,10 @@ class Plugin extends BasePlugin
             Event::on(Structures::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $updateHandler);
 
             // Register option (checkbox) in the CP
-            Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handler\RegisterCacheOptions());
+            Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handlers\RegisterCacheOptions());
         }
     }
 
-    /**
-     * @return \ostark\upper\drivers\CachePurgeInterface
-     */
-    public function getPurger(): CachePurgeInterface
-    {
-        return $this->get('purger');
-    }
-
-    /**
-     * @return \ostark\upper\TagCollection
-     */
-    public function getTagCollection(): TagCollection
-    {
-        /* @var \ostark\upper\TagCollection $collection */
-        $collection = $this->get('tagCollection');
-        $collection->setKeyPrefix($this->getSettings()->getKeyPrefix());
-
-        return $collection;
-    }
 
     /**
      * Creates and returns the model used to store the plugin’s settings.
@@ -203,4 +210,11 @@ class Plugin extends BasePlugin
         }
     }
 
+}
+
+function disableCollectTags() {
+    Event::off(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
+}
+function enableCollectTags() {
+    Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
 }

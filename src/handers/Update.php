@@ -1,4 +1,4 @@
-<?php namespace ostark\upper\handler;
+<?php namespace ostark\upper\handlers;
 
 use craft\elements\Asset;
 use craft\elements\GlobalSet;

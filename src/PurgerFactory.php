@@ -1,5 +1,6 @@
 <?php namespace ostark\upper;
 
+use ostark\upper\models\Settings;
 use Psr\Log\InvalidArgumentException;
 use yii\base\Component;
 
@@ -8,32 +9,34 @@ class PurgerFactory extends Component
     const DRIVERS_NAMESPACE = 'ostark\upper\drivers';
 
     /**
-     * @param array $config
+     * @param \ostark\upper\models\Settings $settings
      *
-     * @return \ostark\upper\drivers\CachePurgeInterface
+     * @return \ostark\upper\drivers\CachePurgeInterface|object
      * @throws \yii\base\InvalidConfigException
      */
-    public static function create(array $config = [])
+    public static function create(Settings $settings)
     {
-        if (!isset($config['driver'])) {
+        if (!$settings->driver) {
             throw new InvalidArgumentException("'driver' in config missing");
         }
-        if (!isset($config['drivers'][$config['driver']])) {
-            throw new InvalidArgumentException("driver '{$config['driver']}' is not configured");
+
+        if (!isset($settings->drivers[$settings->driver])) {
+            throw new InvalidArgumentException("driver '{$settings->driver}' is not configured");
         }
-        if (!isset($config['drivers'][$config['driver']]['tagHeaderName'])) {
+
+        if (!isset($settings->drivers[$settings->driver]['tagHeaderName'])) {
             throw new InvalidArgumentException("'tagHeaderName' is not configured");
         }
 
-        $driverConfig = $config['drivers'][$config['driver']];
+        $driverConfig = $settings->drivers[$settings->driver];
 
         // Predefined or custom driver class?
-        $driverClass = $driverConfig['class'] ?? self::DRIVERS_NAMESPACE . '\\' . ucfirst($config['driver']);
+        $driverClass = $driverConfig['class'] ?? self::DRIVERS_NAMESPACE . '\\' . ucfirst($settings->driver);
 
         // tagHeaderName and tagHeaderDelimiter are not relevant to the Purger
         unset($driverConfig['tagHeaderName'], $driverConfig['tagHeaderDelimiter']);
 
-        return \Craft::createObject($driverClass,[$driverConfig + ['useLocalTags' => $config['useLocalTags']]]);
+        return \Craft::createObject($driverClass, [$driverConfig + ['useLocalTags' => $settings->useLocalTags]]);
 
     }
 }
