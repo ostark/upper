@@ -7,14 +7,16 @@
  */
 class TagCollection
 {
+    /**
+     * @var array
+     */
     protected $tags = [];
 
+    /**
+     * @var string
+     */
     protected $keyPrefix = '';
 
-    public function __construct()
-    {
-        \Craft::warning('TagCollection::__construct()', 'upper');
-    }
 
     public function add(string $tag)
     {
@@ -26,13 +28,19 @@ class TagCollection
         return $this->tags;
     }
 
+
+    /**
+     * Extracts tags from Element and adds then to collection
+     *
+     * @param array|null $elementRawQueryResult
+     */
     public function addTagsFromElement(array $elementRawQueryResult = null)
     {
         if (!is_array($elementRawQueryResult)) {
             return;
         }
 
-        foreach ($this->extractTags($elementRawQueryResult) as $tag) {
+        foreach (self::extractTags($elementRawQueryResult) as $tag) {
             $this->add($tag);
         }
 
@@ -62,24 +70,37 @@ class TagCollection
     }
 
 
-    protected function extractTags(array $elementRawQueryResult = null): array
-    {
-        $tags       = [];
-        $properties = array_keys(Plugin::ELEMENT_PROPERTY_MAP);
-
-        foreach ($properties as $prop) {
-            if (isset($elementRawQueryResult[$prop]) && !is_null($elementRawQueryResult[$prop])) {
-                $tags[] = Plugin::ELEMENT_PROPERTY_MAP[$prop] . $elementRawQueryResult[$prop];
-            }
-        }
-
-        return $tags;
-    }
-
     protected function unique()
     {
         $this->tags = array_unique($this->tags);
 
         return $this;
     }
+
+    /**
+     * Extract tags
+     *
+     * @param array|null $elementRawQueryResult
+     *
+     * @return array
+     */
+    protected static function extractTags(array $elementRawQueryResult = null): array
+    {
+        $tags       = [];
+        $properties = array_keys(Plugin::ELEMENT_PROPERTY_MAP);
+
+        // $elementRawQueryResult is a flat assoc array that contains
+        // information of an element like id, section and structure
+        // We prefix the property ids with short identifiers.
+
+        foreach ($properties as $prop) {
+            if (isset($elementRawQueryResult[$prop]) && !is_null($elementRawQueryResult[$prop])) {
+                $propPrefix = Plugin::ELEMENT_PROPERTY_MAP[$prop];
+                $tags[]     = $propPrefix . $elementRawQueryResult[$prop];
+            }
+        }
+
+        return $tags;
+    }
+
 }

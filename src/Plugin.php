@@ -106,8 +106,55 @@ class Plugin extends BasePlugin
     }
 
 
+    // Event toggle
+    // =========================================================================
+
+
+    /**
+     * Disable tag collector
+     */
+    public function disable()
+    {
+        Event::off(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
+    }
+
+    /**
+     * Enable tag collector
+     */
+    public function enable()
+    {
+        Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
+    }
+
     // Protected Methods
     // =========================================================================
+
+
+    /**
+     * Checks whether a request is cacheable or not
+     *
+     * @return bool
+     */
+    protected function isRequestCacheable()
+    {
+        // No need to continue when in cli mode
+        if (\Craft::$app instanceof \craft\console\Application) {
+            return false;
+        }
+
+        // HTTP request object
+        $request = \Craft::$app->getRequest();
+
+        // Don't cache CP, LivePreview, Non-GET requests
+        if ($request->getIsCpRequest() ||
+            $request->getIsLivePreview() ||
+            !$request->getIsGet()
+        ) {
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * Frontend related handlers
@@ -137,31 +184,6 @@ class Plugin extends BasePlugin
         }
     }
 
-    /**
-     * Checks whether a request is cacheable or not
-     *
-     * @return bool
-     */
-    protected function isRequestCacheable()
-    {
-        // No need to continue when in cli mode
-        if (\Craft::$app instanceof \craft\console\Application) {
-            return false;
-        }
-
-        // HTTP request object
-        $request = \Craft::$app->getRequest();
-
-        // Don't cache CP, LivePreview, Non-GET requests
-        if ($request->getIsCpRequest() ||
-            $request->getIsLivePreview() ||
-            !$request->getIsGet()
-        ) {
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * Control panel related handlers
@@ -184,7 +206,6 @@ class Plugin extends BasePlugin
             Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handlers\RegisterCacheOptions());
         }
     }
-
 
     /**
      * Creates and returns the model used to store the plugin’s settings.
@@ -212,9 +233,3 @@ class Plugin extends BasePlugin
 
 }
 
-function disableCollectTags() {
-    Event::off(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
-}
-function enableCollectTags() {
-    Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
-}
