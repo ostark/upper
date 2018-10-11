@@ -108,29 +108,8 @@ class Plugin extends BasePlugin
     }
 
 
-    // Event toggle
-    // =========================================================================
-
-
-    /**
-     * Disable tag collector
-     */
-    public function disable()
-    {
-        Event::off(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
-    }
-
-    /**
-     * Enable tag collector
-     */
-    public function enable()
-    {
-        Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
-    }
-
     // Protected Methods
     // =========================================================================
-
 
     /**
      * Checks whether a request is cacheable or not
@@ -173,9 +152,6 @@ class Plugin extends BasePlugin
 
             // Add tags from TagCollection as a response header
             Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\handlers\AddCacheTagResponseHeader());
-
-            // Register twig functions
-            Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, new upper\handlers\RegisterCraftVariable());
 
             // Store url tags mapping in DB
             if ($this->getSettings()->useLocalTags) {
