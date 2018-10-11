@@ -1,11 +1,11 @@
 # Changelog
 
 ## [2.0.0] - UNRELEASED
+- PSR2 coding standard
 
 
-
-
-
+## [1.4.2] - 2018-10-11
+- Backport schema change to initial migration
 
 ## [1.4.1] - 2018-09-06
 ### Fixed

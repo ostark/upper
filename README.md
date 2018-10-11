@@ -33,13 +33,15 @@ If you are looking additional integrations (Cache Drivers), feel free to contrib
 
 ## Installation
 
-1. Install with Composer via `composer require ostark/upper` from your project directory
+1. Install with Composer via `composer require ostark/upper:^2.0.0-beta1` from your project directory
 2. Install plugin with this command `php craft install/plugin upper` or in the Craft CP under Settings > Plugins
 3. A new configuration file gets generated automatically in `your-project/config/upper.php`.
 
+## Cache driver configuation
 
+Env vars 
 
-### Fastly Setup
+### Fastly
 
 ```
 UPPER_DRIVER=fastly
@@ -48,7 +50,7 @@ FASTLY_SERVICE_ID=<REPLACE-ME>
 FASTLY_DOMAIN=http://<REPLACE-ME>
 ```
 
-### KeyCDN Setup
+### KeyCDN
 
 ```
 UPPER_DRIVER=keycdn
@@ -57,7 +59,7 @@ KEYCDN_ZONE_URL=<REPLACE-ME>.kxcdn.com
 KEYCDN_ZONE_ID=<REPLACE-ME>
 ```
 
-### Cloudflare Setup
+### Cloudflare
 
 ```
 UPPER_DRIVER=cloudflare
@@ -72,14 +74,14 @@ By default, Cloudflare's CDN  does not cache HTML content. You need to create a 
 If you don't use Cloudflare Enterprise with native `Cache-Tag` support, make sure to enable `useLocalTags` in your `config/upper.php` file (default), otherwise disable it.
 
  
-### Varnish Setup
+### Varnish
 
 ```
 UPPER_DRIVER=varnish
 VARNISH_URL=<REPLACE-ME>
 ```
 
-### Tuning
+## Tuning
 
 With `Cache-Control` headers you can disabled caching for certain templates:
 
@@ -89,14 +91,14 @@ With `Cache-Control` headers you can disabled caching for certain templates:
 
 
 
-### Performance results
+## Performance results
 ![example](https://github.com/ostark/upper/blob/master/resources/preformance.png)
 
-### Cache Tag Headers
+## Cache Tag Headers
 ![example](https://github.com/ostark/upper/blob/master/resources/response-header.png)
 
 
-## Disclaimer
 
-Even if the name of the plugin and some wordings are intentional, the author does not glorify any drug abuse. 🍻
-The plugin is inspired by the [joshangell/Falcon](https://github.com/joshangell/Falcon).
+## Alternative Plugins
+
+* [Blitz](https://putyourlightson.com/craft-plugins/blitz)
