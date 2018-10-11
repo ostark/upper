@@ -20,7 +20,8 @@ class Install extends Migration
 
             $this->createTable(Plugin::CACHE_TABLE, [
                 'uid'         => $this->string(40)->notNull()->unique(),
-                'url'         => $this->string(255)->notNull(),
+                'url'         => $this->text()->notNull(),
+                'urlHash'     => $this->string(32)->notNull(),
                 'headers'     => $this->text()->defaultValue(null),
                 'tags'        => $this->text()->notNull(),
                 'siteId'      => $this->integer(),
@@ -28,7 +29,9 @@ class Install extends Migration
                 'dateUpdated' => $this->dateTime()->null()
             ]);
 
-            $this->createIndex('url_idx', Plugin::CACHE_TABLE, 'url', true);
+            echo "  > Create index: urlhash_idx" . PHP_EOL;
+            $this->createIndex('urlhash_idx', Plugin::CACHE_TABLE, 'urlHash', true);
+
             $this->execute("ALTER TABLE " . Plugin::CACHE_TABLE . " ADD FULLTEXT INDEX tags_fulltext (tags ASC)");
 
         }
@@ -38,7 +41,8 @@ class Install extends Migration
 
             $this->createTable(Plugin::CACHE_TABLE, [
                 'uid'         => $this->string(40)->notNull()->unique(),
-                'url'         => $this->string(255)->notNull(),
+                'url'         => $this->text()->notNull(),
+                'urlHash'     => $this->string(32)->notNull(),
                 'headers'     => $this->text()->defaultValue(null),
                 'tags'        => 'varchar[]',
                 'siteId'      => $this->integer(),
@@ -47,7 +51,9 @@ class Install extends Migration
                 'PRIMARY KEY(uid)',
             ]);
 
-            $this->createIndex('url_idx', Plugin::CACHE_TABLE, 'url', true);
+            echo "  > Create index: urlhash_idx" . PHP_EOL;
+            $this->createIndex('urlhash_idx', Plugin::CACHE_TABLE, 'urlHash', true);
+
             $this->execute("CREATE INDEX tags_array ON " . Plugin::CACHE_TABLE . " USING GIN(tags)");
 
         }
