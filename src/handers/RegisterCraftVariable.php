@@ -3,7 +3,7 @@
 
 use craft\elements\db\ElementQuery;
 
-class CraftVariable extends AbstractPluginEventHandler
+class RegisterCraftVariable extends AbstractPluginEventHandler
 {
     /**
      * @param \yii\base\Event $event
@@ -17,9 +17,13 @@ class CraftVariable extends AbstractPluginEventHandler
 }
 
 /*
-{{ craft.upper.off() }}
+{{ craft.upper.disable() }}
 
-{{ craft.upper.on() }}
+{{ craft.upper.enable() }}
+
+{{ craft.upper.pause(true) }}
+
+{{ craft.upper.unpause() }}
 
 {{ craft.upper.only() }}
 

@@ -52,6 +52,8 @@ class Plugin extends BasePlugin
 
     public $requestUri;
 
+    public $elementStatusHasChanged = false;
+
 
     /**
      * Initialize Plugin
@@ -171,15 +173,14 @@ class Plugin extends BasePlugin
             Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
 
             // Add tags from TagCollection as a response header
-            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\handlers\CacheTagResponse());
+            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\handlers\AddCacheTagResponseHeader());
 
-            // Controls tagging in template
-            //Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, );
-
+            // Register twig functions
+            Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, new upper\handlers\RegisterCraftVariable());
 
             // Store url tags mapping in DB
             if ($this->getSettings()->useLocalTags) {
-                Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\handlers\LocalTagMapping());
+                Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\handlers\StoreLocalTagMap());
             }
         }
     }
@@ -192,15 +193,18 @@ class Plugin extends BasePlugin
     {
         if (\Craft::$app->getRequest()->getIsCpRequest()) {
 
-            // Handler object (with __invoke() method)
-            $updateHandler = new upper\handlers\Update();
+            // Pre update
+            Event::on(Elements::class, Elements::EVENT_BEFORE_SAVE_ELEMENT, new upper\handlers\DetectStatusUpdate());
+
+            // Purge Handler
+            $purgeOnUpdate = new upper\handlers\PurgeOnUpdate();
 
             // Update events
-            Event::on(Element::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $updateHandler);
-            Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, $updateHandler);
-            Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, $updateHandler);
-            Event::on(Sections::class, Sections::EVENT_AFTER_SAVE_SECTION, $updateHandler);
-            Event::on(Structures::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $updateHandler);
+            Event::on(Element::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $purgeOnUpdate);
+            Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, $purgeOnUpdate);
+            Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, $purgeOnUpdate);
+            Event::on(Sections::class, Sections::EVENT_AFTER_SAVE_SECTION, $purgeOnUpdate);
+            Event::on(Structures::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $purgeOnUpdate);
 
             // Register option (checkbox) in the CP
             Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handlers\RegisterCacheOptions());

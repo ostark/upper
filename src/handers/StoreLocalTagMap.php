@@ -7,7 +7,7 @@ use ostark\upper\Plugin;
  *
  * @package ostark\upper\handler
  */
-class LocalTagMapping extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
+class StoreLocalTagMap extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
 
     /**

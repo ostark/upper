@@ -14,7 +14,7 @@ use ostark\upper\Plugin;
  *
  * @package ostark\upper\handler
  */
-class Update extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
+class PurgeOnUpdate extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
     /**
      * @param \yii\base\Event $event
@@ -28,19 +28,20 @@ class Update extends AbstractPluginEventHandler implements InvokeEventHandlerInt
             if (!$this->plugin->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
-
+            // GlobalSet
             if ($event->element instanceof GlobalSet && is_string($event->element->handle)) {
                 $tags[] = $event->element->handle;
-            } elseif ($event->element instanceof Asset && $event->isNew) {
+            } // New Asset
+            elseif ($event->element instanceof Asset && $event->isNew) {
                 $tags[] = (string)$event->element->volumeId;
-            } else {
-                if (!$event->isNew) {
-                    $tags[] = Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
-                }
-                if (isset($event->element->sectionId)) {
-                    $tags[] = Plugin::TAG_PREFIX_SECTION . $event->element->sectionId;
-                }
+            } // Existing Entry
+            elseif (!$event->isNew) {
+                $tags[] = Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
             }
+            // New or changed status: Invalidate section of Entry
+            if (isset($event->element->sectionId) && ($event->isNew || $this->plugin->elementStatusHasChanged)) {
+                $tags[] = Plugin::TAG_PREFIX_SECTION . $event->element->sectionId;
+            };
         }
 
         if ($event instanceof SectionEvent) {

@@ -8,7 +8,7 @@ use ostark\upper\Plugin;
  *
  * @package ostark\upper\handler
  */
-class CacheTagResponse extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
+class AddCacheTagResponseHeader extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
 {
     /***
      * @param \yii\base\Event $event
