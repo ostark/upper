@@ -33,7 +33,6 @@ class AbstractPurger extends BaseObject
     {
         try {
             if ($urls = $this->getTaggedUrls($tag)) {
-
                 $this->purgeUrls(array_values($urls));
                 $this->invalidateLocalCache(array_keys($urls));
 
@@ -84,7 +83,6 @@ class AbstractPurger extends BaseObject
         }
 
         return ArrayHelper::map($results, 'uid', 'url');
-
     }
 
     /**
@@ -110,7 +108,5 @@ class AbstractPurger extends BaseObject
         return \Craft::$app->getDb()->createCommand()
             ->delete(Plugin::CACHE_TABLE)
             ->execute();
-
     }
-
 }

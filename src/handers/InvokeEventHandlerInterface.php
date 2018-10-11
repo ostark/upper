@@ -9,5 +9,4 @@ interface InvokeEventHandlerInterface
 {
 
     function __invoke($event);
-
 }

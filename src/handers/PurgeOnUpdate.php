@@ -24,7 +24,6 @@ class PurgeOnUpdate extends AbstractPluginEventHandler implements InvokeEventHan
         $tags = [];
 
         if ($event instanceof ElementEvent) {
-
             if (!$this->plugin->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
@@ -64,8 +63,7 @@ class PurgeOnUpdate extends AbstractPluginEventHandler implements InvokeEventHan
             // Push to queue
             \Craft::$app->getQueue()->push(new PurgeCacheJob([
                     'tag' => $tag
-                ]
-            ));
+                ]));
         }
     }
 }

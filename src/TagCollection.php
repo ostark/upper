@@ -102,5 +102,4 @@ class TagCollection
 
         return $tags;
     }
-
 }

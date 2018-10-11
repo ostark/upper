@@ -32,12 +32,10 @@ class StoreLocalTagMap extends AbstractPluginEventHandler implements InvokeEvent
             // Insert item
             \Craft::$app->getDb()->createCommand()
                 ->upsert(
-                // Table
+                    // Table
                     Plugin::CACHE_TABLE,
-
                     // Identifier
                     ['urlHash' => $urlHash],
-
                     // Data
                     [
                         'urlHash' => $urlHash,
@@ -51,6 +49,5 @@ class StoreLocalTagMap extends AbstractPluginEventHandler implements InvokeEvent
         } catch (\Exception $e) {
             \Craft::warning("Failed to register fallback.", "upper");
         }
-
     }
 }

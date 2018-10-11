@@ -86,7 +86,6 @@ class CacheControlBehavior extends Behavior
         }
 
         return null;
-
     }
 
     /**

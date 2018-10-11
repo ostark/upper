@@ -38,7 +38,5 @@ class KeycdnApiException extends \Exception
 
         // Unknown
         return new static("Unknown error, uri: '$uri'");
-
     }
 }
-

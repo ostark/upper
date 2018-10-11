@@ -47,8 +47,6 @@ class AddCacheTagResponseHeader extends AbstractPluginEventHandler implements In
                 'maxAge'     => $maxAge,
                 'requestUrl' => \Craft::$app->getRequest()->getUrl(),
                 'headers'    => $response->getHeaders()->toArray()
-            ]
-        ));
-
+            ]));
     }
 }

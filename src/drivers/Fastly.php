@@ -56,8 +56,7 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
     {
         return $this->sendRequest('POST', 'purge', [
                 'Surrogate-Key' => $tag
-            ]
-        );
+            ]);
     }
 
     /**
@@ -123,11 +122,8 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
         }
 
         try {
-
             $client->request($method, $uri);
-
         } catch (BadResponseException $e) {
-
             throw FastlyApiException::create(
                 $e->getRequest(),
                 $e->getResponse()
@@ -137,8 +133,3 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
         return true;
     }
 }
-
-
-
-
-

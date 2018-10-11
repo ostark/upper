@@ -32,8 +32,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
     {
         return $this->sendRequest('DELETE', 'purgetag', [
                 'tags' => [$tag]
-            ]
-        );
+            ]);
     }
 
     /**
@@ -50,8 +49,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
 
         return $this->sendRequest('DELETE', 'purgeurl', [
                 'urls' => $zoneUrls
-            ]
-        );
+            ]);
     }
 
 
@@ -84,13 +82,10 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
         ]);
 
         try {
-
             $uri     = "zones/{$type}/{$this->zoneId}.json";
             $options = (count($params)) ? ['json' => $params] : [];
             $client->request($method, $uri, $options);
-
         } catch (BadResponseException $e) {
-
             throw KeycdnApiException::create(
                 $e->getRequest(),
                 $e->getResponse()
@@ -98,6 +93,5 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
         }
 
         return true;
-
     }
 }

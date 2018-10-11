@@ -70,5 +70,4 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
 
         \Craft::warning($message, "upper");
     }
-
 }

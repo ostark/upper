@@ -1,6 +1,5 @@
 <?php namespace ostark\upper\handlers;
 
-
 use craft\elements\db\ElementQuery;
 
 class RegisterCraftVariable extends AbstractPluginEventHandler

@@ -38,7 +38,5 @@ class FastlyApiException extends \Exception
 
         // Unknown
         return new static("Unknown error, uri: '$uri'");
-
     }
 }
-

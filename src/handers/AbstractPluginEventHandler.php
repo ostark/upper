@@ -27,5 +27,4 @@ abstract class AbstractPluginEventHandler
     {
         $this->plugin = Plugin::getInstance();
     }
-
 }

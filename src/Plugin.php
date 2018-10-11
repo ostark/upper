@@ -165,7 +165,6 @@ class Plugin extends BasePlugin
     {
         // Frontend events
         if ($this->isRequestCacheable()) {
-
             // Set current uri for fast access later
             $this->requestUri = \Craft::$app->getRequest()->getPathInfo();
 
@@ -192,7 +191,6 @@ class Plugin extends BasePlugin
     protected function registerCPEventHandlers()
     {
         if (\Craft::$app->getRequest()->getIsCpRequest()) {
-
             // Pre update
             Event::on(Elements::class, Elements::EVENT_BEFORE_SAVE_ELEMENT, new upper\handlers\DetectStatusUpdate());
 
@@ -234,6 +232,4 @@ class Plugin extends BasePlugin
             copy($configSourceFile, $configTargetFile);
         }
     }
-
 }
-

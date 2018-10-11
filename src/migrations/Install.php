@@ -1,4 +1,6 @@
-<?php namespace ostark\upper\migrations;
+<?php
+
+namespace ostark\upper\migrations;
 
 use craft\db\Migration;
 use ostark\upper\Plugin;
@@ -17,10 +19,10 @@ class Install extends Migration
 
         // mysql with fulltext field tags
         if ($this->getDb()->getIsMysql()) {
-
             $this->createTable(Plugin::CACHE_TABLE, [
                 'uid'         => $this->string(40)->notNull()->unique(),
-                'url'         => $this->string(255)->notNull(),
+                'url'         => $this->text()->notNull(),
+                'urlHash'     => $this->string(32)->notNull(),
                 'headers'     => $this->text()->defaultValue(null),
                 'tags'        => $this->text()->notNull(),
                 'siteId'      => $this->integer(),
@@ -28,17 +30,18 @@ class Install extends Migration
                 'dateUpdated' => $this->dateTime()->null()
             ]);
 
-            $this->createIndex('url_idx', Plugin::CACHE_TABLE, 'url', true);
-            $this->execute("ALTER TABLE " . Plugin::CACHE_TABLE . " ADD FULLTEXT INDEX tags_fulltext (tags ASC)");
+            echo "  > Create index: urlhash_idx" . PHP_EOL;
+            $this->createIndex('urlhash_idx', Plugin::CACHE_TABLE, 'urlHash', true);
 
+            $this->execute("ALTER TABLE " . Plugin::CACHE_TABLE . " ADD FULLTEXT INDEX tags_fulltext (tags ASC)");
         }
 
         // pgsql with array field tags
         elseif ($this->getDb()->getIsPgsql()) {
-
             $this->createTable(Plugin::CACHE_TABLE, [
                 'uid'         => $this->string(40)->notNull()->unique(),
-                'url'         => $this->string(255)->notNull(),
+                'url'         => $this->text()->notNull(),
+                'urlHash'     => $this->string(32)->notNull(),
                 'headers'     => $this->text()->defaultValue(null),
                 'tags'        => 'varchar[]',
                 'siteId'      => $this->integer(),
@@ -47,11 +50,11 @@ class Install extends Migration
                 'PRIMARY KEY(uid)',
             ]);
 
-            $this->createIndex('url_idx', Plugin::CACHE_TABLE, 'url', true);
+            echo "  > Create index: urlhash_idx" . PHP_EOL;
+            $this->createIndex('urlhash_idx', Plugin::CACHE_TABLE, 'urlHash', true);
+
             $this->execute("CREATE INDEX tags_array ON " . Plugin::CACHE_TABLE . " USING GIN(tags)");
-
         }
-
     }
 
     /**
@@ -60,6 +63,5 @@ class Install extends Migration
     public function safeDown()
     {
         $this->dropTableIfExists(Plugin::CACHE_TABLE);
-
     }
 }

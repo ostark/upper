@@ -27,14 +27,12 @@ class DetectStatusUpdate extends AbstractPluginEventHandler implements InvokeEve
 
 
         if ($event instanceof ElementEvent) {
-
             if (!$this->plugin->getSettings()->isCachableElement(get_class($event->element))) {
                 return;
             }
 
             // Status updated but not saved
             if (!$event->isNew) {
-
                 $new = $event->element;
                 $old = \Craft::$app->getElements()->getElementById($new->getId(), get_class($new));
 
@@ -43,12 +41,7 @@ class DetectStatusUpdate extends AbstractPluginEventHandler implements InvokeEve
                     \Craft::warning('Status changed for: ' . $new->getUrl() . ' .. from:' . $old->getStatus() . ' to:' . $new->getStatus(), 'upper');
                     $this->plugin->elementStatusHasChanged = true;
                 }
-
-
             }
-
         }
-
-
     }
 }

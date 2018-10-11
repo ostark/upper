@@ -44,6 +44,5 @@ class CloudflareApiException extends \Exception
 
         // Unknown
         return new static("Unknown error, uri: '$uri'");
-
     }
 }

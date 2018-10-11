@@ -28,7 +28,6 @@ class PurgeCacheJob extends BaseJob
         // Get registered purger
         $purger = Plugin::getInstance()->getPurger();
         $purger->purgeTag($this->tag);
-
     }
 
 

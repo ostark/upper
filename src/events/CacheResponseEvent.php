@@ -33,5 +33,4 @@ class CacheResponseEvent extends Event
      * @var array Array of headers
      */
     public $headers = [];
-
 }

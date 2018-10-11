@@ -38,8 +38,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
         return $this->sendRequest('DELETE', 'purge_cache', [
                 'tags' => [$tag]
-            ]
-        );
+            ]);
     }
 
     /**
@@ -61,8 +60,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
         return $this->sendRequest('DELETE', 'purge_cache', [
                 'files' => $files
-            ]
-        );
+            ]);
     }
 
 
@@ -102,13 +100,10 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
         ]);
 
         try {
-
             $uri     = "zones/{$this->zoneId}/$type";
             $options = (count($params)) ? ['json' => $params] : [];
             $client->request($method, $uri, $options);
-
         } catch (BadResponseException $e) {
-
             throw CloudflareApiException::create(
                 $e->getRequest(),
                 $e->getResponse()
@@ -117,7 +112,4 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
         return true;
     }
-
-
-
 }

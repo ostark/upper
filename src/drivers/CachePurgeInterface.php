@@ -1,6 +1,5 @@
 <?php namespace ostark\upper\drivers;
 
-
 /**
  * Interface CachePurgeInterface
  *
@@ -27,5 +26,4 @@ interface CachePurgeInterface
      * @return bool
      */
     public function purgeAll();
-
 }
