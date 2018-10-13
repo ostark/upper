@@ -38,8 +38,7 @@ class DetectStatusUpdate extends AbstractPluginEventHandler implements InvokeEve
 
                 // status change
                 if ($new->getStatus() != $old->getStatus()) {
-                    \Craft::warning('Status changed for: ' . $new->getUrl() . ' .. from:' . $old->getStatus() . ' to:' . $new->getStatus(), 'upper');
-                    $this->plugin->elementStatusHasChanged = true;
+                    $this->plugin->newElementStatus = $new->getStatus();
                 }
             }
         }

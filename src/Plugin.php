@@ -4,6 +4,8 @@ use Craft;
 use craft\base\Element;
 use craft\base\Plugin as BasePlugin;
 use craft\elements\db\ElementQuery;
+use craft\helpers\Db;
+use craft\records\Entry;
 use craft\services\Elements;
 use craft\services\Sections;
 use craft\services\Structures;
@@ -16,6 +18,7 @@ use ostark\upper\behaviors\TagHeaderBehavior;
 use ostark\upper\drivers\CachePurgeInterface;
 use ostark\upper\models\Settings;
 use yii\base\Event;
+use yii\db\ActiveQuery;
 
 /**
  * Class Plugin
@@ -52,7 +55,7 @@ class Plugin extends BasePlugin
 
     public $requestUri;
 
-    public $elementStatusHasChanged = false;
+    public $newElementStatus = null;
 
 
     /**
