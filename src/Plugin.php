@@ -3,6 +3,7 @@
 use Craft;
 use craft\base\Element;
 use craft\base\Plugin as BasePlugin;
+use craft\console\Application;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use craft\records\Entry;
@@ -85,6 +86,11 @@ class Plugin extends BasePlugin
         // Attach Behaviors
         \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
         \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
+
+        if (\Craft::$app instanceof Application) {
+            // Register console commands
+            \Craft::$app->controllerMap['upper'] = Commands::class;
+        }
     }
 
     // ServiceLocators
