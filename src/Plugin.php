@@ -19,7 +19,7 @@ use ostark\upper\behaviors\TagHeaderBehavior;
 use ostark\upper\drivers\CachePurgeInterface;
 use ostark\upper\models\Settings;
 use yii\base\Event;
-use yii\db\ActiveQuery;
+use yii\caching\CacheInterface;
 
 /**
  * Class Plugin
@@ -90,6 +90,7 @@ class Plugin extends BasePlugin
         if (\Craft::$app instanceof Application) {
             // Register console commands
             \Craft::$app->controllerMap['upper'] = Commands::class;
+            \Craft::$app->set(CacheInterface::class, \Craft::$app->getCache());
         }
     }
 
