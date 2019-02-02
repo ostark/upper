@@ -5,6 +5,7 @@ use craft\base\Element;
 use craft\base\Plugin as BasePlugin;
 use craft\console\Application;
 use craft\elements\db\ElementQuery;
+use craft\events\DefineBehaviorsEvent;
 use craft\helpers\Db;
 use craft\records\Entry;
 use craft\services\Elements;
@@ -179,6 +180,16 @@ class Plugin extends BasePlugin
         if (\Craft::$app->getRequest()->getIsCpRequest()) {
             // Pre update
             Event::on(Elements::class, Elements::EVENT_BEFORE_SAVE_ELEMENT, new upper\handlers\DetectStatusUpdate());
+/*
+            Event::on(Element::class, Element::EVENT_DEFINE_BEHAVIORS, function(DefineBehaviorsEvent $event) {
+                $event->behaviors[] = upper\behaviors\ElementStatusBehavior::class;
+            });
+
+            Event::on(Element::class, Element::EVENT_INIT, function(DefineBehaviorsEvent $event) {
+                $event->
+            });
+*/
+
 
             // Purge Handler
             $purgeOnUpdate = new upper\handlers\PurgeOnUpdate();

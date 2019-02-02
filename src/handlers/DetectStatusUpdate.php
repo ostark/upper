@@ -1,17 +1,15 @@
 <?php namespace ostark\upper\handlers;
 
-use craft\elements\Asset;
-use craft\elements\GlobalSet;
+use craft\elements\Entry;
 use craft\events\ElementEvent;
-use craft\events\ElementStructureEvent;
-use craft\events\MoveElementEvent;
-use craft\events\SectionEvent;
-use ostark\upper\jobs\PurgeCacheJob;
-use ostark\upper\Plugin;
+use ostark\upper\behaviors\ElementStatusBehavior;
+
 
 /**
  * Class StateUpdate
  *
+ *
+ * @property \craft\base\Element $owner
  * @package ostark\upper\handler
  */
 class DetectStatusUpdate extends AbstractPluginEventHandler implements InvokeEventHandlerInterface
@@ -22,24 +20,22 @@ class DetectStatusUpdate extends AbstractPluginEventHandler implements InvokeEve
     public function __invoke($event)
     {
 
-
-        \Craft::warning('Status changed trigger', 'upper');
-
-
         if ($event instanceof ElementEvent) {
-            if (!$this->plugin->getSettings()->isCachableElement(get_class($event->element))) {
+
+            if (!($event->element instanceof Entry)) {
                 return;
             }
+
+            // Attach behavior to store the state
+            $event->element->attachBehavior('status', ElementStatusBehavior::class);
 
             // Status updated but not saved
             if (!$event->isNew) {
                 $new = $event->element;
                 $old = \Craft::$app->getElements()->getElementById($new->getId(), get_class($new));
 
-                // status change
-                if ($new->getStatus() != $old->getStatus()) {
-                    $this->plugin->newElementStatus = $new->getStatus();
-                }
+                // Remember previous status
+                $event->element->setStatusBeforeSave($old->getStatus());
             }
         }
     }

@@ -144,7 +144,8 @@ class Commands extends BaseConsoleController
             ->andWhere(['between', 'postDate', $rangeStart, $rangeEnd])
             ->withStructure(false)
             ->orderBy(null)
-            ->anyStatus())->all();
+            ->anyStatus()
+            ->enabledForSite(true))->all();
 
         // Exclude manually published entries (postDate ≅ dateUpdated)
         return array_filter($entries, function (Entry $item) {
@@ -167,6 +168,7 @@ class Commands extends BaseConsoleController
             ->withStructure(false)
             ->orderBy(null)
             ->anyStatus()
+            ->enabledForSite(true)
         )->all();
     }
 }

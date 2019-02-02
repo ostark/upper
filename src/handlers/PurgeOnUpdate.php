@@ -2,6 +2,7 @@
 
 use craft\base\Element;
 use craft\elements\Asset;
+use craft\elements\Entry;
 use craft\elements\GlobalSet;
 use craft\events\ElementEvent;
 use craft\events\ElementStructureEvent;
@@ -39,11 +40,21 @@ class PurgeOnUpdate extends AbstractPluginEventHandler implements InvokeEventHan
                 $tags[] = Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
             }
             // New or changed status: Invalidate section of Entry
-            if ($event->isNew || $this->plugin->newElementStatus === Element::STATUS_ENABLED) {
+            if ($event->element->hasMethod('statusChangedToLive') && $event->element->statusChangedToLive() === true) {
                 if (isset($event->element->sectionId)) {
                     $tags[] = Plugin::TAG_PREFIX_SECTION . $event->element->sectionId;
                 }
             };
+
+            if ($event->element->hasMethod('getStatusBeforeSave')) {
+                $s1 = $event->element->getStatusBeforeSave();
+                $s2 = $event->element->getStatus();
+                if ($s1 != $s2) {
+                    $entry = $event->element->id;
+                    \Craft::info("Status changed from '$s1' to '$s2' - Enrtry: $entry" , 'craftcodingchallenge');
+                }
+            }
+
         }
 
         if ($event instanceof SectionEvent) {
