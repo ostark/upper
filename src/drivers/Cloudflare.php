@@ -16,6 +16,8 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      */
     const API_ENDPOINT = 'https://api.cloudflare.com/client/v4/';
 
+    const MAX_URLS_PER_PURGE = 30;
+
     public $apiKey;
 
     public $apiEmail;
@@ -59,10 +61,14 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
             return rtrim($this->domain, '/') . $url;
         }, $urls);
 
-        return $this->sendRequest('DELETE', 'purge_cache', [
-                'files' => $files
-            ]
-        );
+        // Chunk larger collections to meet the API constraints
+        foreach(array_chunk($files, self::MAX_URLS_PER_PURGE) as $fileGroup) {
+            $this->sendRequest('DELETE', 'purge_cache', [
+                'files' => $fileGroup
+            ]);
+        }
+
+        return true;
     }
 
 
