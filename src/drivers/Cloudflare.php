@@ -72,13 +72,15 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeAll()
     {
-        if ($this->useLocalTags) {
+        $success = $this->sendRequest('DELETE', 'purge_cache', [
+            'purge_everything' => true
+        ]);
+
+        if ($this->useLocalTags && $success === true) {
             $this->clearLocalCache();
         }
 
-        return $this->sendRequest('DELETE', 'purge_cache', [
-            'purge_everything' => true
-        ]);
+        return $success;
     }
 
 
