@@ -26,7 +26,8 @@
   ],
   "require": {
     "craftcms/cms": "^3.0.0",
-    "guzzlehttp/guzzle": "^6.2"
+    "guzzlehttp/guzzle": "^6.2",
+    "putyourlightson/craft-element-status-events": "v2.x-dev"
   },
   "require-dev": {
     "phpstan/phpstan": "^0.10.3"

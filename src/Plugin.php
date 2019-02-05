@@ -17,8 +17,9 @@ use craft\web\View;
 use ostark\upper;
 use ostark\upper\Behaviors\CacheControlBehavior;
 use ostark\upper\Behaviors\TagHeaderBehavior;
-use ostark\upper\Drivers\CachePurgeInterface;
+use ostark\upper\Contracts\CachePurgeInterface;
 use ostark\upper\Models\Settings;
+use putyourlightson\elementstatusevents\ElementStatusEvents;
 use yii\base\Event;
 use yii\caching\CacheInterface;
 
@@ -80,9 +81,9 @@ class Plugin extends BasePlugin
             'tagCollection' => TagCollection::class
         ]);
 
-        // Register event EventHandlers
+        // Register event Contracts
         $this->registerFrontendEventHandlers();
-        $this->registerCPEventHandlers();
+        $this->registerUpdateHandlers();
 
         // Attach Behaviors
         \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
@@ -99,7 +100,7 @@ class Plugin extends BasePlugin
     // =========================================================================
 
     /**
-     * @return \ostark\upper\Drivers\CachePurgeInterface
+     * @return \ostark\upper\Contracts\CachePurgeInterface
      */
     public function getPurger(): CachePurgeInterface
     {
@@ -149,7 +150,7 @@ class Plugin extends BasePlugin
     }
 
     /**
-     * Frontend related EventHandlers
+     * Frontend related Contracts
      */
     protected function registerFrontendEventHandlers()
     {
@@ -159,40 +160,28 @@ class Plugin extends BasePlugin
             $this->requestUri = \Craft::$app->getRequest()->getPathInfo();
 
             // Extract tags from Elements and store them in a TagCollection
-            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\EventHandlers\CollectTags());
+            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\Contracts\CollectTags());
 
             // Add tags from TagCollection as a response header
-            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\EventHandlers\AddCacheTagResponseHeader());
+            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\Contracts\AddCacheTagResponseHeader());
 
             // Store url tags mapping in DB
             if ($this->getSettings()->useLocalTags) {
-                Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\EventHandlers\StoreLocalTagMap());
+                Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\Contracts\StoreLocalTagMap());
             }
         }
     }
 
 
     /**
-     * Control panel related EventHandlers
+     * Detect updates
      */
-    protected function registerCPEventHandlers()
+    protected function registerUpdateHandlers()
     {
-        if (\Craft::$app->getRequest()->getIsCpRequest()) {
-            // Pre update
-            Event::on(Elements::class, Elements::EVENT_BEFORE_SAVE_ELEMENT, new upper\EventHandlers\DetectStatusUpdate());
-/*
-            Event::on(Element::class, Element::EVENT_DEFINE_BEHAVIORS, function(DefineBehaviorsEvent $event) {
-                $event->Behaviors[] = upper\Behaviors\ElementStatusBehavior::class;
-            });
-
-            Event::on(Element::class, Element::EVENT_INIT, function(DefineBehaviorsEvent $event) {
-                $event->
-            });
-*/
-
+        if (!\Craft::$app->getRequest()->getIsSiteRequest()) {
 
             // Purge Handler
-            $purgeOnUpdate = new upper\EventHandlers\PurgeOnUpdate();
+            $purgeOnUpdate = new upper\Contracts\PurgeOnUpdate();
 
             // Update Events
             Event::on(Element::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $purgeOnUpdate);
@@ -200,9 +189,10 @@ class Plugin extends BasePlugin
             Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, $purgeOnUpdate);
             Event::on(Sections::class, Sections::EVENT_AFTER_SAVE_SECTION, $purgeOnUpdate);
             Event::on(Structures::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $purgeOnUpdate);
+            Event::on(ElementStatusEvents::class, ElementStatusEvents::EVENT_STATUS_CHANGED, $purgeOnUpdate);
 
             // Register option (checkbox) in the CP
-            Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\EventHandlers\RegisterCacheOptions());
+            Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\Contracts\RegisterCacheOptions());
         }
     }
 

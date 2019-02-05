@@ -1,4 +1,4 @@
-<?php namespace ostark\upper\EventHandlers;
+<?php namespace ostark\upper\Contracts;
 
 use ostark\upper\Plugin;
 

@@ -1,4 +1,4 @@
-<?php namespace ostark\upper\Drivers;
+<?php namespace ostark\upper\Contracts;
 
 /**
  * Class Dummy Driver

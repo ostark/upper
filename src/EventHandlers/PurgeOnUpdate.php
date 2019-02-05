@@ -1,8 +1,6 @@
-<?php namespace ostark\upper\EventHandlers;
+<?php namespace ostark\upper\Contracts;
 
-use craft\base\Element;
 use craft\elements\Asset;
-use craft\elements\Entry;
 use craft\elements\GlobalSet;
 use craft\events\ElementEvent;
 use craft\events\ElementStructureEvent;
@@ -10,6 +8,7 @@ use craft\events\MoveElementEvent;
 use craft\events\SectionEvent;
 use ostark\upper\Jobs\PurgeCacheJob;
 use ostark\upper\Plugin;
+use putyourlightson\elementstatusevents\events\StatusChangeEvent;
 
 /**
  * Class Update
@@ -39,22 +38,17 @@ class PurgeOnUpdate extends AbstractPluginEventHandler implements InvokeEventHan
             elseif (!$event->isNew) {
                 $tags[] = Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
             }
-            // New or changed status: Invalidate section of Entry
-            if ($event->element->hasMethod('statusChangedToLive') && $event->element->statusChangedToLive() === true) {
-                if (isset($event->element->sectionId)) {
+        }
+
+        if ($event instanceof StatusChangeEvent) {
+            if ($event->changedToPublished()) {
+                if (property_exists($event->element, 'sectionId')) {
                     $tags[] = Plugin::TAG_PREFIX_SECTION . $event->element->sectionId;
                 }
-            };
-
-            if ($event->element->hasMethod('getStatusBeforeSave')) {
-                $s1 = $event->element->getStatusBeforeSave();
-                $s2 = $event->element->getStatus();
-                if ($s1 != $s2) {
-                    $entry = $event->element->id;
-                    \Craft::info("Status changed from '$s1' to '$s2' - Enrtry: $entry" , 'craftcodingchallenge');
-                }
             }
-
+            if ($event->changedToUnpublished()) {
+                $tags[] = Plugin::TAG_PREFIX_ELEMENT . $event->element->getId();
+            }
         }
 
         if ($event instanceof SectionEvent) {
@@ -76,8 +70,8 @@ class PurgeOnUpdate extends AbstractPluginEventHandler implements InvokeEventHan
             $tag = $this->plugin->getTagCollection()->prepareTag($tag);
             // Push to queue
             \Craft::$app->getQueue()->push(new PurgeCacheJob([
-                    'tag' => $tag
-                ]));
+                'tag' => $tag
+            ]));
         }
     }
 }

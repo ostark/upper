@@ -11,7 +11,7 @@ class PurgerFactory extends Component
     /**
      * @param \ostark\upper\Models\Settings $settings
      *
-     * @return \ostark\upper\Drivers\CachePurgeInterface|object
+     * @return \ostark\upper\Contracts\CachePurgeInterface|object
      * @throws \yii\base\InvalidConfigException
      */
     public static function create(Settings $settings)

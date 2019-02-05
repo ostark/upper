@@ -1,4 +1,4 @@
-<?php namespace ostark\upper\Drivers;
+<?php namespace ostark\upper\Contracts;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
