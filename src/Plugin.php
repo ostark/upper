@@ -15,10 +15,10 @@ use craft\utilities\ClearCaches;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use ostark\upper;
-use ostark\upper\behaviors\CacheControlBehavior;
-use ostark\upper\behaviors\TagHeaderBehavior;
-use ostark\upper\drivers\CachePurgeInterface;
-use ostark\upper\models\Settings;
+use ostark\upper\Behaviors\CacheControlBehavior;
+use ostark\upper\Behaviors\TagHeaderBehavior;
+use ostark\upper\Drivers\CachePurgeInterface;
+use ostark\upper\Models\Settings;
 use yii\base\Event;
 use yii\caching\CacheInterface;
 
@@ -27,7 +27,7 @@ use yii\caching\CacheInterface;
  *
  * @package ostark\upper
  *
- * @method models\Settings getSettings()
+ * @method Models\Settings getSettings()
  */
 class Plugin extends BasePlugin
 {
@@ -80,7 +80,7 @@ class Plugin extends BasePlugin
             'tagCollection' => TagCollection::class
         ]);
 
-        // Register event handlers
+        // Register event EventHandlers
         $this->registerFrontendEventHandlers();
         $this->registerCPEventHandlers();
 
@@ -99,7 +99,7 @@ class Plugin extends BasePlugin
     // =========================================================================
 
     /**
-     * @return \ostark\upper\drivers\CachePurgeInterface
+     * @return \ostark\upper\Drivers\CachePurgeInterface
      */
     public function getPurger(): CachePurgeInterface
     {
@@ -149,40 +149,40 @@ class Plugin extends BasePlugin
     }
 
     /**
-     * Frontend related handlers
+     * Frontend related EventHandlers
      */
     protected function registerFrontendEventHandlers()
     {
-        // Frontend events
+        // Frontend Events
         if ($this->isRequestCacheable()) {
             // Set current uri for fast access later
             $this->requestUri = \Craft::$app->getRequest()->getPathInfo();
 
             // Extract tags from Elements and store them in a TagCollection
-            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\handlers\CollectTags());
+            Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, new upper\EventHandlers\CollectTags());
 
             // Add tags from TagCollection as a response header
-            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\handlers\AddCacheTagResponseHeader());
+            Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, new upper\EventHandlers\AddCacheTagResponseHeader());
 
             // Store url tags mapping in DB
             if ($this->getSettings()->useLocalTags) {
-                Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\handlers\StoreLocalTagMap());
+                Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, new upper\EventHandlers\StoreLocalTagMap());
             }
         }
     }
 
 
     /**
-     * Control panel related handlers
+     * Control panel related EventHandlers
      */
     protected function registerCPEventHandlers()
     {
         if (\Craft::$app->getRequest()->getIsCpRequest()) {
             // Pre update
-            Event::on(Elements::class, Elements::EVENT_BEFORE_SAVE_ELEMENT, new upper\handlers\DetectStatusUpdate());
+            Event::on(Elements::class, Elements::EVENT_BEFORE_SAVE_ELEMENT, new upper\EventHandlers\DetectStatusUpdate());
 /*
             Event::on(Element::class, Element::EVENT_DEFINE_BEHAVIORS, function(DefineBehaviorsEvent $event) {
-                $event->behaviors[] = upper\behaviors\ElementStatusBehavior::class;
+                $event->Behaviors[] = upper\Behaviors\ElementStatusBehavior::class;
             });
 
             Event::on(Element::class, Element::EVENT_INIT, function(DefineBehaviorsEvent $event) {
@@ -192,9 +192,9 @@ class Plugin extends BasePlugin
 
 
             // Purge Handler
-            $purgeOnUpdate = new upper\handlers\PurgeOnUpdate();
+            $purgeOnUpdate = new upper\EventHandlers\PurgeOnUpdate();
 
-            // Update events
+            // Update Events
             Event::on(Element::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $purgeOnUpdate);
             Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, $purgeOnUpdate);
             Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, $purgeOnUpdate);
@@ -202,7 +202,7 @@ class Plugin extends BasePlugin
             Event::on(Structures::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $purgeOnUpdate);
 
             // Register option (checkbox) in the CP
-            Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\handlers\RegisterCacheOptions());
+            Event::on(ClearCaches::class, ClearCaches::EVENT_REGISTER_CACHE_OPTIONS, new upper\EventHandlers\RegisterCacheOptions());
         }
     }
 

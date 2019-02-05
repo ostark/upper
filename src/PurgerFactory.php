@@ -1,6 +1,6 @@
 <?php namespace ostark\upper;
 
-use ostark\upper\models\Settings;
+use ostark\upper\Models\Settings;
 use Psr\Log\InvalidArgumentException;
 use yii\base\Component;
 
@@ -9,9 +9,9 @@ class PurgerFactory extends Component
     const DRIVERS_NAMESPACE = 'ostark\upper\drivers';
 
     /**
-     * @param \ostark\upper\models\Settings $settings
+     * @param \ostark\upper\Models\Settings $settings
      *
-     * @return \ostark\upper\drivers\CachePurgeInterface|object
+     * @return \ostark\upper\Drivers\CachePurgeInterface|object
      * @throws \yii\base\InvalidConfigException
      */
     public static function create(Settings $settings)

@@ -23,7 +23,7 @@ return [
     'keyPrefix'     => getenv('UPPER_KEY_PREFIX') ?: '',
 
     // Drivers settings
-    'drivers'       => [
+    'Drivers'       => [
 
         // Varnish config
         'varnish'    => [
