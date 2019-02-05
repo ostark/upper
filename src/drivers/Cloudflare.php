@@ -16,6 +16,8 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      */
     const API_ENDPOINT = 'https://api.cloudflare.com/client/v4/';
 
+    const MAX_URLS_PER_PURGE = 30;
+
     public $apiKey;
 
     public $apiEmail;
@@ -33,12 +35,13 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
     public function purgeTag(string $tag)
     {
         if ($this->useLocalTags) {
-             return $this->purgeUrlsByTag($tag);
+            return $this->purgeUrlsByTag($tag);
         }
 
         return $this->sendRequest('DELETE', 'purge_cache', [
                 'tags' => [$tag]
-            ]);
+            ]
+        );
     }
 
     /**
@@ -58,9 +61,14 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
             return rtrim($this->domain, '/') . $url;
         }, $urls);
 
-        return $this->sendRequest('DELETE', 'purge_cache', [
-                'files' => $files
+        // Chunk larger collections to meet the API constraints
+        foreach(array_chunk($files, self::MAX_URLS_PER_PURGE) as $fileGroup) {
+            $this->sendRequest('DELETE', 'purge_cache', [
+                'files' => $fileGroup
             ]);
+        }
+
+        return true;
     }
 
 
@@ -70,13 +78,15 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeAll()
     {
-        if ($this->useLocalTags) {
+        $success = $this->sendRequest('DELETE', 'purge_cache', [
+            'purge_everything' => true
+        ]);
+
+        if ($this->useLocalTags && $success === true) {
             $this->clearLocalCache();
         }
 
-        return $this->sendRequest('DELETE', 'purge_cache', [
-            'purge_everything' => true
-        ]);
+        return $success;
     }
 
 
@@ -100,10 +110,13 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
         ]);
 
         try {
+
             $uri     = "zones/{$this->zoneId}/$type";
             $options = (count($params)) ? ['json' => $params] : [];
             $client->request($method, $uri, $options);
+
         } catch (BadResponseException $e) {
+
             throw CloudflareApiException::create(
                 $e->getRequest(),
                 $e->getResponse()
@@ -112,4 +125,5 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
         return true;
     }
+
 }
