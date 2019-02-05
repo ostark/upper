@@ -2,10 +2,11 @@ parameters:
     autoload_directories:
         - %currentWorkingDirectory%/src
     autoload_files:
+        - %currentWorkingDirectory%/vendor/craftcms/cms/src/console/Application.php
         - %currentWorkingDirectory%/vendor/yiisoft/yii2/Yii.php
         - %currentWorkingDirectory%/vendor/craftcms/cms/src/Craft.php
+
     ignoreErrors:
-        - '#Call to an undefined method ostark\\upper\\Drivers\\AbstractPurger::purgeUrls\(\).#'
         - '#Call to an undefined method craft\\console\\Request::[a-zA-Z0-9_]+\(\)#'
         - '#Call to an undefined method object::setKeyPrefix\(\)#'
         - '#Call to an undefined method craft\\queue\\QueueInterface::push\(\)#'

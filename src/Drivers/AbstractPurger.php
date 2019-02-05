@@ -9,6 +9,7 @@ use yii\helpers\ArrayHelper;
  * Class AbstractPurger Driver
  *
  * @package ostark\upper\Drivers
+ * @method purgeUrls(array $urls)
  */
 class AbstractPurger extends BaseObject
 {
