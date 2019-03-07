@@ -1,6 +1,8 @@
 <?php namespace ostark\upper\drivers;
 
+use Craft;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Class Varnish Driver
@@ -85,14 +87,22 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
         $success = true;
         $purgeUrls = explode(',', $this->purgeUrl);
         foreach ($purgeUrls as $purgeUrl) {
+            Craft::info('Purging Varnish cache ' . $purgeUrl);
+            
             $options['base_uri'] = $purgeUrl;
             if (isset($options['url'])) {
                 $options['base_uri'] .= $options['url'];
             }
-            $response = (new Client($options))->request($method);
 
-            if ($success) {
-                $success = in_array($response->getStatusCode(), [204, 200]);
+            try {
+                $response = (new Client($options))->request($method);
+
+                if ($success) {
+                    $success = in_array($response->getStatusCode(), [204, 200]);
+                }
+            } catch (GuzzleException $guzzleException) {
+                $success = false;
+                Craft::warning($guzzleException->getMessage());
             }
         }
 
