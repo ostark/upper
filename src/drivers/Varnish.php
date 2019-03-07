@@ -87,8 +87,8 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
         $success = true;
         $purgeUrls = explode(',', $this->purgeUrl);
         foreach ($purgeUrls as $purgeUrl) {
-            Craft::info('Purging Varnish cache ' . $purgeUrl);
-            
+            Craft::info($method . ' Varnish cache ' . $purgeUrl);
+
             $options['base_uri'] = $purgeUrl;
             if (isset($options['url'])) {
                 $options['base_uri'] .= $options['url'];
