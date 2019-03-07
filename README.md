@@ -73,7 +73,7 @@ If you don't use Cloudflare Enterprise with native `Cache-Tag` support, make sur
 
  
 ### Varnish Setup
-
+Varnish URL supports multiple servers, separate with comma. E.g `http://1.1.1.1,http://2.2.2.2`
 ```
 UPPER_DRIVER=varnish
 VARNISH_URL=<REPLACE-ME>
