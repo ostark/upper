@@ -1,6 +1,8 @@
 <?php namespace ostark\upper\drivers;
 
+use Craft;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 
 /**
  * Class Varnish Driver
@@ -34,7 +36,6 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
         }
 
         return $this->sendPurgeRequest([
-                'base_uri' => $this->purgeUrl,
                 'headers'  => $this->headers + [$this->purgeHeaderName => $tag]
             ]
         );
@@ -48,9 +49,7 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
     public function purgeUrls(array $urls)
     {
         foreach ($urls as $url) {
-
             $success = $this->sendPurgeRequest([
-                    'base_uri' => $this->purgeUrl . $url,
                     'url'      => $url,
                     'headers'  => $this->headers
                 ]
@@ -77,25 +76,36 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeAll()
     {
-        $options = [
-            'base_uri' => $this->purgeUrl,
+        return $this->sendPurgeRequest([
             'headers'  => $this->headers
-        ];
-
-        $response = (new Client($options))->request('BAN');
-
-        return (in_array($response->getStatusCode(), [204, 200]))
-            ? true
-            : false;
+        ], 'BAN');
     }
 
 
-    protected function sendPurgeRequest(array $options = [])
+    protected function sendPurgeRequest(array $options = [], $method = 'PURGE')
     {
-        $response = (new Client($options))->request('PURGE');
+        $success = true;
+        $purgeUrls = explode(',', $this->purgeUrl);
+        foreach ($purgeUrls as $purgeUrl) {
+            Craft::info($method . ' Varnish cache ' . $purgeUrl);
 
-        return (in_array($response->getStatusCode(), [204, 200]))
-            ? true
-            : false;
+            $options['base_uri'] = $purgeUrl;
+            if (isset($options['url'])) {
+                $options['base_uri'] .= $options['url'];
+            }
+
+            try {
+                $response = (new Client($options))->request($method);
+
+                if ($success) {
+                    $success = in_array($response->getStatusCode(), [204, 200]);
+                }
+            } catch (GuzzleException $guzzleException) {
+                $success = false;
+                Craft::warning($guzzleException->getMessage());
+            }
+        }
+
+        return $success;
     }
 }

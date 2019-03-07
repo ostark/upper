@@ -106,7 +106,7 @@ class Settings extends Model
             return '';
         }
 
-        $clean = Inflector::slug($this->keyPrefix,'');
+        $clean = Inflector::slug($this->keyPrefix);
         return substr($clean, 0, 8);
     }
 
