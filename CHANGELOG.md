@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.0] - 2019-03-12
+- Added support for multiple varnish servers (@larsboldt)
+- Fixed a bug when using `keyPrefix` 
+
 ## [1.4.2] - 2018-10-11
 - Backport schema change to initial migration
 
