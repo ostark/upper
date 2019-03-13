@@ -77,7 +77,9 @@ Varnish URL supports multiple servers, separate with comma. E.g `http://1.1.1.1,
 ```
 UPPER_DRIVER=varnish
 VARNISH_URL=<REPLACE-ME>
+VARNISH_BAN_KEY=<UID>
 ```
+`VARNISH_BAN_KEY` lets you specify a unique id which you can pick up in your VCL and issue the correct bans. Very useful when you have multiple sites hosted on the same backends and you want to control what to ban.
 
 ### Tuning
 
