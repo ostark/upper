@@ -202,6 +202,11 @@ class EventRegistrar
                 return;
             }
 
+            // Prevent purge on resaving
+            if (property_exists($event->element, 'resaving') && $event->element->resaving === true) {
+                return;
+            }
+
             if ($event->element instanceof \craft\elements\GlobalSet && is_string($event->element->handle)) {
                 $tags[] = $event->element->handle;
             } elseif ($event->element instanceof \craft\elements\Asset && $event->isNew) {

@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.5.1] - 2019-05-03
+- Prevent purge on resaving
+
 ## [1.5.0] - 2019-03-12
 - Added support for multiple varnish servers (@larsboldt)
 - Fixed a bug when using `keyPrefix` 
