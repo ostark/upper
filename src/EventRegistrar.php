@@ -15,6 +15,7 @@ use craft\services\Structures;
 use craft\utilities\ClearCaches;
 use craft\web\View;
 use ostark\upper\events\CacheResponseEvent;
+use ostark\upper\events\PurgeEvent;
 use ostark\upper\jobs\PurgeCacheJob;
 use yii\base\Event;
 
@@ -238,11 +239,20 @@ class EventRegistrar
 
         foreach ($tags as $tag) {
             $tag = Plugin::getInstance()->getTagCollection()->prepareTag($tag);
+
+            $purgeEvent = new PurgeEvent([
+                'tag' => $tag,
+            ]);
+
+            Plugin::getInstance()->trigger(Plugin::EVENT_BEFORE_PURGE, $purgeEvent);
+
             // Push to queue
             \Craft::$app->getQueue()->push(new PurgeCacheJob([
-                    'tag' => $tag
+                    'tag' => $purgeEvent->tag
                 ]
             ));
+
+            Plugin::getInstance()->trigger(Plugin::EVENT_AFTER_PURGE, $purgeEvent);
         }
 
     }
