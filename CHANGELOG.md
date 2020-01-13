@@ -1,9 +1,10 @@
 # Changelog
 
-## [1.6.0] - 2010-01-13
+## [1.6.0] - 2020-XX-XX
 - Require at least Craft 3.2
 - Prevent cache purge on updated drafts or revisions 
-- Prevent caching of CP requests 
+- Prevent caching of CP requests
+- Allow to modify cache control from template
 
 ## [1.5.1] - 2019-05-03
 - Prevent purge on resaving
