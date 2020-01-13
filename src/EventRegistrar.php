@@ -9,10 +9,12 @@ use craft\events\PopulateElementEvent;
 use craft\events\RegisterCacheOptionsEvent;
 use craft\events\SectionEvent;
 use craft\events\TemplateEvent;
+use craft\helpers\ElementHelper;
 use craft\services\Elements;
 use craft\services\Sections;
 use craft\services\Structures;
 use craft\utilities\ClearCaches;
+use craft\web\Response;
 use craft\web\View;
 use ostark\upper\events\CacheResponseEvent;
 use ostark\upper\events\PurgeEvent;
@@ -62,6 +64,10 @@ class EventRegistrar
             $request->getIsLivePreview() ||
             !$request->getIsGet()
         ) {
+            $response = \Craft::$app->getResponse();
+            $response->addCacheControlDirective('private');
+            $response->addCacheControlDirective('no-cache');
+
             return false;
         }
 
@@ -197,9 +203,15 @@ class EventRegistrar
     {
         $tags = [];
 
+
         if ($event instanceof ElementEvent) {
 
             if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
+                return;
+            }
+
+            // Prevent purge on updates of drafts or revisions
+            if (ElementHelper::isDraftOrRevision($event->element)) {
                 return;
             }
 

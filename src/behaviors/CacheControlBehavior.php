@@ -123,6 +123,7 @@ class CacheControlBehavior extends Behavior
     {
         $this->addCacheControlDirective('public');
         $this->removeCacheControlDirective('private');
+        $this->removeCacheControlDirective('no-cache');
         $this->addCacheControlDirective('s-maxage', $value);
 
         return $this;
