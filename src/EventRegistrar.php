@@ -231,9 +231,6 @@ class EventRegistrar
         }
 
         if (count($tags) === 0) {
-            $type = get_class($event);
-            \Craft::warning("Unabled to find tag. Unknown Event '$type'.", "upper");
-
             return;
         }
 
