@@ -19,6 +19,7 @@ class Plugin extends BasePlugin
 {
     // Event names
     const EVENT_AFTER_SET_TAG_HEADER = 'upper_after_set_tag_header';
+    const EVENT_BEFORE_PURGE = 'upper_before_purge';
     const EVENT_AFTER_PURGE = 'upper_after_purge';
 
     // Tag prefixes
