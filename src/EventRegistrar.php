@@ -59,9 +59,10 @@ class EventRegistrar
         // HTTP request object
         $request = \Craft::$app->getRequest();
 
-        // Don't cache CP, LivePreview, Non-GET requests
+        // Don't cache CP, LivePreview, Action, Non-GET requests
         if ($request->getIsCpRequest() ||
             $request->getIsLivePreview() ||
+            $request->getIsActionRequest() ||
             !$request->getIsGet()
         ) {
             $response = \Craft::$app->getResponse();
