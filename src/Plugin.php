@@ -61,7 +61,6 @@ class Plugin extends BasePlugin
             'tagCollection' => TagCollection::class
         ]);
 
-
         // Attach Behaviors
         \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
         \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
