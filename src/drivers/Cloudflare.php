@@ -1,5 +1,6 @@
 <?php namespace ostark\upper\drivers;
 
+use Craft;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use ostark\upper\exceptions\CloudflareApiException;
@@ -22,6 +23,8 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
     public $apiEmail;
 
+    public $apiToken;
+
     public $zoneId;
 
     public $domain;
@@ -35,7 +38,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
     public function purgeTag(string $tag)
     {
         if ($this->useLocalTags) {
-             return $this->purgeUrlsByTag($tag);
+            return $this->purgeUrlsByTag($tag);
         }
 
         return $this->sendRequest('DELETE', 'purge_cache', [
@@ -57,12 +60,12 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
         }
 
         // prefix urls with domain
-        $files = array_map(function ($url) {
+        $files = array_map(function($url) {
             return rtrim($this->domain, '/') . $url;
         }, $urls);
 
         // Chunk larger collections to meet the API constraints
-        foreach(array_chunk($files, self::MAX_URLS_PER_PURGE) as $fileGroup) {
+        foreach (array_chunk($files, self::MAX_URLS_PER_PURGE) as $fileGroup) {
             $this->sendRequest('DELETE', 'purge_cache', [
                 'files' => $fileGroup
             ]);
@@ -100,21 +103,12 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      */
     protected function sendRequest($method = 'DELETE', string $type, array $params = [])
     {
-        $client = new Client([
-            'base_uri' => self::API_ENDPOINT,
-            'headers'  => [
-                'Content-Type' => 'application/json',
-                'X-Auth-Key'   => $this->apiKey,
-                'X-Auth-Email' => $this->apiEmail,
-            ]
-        ]);
+        $client = $this->getClient();
 
         try {
-
-            $uri     = "zones/{$this->zoneId}/$type";
+            $uri = "zones/{$this->zoneId}/$type";
             $options = (count($params)) ? ['json' => $params] : [];
             $client->request($method, $uri, $options);
-
         } catch (BadResponseException $e) {
 
             throw CloudflareApiException::create(
@@ -126,6 +120,29 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
         return true;
     }
 
+    private function getClient()
+    {
+        $headers = [
+            'Content-Type' => 'application/json',
+        ];
 
+        if ($this->usesLegacyApiKey()) {
+            Craft::$app->getDeprecator()->log('Upper Config: Cloudflare $apiKey', 'Globally scoped Cloudflare API keys are deprecated for security. Create a scoped token instead and use via the `apiToken` key in the driver config.');
 
+            $headers['X-Auth-Key'] = $this->apiKey;
+            $headers['X-Auth-Email'] = $this->apiEmail;
+        } else {
+            $headers['Authorization'] = 'Bearer ' . $this->apiToken;
+        }
+
+        return new Client([
+            'base_uri' => self::API_ENDPOINT,
+            'headers' => $headers,
+        ]);
+    }
+
+    private function usesLegacyApiKey()
+    {
+        return !isset($this->apiToken) && isset($this->apiKey);
+    }
 }
