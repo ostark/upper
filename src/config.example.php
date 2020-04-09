@@ -53,10 +53,12 @@ return [
         'cloudflare' => [
             'tagHeaderName'      => 'Cache-Tag',
             'tagHeaderDelimiter' => ',',
+            'apiToken'           => getenv('CLOUDFLARE_API_TOKEN'),
+            'zoneId'             => getenv('CLOUDFLARE_ZONE_ID'),
+            'domain'             => getenv('CLOUDFLARE_DOMAIN'),
+            // deprecated, do not use for new installs
             'apiKey'             => getenv('CLOUDFLARE_API_KEY'),
             'apiEmail'           => getenv('CLOUDFLARE_API_EMAIL'),
-            'zoneId'             => getenv('CLOUDFLARE_ZONE_ID'),
-            'domain'             => getenv('CLOUDFLARE_DOMAIN')
         ],
 
         // Dummy driver (default)
