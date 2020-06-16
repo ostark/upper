@@ -1,10 +1,11 @@
 # Changelog
 
-## [1.6.0] - 2020-XX-XX
+## [1.6.0] - 2020-06-16
 - Require at least Craft 3.2
 - Prevent cache purge on updated drafts or revisions 
-- Prevent caching of CP requests
+- Prevent caching of CP requests (@timkelty)
 - Allow to modify cache control from template
+- Support for Cloudflare scoped API tokens (@tomdavies)
 
 ## [1.5.1] - 2019-05-03
 - Prevent purge on resaving
