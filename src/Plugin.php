@@ -61,9 +61,6 @@ class Plugin extends BasePlugin
             'tagCollection' => TagCollection::class
         ]);
 
-        // Register Twig extension
-        \Craft::$app->getView()->registerTwigExtension(new TwigExtension);
-
         // Attach Behaviors
         \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
         \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
@@ -78,7 +75,7 @@ class Plugin extends BasePlugin
         }
 
         // Register Twig extension
-        \Craft::$app->getView()->registerTwigExtension(new TwigExtension());
+        \Craft::$app->getView()->registerTwigExtension(new TwigExtension);
     }
 
     // ServiceLocators
