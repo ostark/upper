@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.7.0] - 2021-01-27
+- Craft 3.6 support
+- Guzzle dependencies updated
+- pgsql uid_urlhash_idx ([PR #7436](https://github.com/ostark/upper/pull/42))
+
+
 ## [1.6.0] - 2020-06-16
 - Require at least Craft 3.2
 - Prevent cache purge on updated drafts or revisions 
