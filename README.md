@@ -34,7 +34,7 @@ If you are looking additional integrations (Cache Drivers), feel free to contrib
 ## Installation
 
 1. Install with Composer via `composer require ostark/upper` from your project directory
-2. Install plugin with this command `php craft install/plugin upper` or in the Craft CP under Settings > Plugins
+2. Install plugin with this command `php craft plugin/install upper` or in the Craft CP under Settings > Plugins
 3. A new configuration file gets generated automatically in `your-project/config/upper.php`.
 
 
