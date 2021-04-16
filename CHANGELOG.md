@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- Add `softPurge` option to enable [Soft Purge](https://docs.fastly.com/en/guides/soft-purges) for Fastly.
+
 ## [1.8.0] - 2021-02-08
 - MySQL 8.0 support (removed ordered FULLTEXT index)
 - Switched to `psalm` for static analysis
