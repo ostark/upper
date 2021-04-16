@@ -30,6 +30,8 @@ class m180618_120307_url_index extends Migration
         echo "  > Create index: urlhash_idx" . PHP_EOL;
 
         $this->createIndex('urlhash_idx', Plugin::CACHE_TABLE, 'urlHash', true);
+
+        return true;
     }
 
     /**

@@ -32,7 +32,7 @@ class Install extends Migration
             echo "  > Create index: urlhash_idx" . PHP_EOL;
             $this->createIndex('urlhash_idx', Plugin::CACHE_TABLE, 'urlHash', true);
 
-            $this->execute("ALTER TABLE " . Plugin::CACHE_TABLE . " ADD FULLTEXT INDEX tags_fulltext (tags ASC)");
+            $this->execute("ALTER TABLE " . Plugin::CACHE_TABLE . " ADD FULLTEXT INDEX tags_fulltext (tags)");
 
         }
 
@@ -53,10 +53,13 @@ class Install extends Migration
 
             echo "  > Create index: urlhash_idx" . PHP_EOL;
             $this->createIndex('urlhash_idx', Plugin::CACHE_TABLE, 'urlHash', true);
+            $this->createIndex('uid_urlhash_ids', Plugin::CACHE_TABLE, 'uid,urlHash', true);
 
             $this->execute("CREATE INDEX tags_array ON " . Plugin::CACHE_TABLE . " USING GIN(tags)");
 
         }
+
+        return true;
 
     }
 
@@ -66,6 +69,6 @@ class Install extends Migration
     public function safeDown()
     {
         $this->dropTableIfExists(Plugin::CACHE_TABLE);
-
+        return true;
     }
 }
