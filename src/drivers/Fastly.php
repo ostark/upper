@@ -44,6 +44,10 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
      */
     public $domain;
 
+    /**
+     * @var bool
+     */
+    public $softPurge = false;
 
     /**
      * Purge cache by tag
@@ -113,8 +117,10 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
             'base_uri' => self::API_ENDPOINT,
             'headers'  => array_merge($headers, [
                 'Content-Type' => 'application/json',
-                'Fastly-Key'   => $this->apiToken
-            ])
+                'Fastly-Key'   => $this->apiToken,
+            ], $this->softPurge ? [
+                'Fastly-Soft-Purge' => 1,
+            ] : [])
         ]);
 
         // Prepend the service endpoint
