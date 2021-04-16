@@ -73,6 +73,9 @@ class Plugin extends BasePlugin
         if ($this->getSettings()->useLocalTags) {
             EventRegistrar::registerFallback();
         }
+
+        // Register Twig extension
+        \Craft::$app->getView()->registerTwigExtension(new TwigExtension);
     }
 
     // ServiceLocators

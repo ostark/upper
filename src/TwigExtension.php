@@ -15,7 +15,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
     {
         return [
             'upper' => [
-                'cache' => \Craft::createObject(CacheResponse::class)
+                'cache' => \Craft::createObject(CacheResponse::class, [\Craft::$app->getResponse()]),
             ]
         ];
     }
