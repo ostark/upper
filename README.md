@@ -28,6 +28,7 @@ If you are looking additional integrations (Cache Drivers), feel free to contrib
 * [KeyCDN](https://www.keycdn.com) (CDN/SaaS)
 * [Fastly](https://www.fastly.com) (CDN/SaaS)
 * [Cloudflare](https://www.cloudflare.com) (CDN/SaaS)
+* [Akamai](https://www.akamai.com) (CDN/SaaS)
 * Varnish with XKEY support (your own proxy)
 * Dummy (does nothing)
 
@@ -78,6 +79,17 @@ Varnish URL supports multiple servers, separate with comma. E.g `http://1.1.1.1,
 ```
 UPPER_DRIVER=varnish
 VARNISH_URL=<REPLACE-ME>
+```
+
+### Akamai Setup
+
+```
+UPPER_DRIVER=akamai
+AKAMAI_HOST=<REPLACE-ME>
+AKAMAI_CLIENT_TOKEN=<REPLACE-ME>
+AKAMAI_CLIENT_SECRET=<REPLACE-ME>
+AKAMAI_ACCESS_TOKEN=<REPLACE-ME>
+AKAMAI_MAX_SIZE=2048
 ```
 
 ### Tuning
