@@ -10,7 +10,8 @@
     "cache",
     "cloudflare",
     "fastly",
-    "keycdn"
+    "keycdn",
+    "akamai"
   ],
   "support": {
     "docs": "https://github.com/ostark/upper/blob/master/README.md",
@@ -25,7 +26,8 @@
   ],
   "require": {
     "craftcms/cms": "^3.2.0",
-    "guzzlehttp/guzzle": "^6.5.5|^7.2.0"
+    "guzzlehttp/guzzle": "^6.5.5|^7.2.0",
+    "akamai-open/edgegrid-auth": "^1.0"
   },
   "require-dev": {
     "vimeo/psalm": "^4.4"
