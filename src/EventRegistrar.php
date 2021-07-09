@@ -212,8 +212,12 @@ class EventRegistrar
             }
 
             // Prevent purge on updates of drafts or revisions
-            if (ElementHelper::isDraftOrRevision($event->element)) {
-                return;
+            try {
+                if (ElementHelper::isDraftOrRevision($event->element)) {
+                    return;
+                }
+            } catch (\Exception $e) {
+                \Craft::warning("Failed to determine whether element is a Draft or Revision.", "upper");
             }
 
             // Prevent purge on resaving
