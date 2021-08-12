@@ -51,7 +51,8 @@ class Akamai extends AbstractPurger implements CachePurgeInterface
             return $this->purgeUrlsByTag($tag);
         }
 
-        return $this->sendRequest('POST', 'tag', $tag);
+        return $this->sendRequest('production', 'POST', 'tag', $tag);
+        return $this->sendRequest('staging', 'POST', 'tag', $tag);
     }
 
     /**
@@ -64,7 +65,10 @@ class Akamai extends AbstractPurger implements CachePurgeInterface
     public function purgeUrls(array $urls)
     {
         foreach ($urls as $url) {
-            if (!$this->sendRequest('POST', 'url', $url)) {
+            if (!$this->sendRequest('production', 'POST', 'url', $url)) {
+                return false;
+            }
+            if (!$this->sendRequest('staging', 'POST', 'url', $url)) {
                 return false;
             }
         }
@@ -96,7 +100,7 @@ class Akamai extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \ostark\upper\exceptions\AkamaiApiException
      */
-    protected function sendRequest(string $method = 'POST', string $type = "url", string $uri = "", array $headers = [])
+    protected function sendRequest(string $environment = 'production', string $method = 'POST', string $type = "url", string $uri = "", array $headers = [])
     {
         // Akamai Open Edgegrid reads $_ENV which doesn't get populated by Craft, so filling in the blanks
         $_ENV['AKAMAI_HOST'] = getenv('AKAMAI_HOST');
@@ -108,7 +112,7 @@ class Akamai extends AbstractPurger implements CachePurgeInterface
         $auth = \Akamai\Open\EdgeGrid\Authentication::createFromEnv();
 
         $auth->setHttpMethod('POST');
-        $auth->setPath('/ccu/v3/invalidate/' . $type . '/production');
+        $auth->setPath('/ccu/v3/invalidate/' . $type . '/' . $environment);
 
         $body = json_encode(array(
             'objects' => array(getenv('DEFAULT_SITE_URL') . $uri)
