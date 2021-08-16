@@ -65,10 +65,10 @@ class Akamai extends AbstractPurger implements CachePurgeInterface
     public function purgeUrls(array $urls)
     {
         foreach ($urls as $url) {
-            if (!$this->sendRequest('production', 'POST', 'url', $url)) {
+            if (!$this->sendRequest('production', 'POST', 'url', getenv('DEFAULT_SITE_URL') . $url)) {
                 return false;
             }
-            if (!$this->sendRequest('staging', 'POST', 'url', $url)) {
+            if (!$this->sendRequest('staging', 'POST', 'url', getenv('DEFAULT_SITE_URL') . $url)) {
                 return false;
             }
         }
@@ -115,7 +115,7 @@ class Akamai extends AbstractPurger implements CachePurgeInterface
         $auth->setPath('/ccu/v3/invalidate/' . $type . '/' . $environment);
 
         $body = json_encode(array(
-            'objects' => array(getenv('DEFAULT_SITE_URL') . $uri)
+            'objects' => array($uri)
         ));
 
         $auth->setBody($body);
