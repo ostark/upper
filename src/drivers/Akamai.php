@@ -51,8 +51,10 @@ class Akamai extends AbstractPurger implements CachePurgeInterface
             return $this->purgeUrlsByTag($tag);
         }
 
-        return $this->sendRequest('production', 'POST', 'tag', $tag);
-        return $this->sendRequest('staging', 'POST', 'tag', $tag);
+        $this->sendRequest('production', 'POST', 'tag', $tag);
+        $this->sendRequest('staging', 'POST', 'tag', $tag);
+
+        return true;
     }
 
     /**
