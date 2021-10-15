@@ -1,11 +1,11 @@
 <?php namespace ostark\upper;
 
-use craft\web\Response;
+use yii\base\Response;
 
 class CacheResponse
 {
     /**
-     * @var \craft\web\Response|\ostark\upper\behaviors\CacheControlBehavior
+     * @var \yii\base\Response|\ostark\upper\behaviors\CacheControlBehavior
      */
     public $response;
 
@@ -16,14 +16,26 @@ class CacheResponse
 
     public function never()
     {
+        if (!$this->isWebResponse()) {
+            return;
+        }
+
         $this->response->addCacheControlDirective('private');
         $this->response->addCacheControlDirective('no-cache');
     }
 
     public function for(string $time)
     {
+        if (!$this->isWebResponse()) {
+            return;
+        }
+
         $seconds = strtotime($time) - time();
         $this->response->setSharedMaxAge($seconds);
     }
 
+    public function isWebResponse(): bool
+    {
+        return $this->response instanceof \craft\web\Response;
+    }
 }
