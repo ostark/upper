@@ -34,7 +34,7 @@ class CacheResponse
         $this->response->setSharedMaxAge($seconds);
     }
 
-    public function isWebResponse()
+    public function isWebResponse(): bool
     {
         return $this->response instanceof \craft\web\Response;
     }
