@@ -88,7 +88,7 @@ In a template, you can fully disable caching like so:
 {% do upper.cache.never() %}
 ```
 
-This is a shorthand for:
+…which is a shorthand for:
 
 ```
 {% header "Cache-Control: private, no-cache" %}
@@ -100,7 +100,7 @@ By default the `defaultMaxAge` config setting will be used to determine the cach
 {% do upper.cache.for('5 minutes') %}
 ```
 
-This is shorthand for:
+…which is shorthand for:
 
 ```
 {% header "Cache-Control: public, s-maxage=300" %}
