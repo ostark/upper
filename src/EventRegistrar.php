@@ -61,7 +61,7 @@ class EventRegistrar
 
         // Don't cache CP, LivePreview, Action, Non-GET requests
         if ($request->getIsCpRequest() ||
-            $request->getIsLivePreview() ||
+            $request->getIsPreview() ||
             $request->getIsActionRequest() ||
             !$request->getIsGet()
         ) {
