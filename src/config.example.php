@@ -22,6 +22,13 @@ return [
     // 1-8 characters, special chars get removed
     'keyPrefix'     => getenv('UPPER_KEY_PREFIX') ?: '',
 
+    // Optional maximum length for the cache tag header. Setting this higher will
+    // allow Upper to return more tags in the header. However, it will also require
+    // more resources on the server to store/buffer the tags. Ensure you have enough
+    // room in any proxy/CDN to display large headers if you raise this above 4k.
+    // Stored in bytes, typically as `16 * 1024` for 16KB
+    'maxBytesForCacheTagHeader' => null,
+
     // Drivers settings
     'drivers'       => [
 
