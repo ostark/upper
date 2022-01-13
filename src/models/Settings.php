@@ -57,6 +57,13 @@ class Settings extends Model
      */
     public $keyPrefix = '';
 
+    /**
+     * Max kilobytes of the X-Cachetag header
+     *
+     * @var string
+     */
+    public $maxBytesForCacheTagHeader = null;
+
     // Public Methods
     // =========================================================================
 

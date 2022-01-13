@@ -21,6 +21,28 @@ class TagCollection
         return $this->tags;
     }
 
+    public function getUntilMaxBytes($maxBytes=null)
+    {
+        if ($maxBytes === null) {
+            return $this->tags;
+        }
+
+        $tags = [];
+        $runningSize = 0;
+        foreach ($this->tags as $tag) {
+            $thisSize = mb_strlen($tag.' ', '8bit');
+
+            if ($runningSize + $thisSize > $maxBytes) {
+                break;
+            }
+
+            $runningSize += $thisSize;
+            $tags[] = $tag;
+        }
+
+        return $tags;
+    }
+
     public function addTagsFromElement(array $elementRawQueryResult = null)
     {
         if (!is_array($elementRawQueryResult)) {

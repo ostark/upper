@@ -94,11 +94,12 @@ class EventRegistrar
         Event::on(View::class, View::EVENT_AFTER_RENDER_PAGE_TEMPLATE, function (TemplateEvent $event) {
 
             /** @var \yii\web\Response $response */
-            $response = \Craft::$app->getResponse();
-            $plugin   = Plugin::getInstance();
-            $tags     = $plugin->getTagCollection()->getAll();
-            $settings = $plugin->getSettings();
-            $headers  = $response->getHeaders();
+            $response      = \Craft::$app->getResponse();
+            $plugin        = Plugin::getInstance();
+            $tagCollection = $plugin->getTagCollection();
+            $tags          = $plugin->getTagCollection()->getAll();
+            $settings      = $plugin->getSettings();
+            $headers       = $response->getHeaders();
 
             // Make existing cache-control headers accessible
             $response->setCacheControlDirectiveFromString($headers->get('cache-control'));
@@ -114,7 +115,15 @@ class EventRegistrar
             $maxAge = $response->getMaxAge() ?? $settings->defaultMaxAge;
 
             // Set Headers
-            $response->setTagHeader($settings->getTagHeaderName(), $tags, $settings->getHeaderTagDelimiter());
+            $maxBytes = $settings->maxBytesForCacheTagHeader;
+            $maxedTags = $tagCollection->getUntilMaxBytes($maxBytes);
+            $response->setTagHeader($settings->getTagHeaderName(), $maxedTags, $settings->getHeaderTagDelimiter());
+
+            // Flag truncation
+            if (count($tags) > count($maxedTags)) {
+                $headers->set(Plugin::TRUNCATED_HEADER_NAME, count($tags) - count($maxedTags));
+            }
+
             $response->setSharedMaxAge($maxAge);
             $headers->set(Plugin::INFO_HEADER_NAME, "CACHED: " . date(\DateTime::ISO8601));
 
