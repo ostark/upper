@@ -60,7 +60,7 @@ class Settings extends Model
     /**
      * Max kilobytes of the X-Cachetag header
      *
-     * @var string
+     * @var int
      */
     public $maxBytesForCacheTagHeader = null;
 

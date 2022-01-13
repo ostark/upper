@@ -21,7 +21,7 @@ class TagCollection
         return $this->tags;
     }
 
-    public function getUntilMaxBytes($maxBytes=null)
+    public function getUntilMaxBytes(int $maxBytes = null)
     {
         if ($maxBytes === null) {
             return $this->tags;
