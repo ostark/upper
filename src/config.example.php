@@ -47,6 +47,7 @@ return [
             'serviceId'     => getenv('FASTLY_SERVICE_ID'),
             'apiToken'      => getenv('FASTLY_API_TOKEN'),
             'domain'        => getenv('FASTLY_DOMAIN'),
+            'softPurge'     => false
         ],
 
         // KeyCDN config
