@@ -16,10 +16,7 @@ class Install extends Migration
      */
     public function safeUp()
     {
-        if ($this->getDb()->getTableSchema($this->getDb()->tablePrefix . Plugin::CACHE_TABLE, true) !== null) {
-            echo "  > cache table already exists, skipping" . PHP_EOL;
-            return;
-        }
+        $this->dropTableIfExists(Plugin::CACHE_TABLE);
 
         // mysql with fulltext field tags
         if ($this->getDb()->getIsMysql()) {
