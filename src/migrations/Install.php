@@ -15,6 +15,8 @@ class Install extends Migration
     public function safeUp()
     {
 
+        $this->dropTableIfExists(Plugin::CACHE_TABLE);
+
         // mysql with fulltext field tags
         if ($this->getDb()->getIsMysql()) {
 
