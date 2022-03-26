@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.9.2] - 2022-03-26
+- Fix issues with Supertable / exclude SuperTableBlockElement
+
 ## [1.9.1] - 2022-02-08
 - Add `softPurge` option in example config
 - Drop database table if exists (might happen with a dirty uninstall)
