@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Don't edit the config.example.php.
  * Instead modify the projects/config/upper.php and use ENV VARS
@@ -68,6 +69,16 @@ return [
             // deprecated, do not use for new installs
             'apiKey'             => getenv('CLOUDFLARE_API_KEY'),
             'apiEmail'           => getenv('CLOUDFLARE_API_EMAIL'),
+        ],
+
+        // Akamai config
+        'akamai'    => [
+            'tagHeaderName'     => 'Edge-Cache-Tag',
+            'host'              => getenv('AKAMAI_HOST'),
+            'clientToken'       => getenv('AKAMAI_CLIENT_TOKEN'),
+            'clientSecret'      => getenv('AKAMAI_CLIENT_SECRET'),
+            'accessToken'       => getenv('AKAMAI_ACCESS_TOKEN'),
+            'maxSize'           => getenv('AKAMAI_MAX_SIZE'),
         ],
 
         // Dummy driver (default)

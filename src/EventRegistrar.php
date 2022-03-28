@@ -1,4 +1,6 @@
-<?php namespace ostark\upper;
+<?php
+
+namespace ostark\upper;
 
 use craft\base\Element;
 use craft\elements\db\ElementQuery;
@@ -46,7 +48,6 @@ class EventRegistrar
         Event::on(Sections::class, Sections::EVENT_AFTER_SAVE_SECTION, function ($event) {
             static::handleUpdateEvent($event);
         });
-
     }
 
     public static function registerFrontendEvents()
@@ -60,7 +61,8 @@ class EventRegistrar
         $request = \Craft::$app->getRequest();
 
         // Don't cache CP, LivePreview, Action, Non-GET requests
-        if ($request->getIsCpRequest() ||
+        if (
+            $request->getIsCpRequest() ||
             $request->getIsLivePreview() ||
             $request->getIsActionRequest() ||
             !$request->getIsGet()
@@ -87,7 +89,6 @@ class EventRegistrar
 
             // Add to collection
             Plugin::getInstance()->getTagCollection()->addTagsFromElement($event->row);
-
         });
 
         // Add the tags to the response header
@@ -127,7 +128,8 @@ class EventRegistrar
             $response->setSharedMaxAge($maxAge);
             $headers->set(Plugin::INFO_HEADER_NAME, "CACHED: " . date(\DateTime::ISO8601));
 
-            $plugin->trigger($plugin::EVENT_AFTER_SET_TAG_HEADER, new CacheResponseEvent([
+            $plugin->trigger($plugin::EVENT_AFTER_SET_TAG_HEADER, new CacheResponseEvent(
+                [
                     'tags'       => $tags,
                     'maxAge'     => $maxAge,
                     'requestUrl' => \Craft::$app->getRequest()->getUrl(),
@@ -135,7 +137,6 @@ class EventRegistrar
                 ]
             ));
         });
-
     }
 
 
@@ -181,7 +182,7 @@ class EventRegistrar
                 // Insert item
                 \Craft::$app->getDb()->createCommand()
                     ->upsert(
-                    // Table
+                        // Table
                         Plugin::CACHE_TABLE,
 
                         // Identifier
@@ -200,9 +201,7 @@ class EventRegistrar
             } catch (\Exception $e) {
                 \Craft::warning("Failed to register fallback.", "upper");
             }
-
         });
-
     }
 
 
@@ -266,14 +265,13 @@ class EventRegistrar
             Plugin::getInstance()->trigger(Plugin::EVENT_BEFORE_PURGE, $purgeEvent);
 
             // Push to queue
-            \Craft::$app->getQueue()->push(new PurgeCacheJob([
+            \Craft::$app->getQueue()->ttr(1200)->push(new PurgeCacheJob(
+                [
                     'tag' => $purgeEvent->tag
                 ]
             ));
 
             Plugin::getInstance()->trigger(Plugin::EVENT_AFTER_PURGE, $purgeEvent);
         }
-
     }
-
 }
