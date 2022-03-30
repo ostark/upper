@@ -76,6 +76,7 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeAll()
     {
+        $this->headers['Varnish_Ban_Key'] = getenv('VARNISH_BAN_KEY');
         return $this->sendPurgeRequest([
             'headers'  => $this->headers
         ], 'BAN');
