@@ -18,7 +18,7 @@ use yii\helpers\Inflector;
  * @package   Upper
  * @since     1.0.0
  */
-class Settings extends Model
+class PluginSettings extends Model
 {
     // Public Properties
     // =========================================================================

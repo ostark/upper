@@ -36,7 +36,10 @@
   "autoload": {
     "psr-4": {
       "ostark\\Upper\\": "src/"
-    }
+    },
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "scripts": {
     "phpstan": "vendor/bin/phpstan analyse",
