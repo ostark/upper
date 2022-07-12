@@ -1,4 +1,4 @@
-<?php namespace ostark\upper\models;
+<?php namespace ostark\Upper\Models;
 
 use Craft;
 use craft\base\Model;
@@ -18,7 +18,7 @@ use yii\helpers\Inflector;
  * @package   Upper
  * @since     1.0.0
  */
-class Settings extends Model
+class PluginSettings extends Model
 {
     // Public Properties
     // =========================================================================

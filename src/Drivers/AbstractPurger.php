@@ -1,6 +1,6 @@
-<?php namespace ostark\upper\drivers;
+<?php namespace ostark\Upper\Drivers;
 
-use ostark\upper\Plugin;
+use ostark\Upper\Plugin;
 use yii\base\BaseObject;
 use yii\db\Exception;
 use yii\helpers\ArrayHelper;
@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 /**
  * Class AbstractPurger Driver
  *
- * @package ostark\upper\drivers
+ * @package ostark\Upper\Drivers
  */
 class AbstractPurger extends BaseObject
 {

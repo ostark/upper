@@ -1,0 +1,11 @@
+includes:
+    - vendor/craftcms/phpstan/phpstan.neon
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    tmpDir: build/phpstan
+    checkMissingIterableValueType: false
+    ignoreErrors:
+        - "#Unable to resolve the template type T in call to method static method#"

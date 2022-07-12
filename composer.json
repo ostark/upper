@@ -24,20 +24,26 @@
     }
   ],
   "require": {
-    "craftcms/cms": "^3.2.0",
+    "craftcms/cms": "^4.1.0",
     "guzzlehttp/guzzle": "^6.5.5|^7.2.0"
   },
   "require-dev": {
-    "vimeo/psalm": "^4.4"
+    "craftcms/phpstan": "*",
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "pestphp/pest": "^1.2",
+    "pestphp/pest-plugin-parallel": "^1.0"
   },
   "autoload": {
     "psr-4": {
-      "ostark\\upper\\": "src/"
-    }
+      "ostark\\Upper\\": "src/"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "scripts": {
-    "ps": "phpstan analyse src --level=5 -c phpstan.neon",
-    "stan": "@ps"
+    "phpstan": "vendor/bin/phpstan analyse",
+    "test": "vendor/bin/pest"
   },
   "extra": {
     "name": "Upper",
@@ -45,5 +51,16 @@
     "hasCpSettings": false,
     "hasCpSection": false,
     "changelogUrl": "https://raw.githubusercontent.com/ostark/upper/master/CHANGELOG.md"
-  }
+  },
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "composer/package-versions-deprecated": true,
+      "craftcms/plugin-installer": true,
+      "pestphp/pest-plugin": true
+    }
+  },
+
+  "prefer-stable": true,
+  "minimum-stability": "dev"
 }

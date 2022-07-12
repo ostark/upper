@@ -1,14 +1,14 @@
-<?php namespace ostark\upper\drivers;
+<?php namespace ostark\Upper\Drivers;
 
 use Craft;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
-use ostark\upper\exceptions\CloudflareApiException;
+use ostark\Upper\Exceptions\CloudflareApiException;
 
 /**
  * Class Cloudflare Driver
  *
- * @package ostark\upper\drivers
+ * @package ostark\Upper\Drivers
  */
 class Cloudflare extends AbstractPurger implements CachePurgeInterface
 {
@@ -51,7 +51,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      * @param array $urls
      *
      * @return bool
-     * @throws \ostark\upper\exceptions\CloudflareApiException
+     * @throws \ostark\Upper\exceptions\CloudflareApiException
      */
     public function purgeUrls(array $urls)
     {
@@ -99,7 +99,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      * @param array  $params
      *
      * @return bool
-     * @throws \ostark\upper\exceptions\CloudflareApiException
+     * @throws \ostark\Upper\exceptions\CloudflareApiException
      */
     protected function sendRequest($method = 'DELETE', string $type, array $params = [])
     {

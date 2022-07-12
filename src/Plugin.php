@@ -1,19 +1,33 @@
-<?php namespace ostark\upper;
+<?php namespace ostark\Upper;
 
 
 use Craft;
+use craft\base\Element;
 use craft\base\Plugin as BasePlugin;
-use ostark\upper\behaviors\CacheControlBehavior;
-use ostark\upper\behaviors\TagHeaderBehavior;
-use ostark\upper\drivers\CachePurgeInterface;
-use ostark\upper\models\Settings;
+use craft\elements\db\ElementQuery;
+use craft\services\Elements;
+use craft\services\Sections;
+use craft\services\Structures;
+use craft\utilities\ClearCaches;
+use craft\web\View;
+use ostark\Upper\behaviors\CacheControlBehavior;
+use ostark\Upper\behaviors\TagHeaderBehavior;
+use ostark\Upper\Drivers\CachePurgeInterface;
+use ostark\Upper\Handlers\AddCacheResponse;
+use ostark\Upper\Handlers\CollectTagsFromElementQuery;
+use ostark\Upper\Handlers\CollectTagsFromTemplateCache;
+use ostark\Upper\Handlers\InvalidateCache;
+use ostark\Upper\Handlers\RegisterCacheCheckbox;
+use ostark\Upper\Handlers\StoreTagUrlRelation;
+use ostark\Upper\Models\PluginSettings;
+use yii\base\Event;
 
 /**
  * Class Plugin
  *
- * @package ostark\upper
+ * @package ostark\Upper
  *
- * @method models\Settings getSettings()
+ * @method Models\PluginSettings getSettings()
  */
 class Plugin extends BasePlugin
 {
@@ -41,7 +55,7 @@ class Plugin extends BasePlugin
     const INFO_HEADER_NAME = 'X-UPPER-CACHE';
     const TRUNCATED_HEADER_NAME = 'X-UPPER-CACHE-TRUNCATED';
 
-    public $schemaVersion = '1.0.1';
+    public string $schemaVersion = '1.0.1';
 
 
     /**
@@ -56,65 +70,115 @@ class Plugin extends BasePlugin
             return false;
         }
 
-        // Register plugin components
-        $this->setComponents([
-            'purger'        => PurgerFactory::create($this->getSettings()->toArray()),
-            'tagCollection' => TagCollection::class
-        ]);
+        // Register TagCollection in container
+        Craft::$container->setSingleton(TagCollection::class, function () {
+            $collection = new TagCollection();
+            $collection->setKeyPrefix($this->getSettings()->getKeyPrefix());
+            return $collection;
+        });
+
+        // Register Purger in container
+        Craft::$container->set(CachePurgeInterface::class , function () {
+            return PurgerFactory::create($this->getSettings()->toArray());
+        });
 
         // Attach Behaviors
-        \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
-        \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
+        // TODO -> different implementation
+        // \Craft::$app->getResponse()->attachBehavior('cache-control', CacheControlBehavior::class);
+        // \Craft::$app->getResponse()->attachBehavior('tag-header', TagHeaderBehavior::class);
 
         // Register event handlers
-        EventRegistrar::registerFrontendEvents();
-        EventRegistrar::registerCpEvents();
-        EventRegistrar::registerUpdateEvents();
-
-        if ($this->getSettings()->useLocalTags) {
-            EventRegistrar::registerFallback();
-        }
+        $this->registerFrontendEventHandlers();
+        $this->registerCpEventHandlers();
+        $this->registerUpdateEventHandlers();
 
         // Register Twig extension
         \Craft::$app->getView()->registerTwigExtension(new TwigExtension);
     }
 
-    // ServiceLocators
-    // =========================================================================
 
-    /**
-     * @return \ostark\upper\drivers\CachePurgeInterface
-     */
-    public function getPurger(): CachePurgeInterface
+    private function registerFrontendEventHandlers(): void
     {
-        return $this->get('purger');
+        if ($this->isNotCacheable()) {
+            // TODO
+            // $response = \Craft::$app->getResponse();
+            // $response->addCacheControlDirective('private');
+            //$response->addCacheControlDirective('no-cache');
+            return;
+        }
+
+        Event::on(
+            ElementQuery::class,
+            ElementQuery::EVENT_AFTER_POPULATE_ELEMENT,
+            new CollectTagsFromElementQuery($this->getSettings(), tags())
+        );
+
+        Event::on(
+            ElementQuery::class,
+            ElementQuery::EVENT_DEFINE_CACHE_TAGS,
+            new CollectTagsFromTemplateCache($this->getSettings())
+        );
+
+        Event::on(
+            View::class,
+            View::EVENT_AFTER_RENDER_PAGE_TEMPLATE,
+            new AddCacheResponse($this->getSettings(), tags())
+        );
+
+        Event::on(
+            Plugin::class,
+            Plugin::EVENT_AFTER_SET_TAG_HEADER,
+            new StoreTagUrlRelation()
+        );
+
+    }
+
+    private function registerCpEventHandlers(): void
+    {
+        Event::on(
+            ClearCaches::class,
+            ClearCaches::EVENT_REGISTER_CACHE_OPTIONS,
+            new RegisterCacheCheckbox($this->getSettings(), purger())
+        );
+    }
+
+    private function registerUpdateEventHandlers(): void
+    {
+        $handler = new InvalidateCache($this->getSettings());
+
+        Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, $handler);
+        Event::on(Element::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, $handler);
+        Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, $handler);
+        Event::on(Structures::class, Structures::EVENT_AFTER_MOVE_ELEMENT, $handler);
+        Event::on(Sections::class, Sections::EVENT_AFTER_SAVE_SECTION, $handler);
     }
 
 
-    /**
-     * @return \ostark\upper\TagCollection
-     */
-    public function getTagCollection(): TagCollection
+    private function isNotCacheable(): bool
     {
-        /* @var \ostark\upper\TagCollection $collection */
-        $collection = $this->get('tagCollection');
-        $collection->setKeyPrefix($this->getSettings()->getKeyPrefix());
+        if (\Craft::$app instanceof \craft\console\Application) {
+            return true;
+        }
 
-        return $collection;
+        $request = \Craft::$app->getRequest();
+
+        if ($request->getIsCpRequest() ||
+            $request->getIsLivePreview() ||
+            $request->getIsActionRequest() ||
+            !$request->getIsGet()
+        ) {
+            return true;
+        }
+        return false;
     }
 
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * Creates and returns the model used to store the plugin’s settings.
-     *
-     * @return \craft\base\Model|null
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): PluginSettings
     {
-        return new Settings();
+        return new PluginSettings();
     }
 
 
@@ -122,7 +186,7 @@ class Plugin extends BasePlugin
      * Is called after the plugin is installed.
      * Copies example config to project's config folder
      */
-    protected function afterInstall()
+    protected function afterInstall():void
     {
         $configSourceFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.example.php';
         $configTargetFile = \Craft::$app->getConfig()->configDir . DIRECTORY_SEPARATOR . $this->handle . '.php';
@@ -131,5 +195,4 @@ class Plugin extends BasePlugin
             copy($configSourceFile, $configTargetFile);
         }
     }
-
 }

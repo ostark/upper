@@ -1,9 +1,9 @@
-<?php namespace ostark\upper;
+<?php namespace ostark\Upper;
 
 /**
  * Class TagCollection
  *
- * @package ostark\upper
+ * @package ostark\Upper
  */
 class TagCollection
 {

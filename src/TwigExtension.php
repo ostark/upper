@@ -1,4 +1,4 @@
-<?php namespace ostark\upper;
+<?php namespace ostark\Upper;
 
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
