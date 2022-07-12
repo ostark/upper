@@ -3,9 +3,8 @@
 .php_cs.cache
 .php-cs-fixer.cache
 .phpunit.result.cache
-build
+/build
 composer.lock
-coverage
 vendor
 *.log
 /tests/_craft/storage/

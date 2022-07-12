@@ -1,13 +1,13 @@
-<?php namespace ostark\upper\jobs;
+<?php namespace ostark\Upper\Jobs;
 
 use Craft;
 use craft\queue\BaseJob;
-use ostark\upper\Plugin;
+use ostark\Upper\Plugin;
 
 /**
  * Class PurgeCache
  *
- * @package ostark\upper\jobs
+ * @package ostark\Upper\jobs
  */
 class PurgeCacheJob extends BaseJob
 {

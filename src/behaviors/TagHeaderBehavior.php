@@ -1,11 +1,11 @@
-<?php namespace ostark\upper\behaviors;
+<?php namespace ostark\Upper\behaviors;
 
 use yii\base\Behavior;
 
 /**
  * Class TagHeaderBehavior
  *
- * @package ostark\upper\behaviors
+ * @package ostark\Upper\behaviors
  * @property \yii\web\Response $owner
  */
 class TagHeaderBehavior extends Behavior

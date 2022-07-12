@@ -1,4 +1,4 @@
-<?php namespace ostark\upper\models;
+<?php namespace ostark\Upper\Models;
 
 use Craft;
 use craft\base\Model;

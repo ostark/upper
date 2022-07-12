@@ -1,9 +1,9 @@
 <?php
 
-namespace ostark\upper\migrations;
+namespace ostark\Upper\migrations;
 
 use craft\db\Migration;
-use ostark\upper\Plugin;
+use ostark\Upper\Plugin;
 
 /**
  * m180618_120307_url_index migration.

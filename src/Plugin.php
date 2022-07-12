@@ -1,19 +1,19 @@
-<?php namespace ostark\upper;
+<?php namespace ostark\Upper;
 
 
 use Craft;
 use craft\base\Plugin as BasePlugin;
-use ostark\upper\behaviors\CacheControlBehavior;
-use ostark\upper\behaviors\TagHeaderBehavior;
-use ostark\upper\drivers\CachePurgeInterface;
-use ostark\upper\models\Settings;
+use ostark\Upper\behaviors\CacheControlBehavior;
+use ostark\Upper\behaviors\TagHeaderBehavior;
+use ostark\Upper\Drivers\CachePurgeInterface;
+use ostark\Upper\Models\Settings as PluginSettings;
 
 /**
  * Class Plugin
  *
- * @package ostark\upper
+ * @package ostark\Upper
  *
- * @method models\Settings getSettings()
+ * @method Models\Settings getSettings()
  */
 class Plugin extends BasePlugin
 {
@@ -83,7 +83,7 @@ class Plugin extends BasePlugin
     // =========================================================================
 
     /**
-     * @return \ostark\upper\drivers\CachePurgeInterface
+     * @return \ostark\Upper\Drivers\CachePurgeInterface
      */
     public function getPurger(): CachePurgeInterface
     {
@@ -92,11 +92,11 @@ class Plugin extends BasePlugin
 
 
     /**
-     * @return \ostark\upper\TagCollection
+     * @return \ostark\Upper\TagCollection
      */
     public function getTagCollection(): TagCollection
     {
-        /* @var \ostark\upper\TagCollection $collection */
+        /* @var \ostark\Upper\TagCollection $collection */
         $collection = $this->get('tagCollection');
         $collection->setKeyPrefix($this->getSettings()->getKeyPrefix());
 
@@ -109,12 +109,10 @@ class Plugin extends BasePlugin
 
     /**
      * Creates and returns the model used to store the plugin’s settings.
-     *
-     * @return \craft\base\Model|null
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): PluginSettings
     {
-        return new Settings();
+        return new PluginSettings();
     }
 
 
