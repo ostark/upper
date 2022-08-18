@@ -4,6 +4,7 @@ use Craft;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use ostark\upper\exceptions\CloudflareApiException;
+use ostark\upper\Plugin;
 
 /**
  * Class Cloudflare Driver
@@ -29,6 +30,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
     public $domain;
 
+    public $sites;
 
     /**
      * @param string $tag
@@ -55,20 +57,48 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeUrls(array $urls)
     {
-        if (strpos($this->domain, 'http') !== 0) {
-            throw new \InvalidArgumentException("'domain' must include the protocol, e.g. https://www.foo.com");
-        }
+        if ($this->sites) {
+            foreach ($urls as $uid => $url) {
+                $sql ="SELECT siteId FROM %s WHERE uid = '%s'";
+                $sql = sprintf(
+                    $sql,
+                    \Craft::$app->getDb()->quoteTableName(Plugin::CACHE_TABLE),
+                    $uid
+                );
+                $result = \Craft::$app->getDb()
+                    ->createCommand($sql)
+                    ->queryOne();
+                $siteId = $result['siteId'];
+                if (strpos($this->sites[$siteId]['domain'], 'http') !== 0) {
+                    throw new \InvalidArgumentException("'domain' must include the protocol, e.g. https://www.foo.com");
+                }
+                $files[$siteId][] = rtrim($this->sites[$siteId]['domain'], '/') . $url;
+            }
 
-        // prefix urls with domain
-        $files = array_map(function($url) {
-            return rtrim($this->domain, '/') . $url;
-        }, $urls);
+            // Chunk larger collections to meet the API constraints
+            foreach ($files as $siteId => $siteFiles) {
+                foreach (array_chunk($siteFiles, self::MAX_URLS_PER_PURGE) as $fileGroup) {
+                    $this->sendRequest('DELETE', 'purge_cache', [
+                        'files' => $fileGroup
+                    ], [$this->sites[$siteId]['zoneId']]);
+                }    
+            }
+        } else {
+            if (strpos($this->domain, 'http') !== 0) {
+                throw new \InvalidArgumentException("'domain' must include the protocol, e.g. https://www.foo.com");
+            }
+    
+            // prefix urls with domain
+            $files = array_map(function($url) {
+                return rtrim($this->domain, '/') . $url;
+            }, $urls);    
 
-        // Chunk larger collections to meet the API constraints
-        foreach (array_chunk($files, self::MAX_URLS_PER_PURGE) as $fileGroup) {
-            $this->sendRequest('DELETE', 'purge_cache', [
-                'files' => $fileGroup
-            ]);
+            // Chunk larger collections to meet the API constraints
+            foreach (array_chunk($files, self::MAX_URLS_PER_PURGE) as $fileGroup) {
+                $this->sendRequest('DELETE', 'purge_cache', [
+                    'files' => $fileGroup
+                ]);
+            }
         }
 
         return true;
@@ -81,9 +111,16 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeAll()
     {
+        $zoneIds = [];
+        if ($this->sites) {
+            foreach ($this->sites as $site) {
+                $zoneIds[] = $site['zoneId'];
+            }    
+        }
+
         $success = $this->sendRequest('DELETE', 'purge_cache', [
-            'purge_everything' => true
-        ]);
+            'purge_everything' => true,
+        ], $zoneIds);
 
         if ($this->useLocalTags && $success === true) {
             $this->clearLocalCache();
@@ -101,20 +138,26 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \ostark\upper\exceptions\CloudflareApiException
      */
-    protected function sendRequest($method = 'DELETE', string $type, array $params = [])
+    protected function sendRequest($method = 'DELETE', string $type, array $params = [], $zoneIds = [])
     {
         $client = $this->getClient();
 
-        try {
-            $uri = "zones/{$this->zoneId}/$type";
-            $options = (count($params)) ? ['json' => $params] : [];
-            $client->request($method, $uri, $options);
-        } catch (BadResponseException $e) {
+        if (empty($zoneIds)) {
+            $zoneIds[] = $this->zoneId;
+        }
 
-            throw CloudflareApiException::create(
-                $e->getRequest(),
-                $e->getResponse()
-            );
+        foreach ($zoneIds as $zoneId) {
+            try {
+                $uri = "zones/$zoneId/$type";
+                $options = (count($params)) ? ['json' => $params] : [];
+                $client->request($method, $uri, $options);
+            } catch (BadResponseException $e) {
+
+                throw CloudflareApiException::create(
+                    $e->getRequest(),
+                    $e->getResponse()
+                );
+            }
         }
 
         return true;
