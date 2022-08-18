@@ -65,6 +65,16 @@ return [
             'apiToken'           => getenv('CLOUDFLARE_API_TOKEN'),
             'zoneId'             => getenv('CLOUDFLARE_ZONE_ID'),
             'domain'             => getenv('CLOUDFLARE_DOMAIN'),
+            'sites'              => [
+                'defaultId' => [
+                    'zoneId' => getenv('CLOUDFLARE_ZONE_ID'),
+                    'domain' => getenv('CLOUDFLARE_DOMAIN'),    
+                ],
+                'alternateId' => [
+                    'zoneId' => getenv('ALT_CLOUDFLARE_ZONE_ID'),
+                    'domain' => getenv('ALT_CLOUDFLARE_DOMAIN'),    
+                ],
+            ],
             // deprecated, do not use for new installs
             'apiKey'             => getenv('CLOUDFLARE_API_KEY'),
             'apiEmail'           => getenv('CLOUDFLARE_API_EMAIL'),
