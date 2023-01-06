@@ -25,8 +25,6 @@ class AbstractPurger extends BaseObject
 
 
     /**
-     * @param string $tag
-     *
      * @return bool
      */
     public function purgeUrlsByTag(string $tag)
@@ -39,7 +37,7 @@ class AbstractPurger extends BaseObject
 
                 return true;
             }
-        } catch (Exception $e) {
+        } catch (Exception) {
             \Craft::warning("Failed to purge '$tag'.", "upper");
         }
 
@@ -79,7 +77,7 @@ class AbstractPurger extends BaseObject
             ->createCommand($sql)
             ->queryAll();
 
-        if (count($results) === 0) {
+        if ((is_countable($results) ? count($results) : 0) === 0) {
             return [];
         }
 
@@ -88,7 +86,6 @@ class AbstractPurger extends BaseObject
     }
 
     /**
-     * @param array $uids
      *
      * @return int
      * @throws \yii\db\Exception

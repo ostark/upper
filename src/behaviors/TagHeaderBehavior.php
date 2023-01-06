@@ -14,8 +14,6 @@ class TagHeaderBehavior extends Behavior
     /**
      * Simply tag
      *
-     * @param string      $name
-     * @param array       $tags
      * @param string|null $delimiter
      *
      * @return bool

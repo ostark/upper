@@ -27,7 +27,7 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
     /**
      * Fastly API endpoint
      */
-    const API_ENDPOINT = 'https://api.fastly.com';
+    final const API_ENDPOINT = 'https://api.fastly.com';
 
     /**
      * @var string
@@ -52,13 +52,12 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
     /**
      * Purge cache by tag
      *
-     * @param string $tag
      *
      * @return bool
      */
     public function purgeTag(string $tag)
     {
-        return $this->sendRequest('POST', 'purge', [
+        return $this->sendRequest('purge', 'POST', [
                 'Surrogate-Key' => $tag
             ]
         );
@@ -67,22 +66,21 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
     /**
      * Purge cache by urls
      *
-     * @param array $urls
      *
      * @return bool
      */
     public function purgeUrls(array $urls)
     {
-        if (strpos($this->domain, 'http') === false) {
+        if (!str_contains($this->domain, 'http')) {
             throw new \InvalidArgumentException("'domain' is not configured for fastly driver");
         }
 
-        if (strpos($this->domain, 'http') !== 0) {
+        if (!str_starts_with($this->domain, 'http')) {
             throw new \InvalidArgumentException("'domain' must include the protocol, e.g. http://www.foo.com");
         }
 
         foreach ($urls as $url) {
-            if (!$this->sendRequest('PURGE', $this->domain . $url)) {
+            if (!$this->sendRequest($this->domain . $url, 'PURGE')) {
                 return false;
             }
         }
@@ -98,20 +96,18 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeAll()
     {
-        return $this->sendRequest('POST', 'purge_all');
+        return $this->sendRequest('purge_all', 'POST');
     }
 
     /**
      * Send API call
      *
      * @param string $method HTTP verb
-     * @param string $uri
-     * @param array  $headers
      *
      * @return bool
      * @throws \ostark\upper\exceptions\FastlyApiException
      */
-    protected function sendRequest(string $method = 'PURGE', string $uri, array $headers = [])
+    protected function sendRequest(string $uri, string $method = 'PURGE', array $headers = [])
     {
         $client = new Client([
             'base_uri' => self::API_ENDPOINT,

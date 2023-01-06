@@ -14,7 +14,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
     /**
      * KeyCDN API endpoint
      */
-    const API_ENDPOINT = 'https://api.keycdn.com/';
+    final const API_ENDPOINT = 'https://api.keycdn.com/';
 
     public $apiKey;
 
@@ -24,31 +24,25 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
 
 
     /**
-     * @param string $tag
-     *
      * @return bool
      */
     public function purgeTag(string $tag)
     {
-        return $this->sendRequest('DELETE', 'purgetag', [
+        return $this->sendRequest('purgetag', 'DELETE', [
                 'tags' => [$tag]
             ]
         );
     }
 
     /**
-     * @param array $urls
-     *
      * @return bool
      */
     public function purgeUrls(array $urls)
     {
         // prefix urls
-        $zoneUrls = array_map(function ($url) {
-            return $this->zoneUrl . $url;
-        }, $urls);
+        $zoneUrls = array_map(fn($url) => $this->zoneUrl . $url, $urls);
 
-        return $this->sendRequest('DELETE', 'purgeurl', [
+        return $this->sendRequest('purgeurl', 'DELETE', [
                 'urls' => $zoneUrls
             ]
         );
@@ -60,19 +54,17 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
      */
     public function purgeAll()
     {
-        return $this->sendRequest('GET', 'purge', []);
+        return $this->sendRequest('purge', 'GET', []);
     }
 
 
     /**
      * @param string $method HTTP verb
-     * @param string $type
-     * @param array  $params
      *
      * @return bool
      * @throws \ostark\upper\exceptions\KeycdnApiException
      */
-    protected function sendRequest($method = 'DELETE', string $type, array $params = [])
+    protected function sendRequest(string $type, $method = 'DELETE', array $params = [])
     {
         $token  = base64_encode("{$this->apiKey}:");
         $client = new Client([

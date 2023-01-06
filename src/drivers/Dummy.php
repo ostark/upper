@@ -14,8 +14,6 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
     public $logPurgeActions = true;
 
     /**
-     * @param string $tag
-     *
      * @return bool
      */
     public function purgeTag(string $tag)
@@ -31,8 +29,6 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
 
 
     /**
-     * @param array $urls
-     *
      * @return bool
      */
     public function purgeUrls(array $urls)

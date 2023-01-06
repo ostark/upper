@@ -15,9 +15,9 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
     /**
      * Cloudflare API endpoint
      */
-    const API_ENDPOINT = 'https://api.cloudflare.com/client/v4/';
+    final const API_ENDPOINT = 'https://api.cloudflare.com/client/v4/';
 
-    const MAX_URLS_PER_PURGE = 30;
+    final const MAX_URLS_PER_PURGE = 30;
 
     public $apiKey;
 
@@ -31,8 +31,6 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
 
     /**
-     * @param string $tag
-     *
      * @return bool
      */
     public function purgeTag(string $tag)
@@ -48,21 +46,18 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
     }
 
     /**
-     * @param array $urls
      *
      * @return bool
      * @throws \ostark\upper\exceptions\CloudflareApiException
      */
     public function purgeUrls(array $urls)
     {
-        if (strpos($this->domain, 'http') !== 0) {
+        if (!str_starts_with((string) $this->domain, 'http')) {
             throw new \InvalidArgumentException("'domain' must include the protocol, e.g. https://www.foo.com");
         }
 
         // prefix urls with domain
-        $files = array_map(function($url) {
-            return rtrim($this->domain, '/') . $url;
-        }, $urls);
+        $files = array_map(fn($url) => rtrim((string) $this->domain, '/') . $url, $urls);
 
         // Chunk larger collections to meet the API constraints
         foreach (array_chunk($files, self::MAX_URLS_PER_PURGE) as $fileGroup) {
@@ -95,13 +90,11 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
     /**
      * @param string $method HTTP verb
-     * @param string $type
-     * @param array  $params
      *
      * @return bool
      * @throws \ostark\upper\exceptions\CloudflareApiException
      */
-    protected function sendRequest($method = 'DELETE', string $type, array $params = [])
+    protected function sendRequest(string $type, $method = 'DELETE', array $params = [])
     {
         $client = $this->getClient();
 

@@ -26,9 +26,6 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
      */
     public $headers = [];
 
-    /**
-     * @param string $tag
-     */
     public function purgeTag(string $tag)
     {
         if ($this->useLocalTags) {
@@ -42,8 +39,6 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
     }
 
     /**
-     * @param array $urls
-     *
      * @return bool
      */
     public function purgeUrls(array $urls)

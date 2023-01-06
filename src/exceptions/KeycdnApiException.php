@@ -11,9 +11,7 @@ class KeycdnApiException extends \Exception
     }
 
     /**
-     * @param \Psr\Http\Message\RequestInterface       $request
      * @param \Psr\Http\Message\ResponseInterface|null $response
-     *
      * @return static
      */
     public static function create(RequestInterface $request, ResponseInterface $response = null)
