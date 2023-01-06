@@ -18,30 +18,30 @@ use ostark\upper\models\Settings;
 class Plugin extends BasePlugin
 {
     // Event names
-    final const EVENT_AFTER_SET_TAG_HEADER = 'upper_after_set_tag_header';
-    final const EVENT_BEFORE_PURGE = 'upper_before_purge';
-    final const EVENT_AFTER_PURGE = 'upper_after_purge';
+    const EVENT_AFTER_SET_TAG_HEADER = 'upper_after_set_tag_header';
+    const EVENT_BEFORE_PURGE = 'upper_before_purge';
+    const EVENT_AFTER_PURGE = 'upper_after_purge';
 
     // Tag prefixes
-    final const TAG_PREFIX_ELEMENT = 'el';
-    final const TAG_PREFIX_SECTION = 'se';
-    final const TAG_PREFIX_STRUCTURE = 'st';
+    const TAG_PREFIX_ELEMENT = 'el';
+    const TAG_PREFIX_SECTION = 'se';
+    const TAG_PREFIX_STRUCTURE = 'st';
 
     // Mapping element properties <> tag prefixes
-    final const ELEMENT_PROPERTY_MAP = [
+    const ELEMENT_PROPERTY_MAP = [
         'id'          => self::TAG_PREFIX_ELEMENT,
         'sectionId'   => self::TAG_PREFIX_SECTION,
         'structureId' => self::TAG_PREFIX_STRUCTURE
     ];
 
     // DB
-    final const CACHE_TABLE = '{{%upper_cache}}';
+    const CACHE_TABLE = '{{%upper_cache}}';
 
     // Header
-    final const INFO_HEADER_NAME = 'X-UPPER-CACHE';
-    final const TRUNCATED_HEADER_NAME = 'X-UPPER-CACHE-TRUNCATED';
+    const INFO_HEADER_NAME = 'X-UPPER-CACHE';
+    const TRUNCATED_HEADER_NAME = 'X-UPPER-CACHE-TRUNCATED';
 
-    public $schemaVersion = '1.0.1';
+    public string $schemaVersion = '1.0.1';
 
 
     /**
