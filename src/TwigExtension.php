@@ -11,7 +11,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return array An array of global variables
      */
-    public function getGlobals()
+    public function getGlobals(): array
     {
         return [
             'upper' => [
