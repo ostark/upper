@@ -19,7 +19,7 @@ class PurgeCacheJob extends BaseJob
     /**
      * @inheritdoc
      */
-    public function execute($queue)
+    public function execute($queue): bool
     {
         if (!$this->tag) {
             return false;
