@@ -14,12 +14,12 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
     /**
      * @var string
      */
-    public $purgeHeaderName;
+    public string $purgeHeaderName;
 
     /**
      * @var string
      */
-    public $purgeUrl;
+    public string $purgeUrl;
 
     /**
      * @var array
@@ -29,7 +29,7 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
     /**
      * @param string $tag
      */
-    public function purgeTag(string $tag)
+    public function purgeTag(string $tag): int
     {
         if ($this->useLocalTags) {
             return $this->purgeUrlsByTag($tag);
@@ -46,7 +46,7 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeUrls(array $urls)
+    public function purgeUrls(array $urls): int
     {
         foreach ($urls as $url) {
             $success = $this->sendPurgeRequest([
@@ -74,7 +74,7 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeAll()
+    public function purgeAll(): int
     {
         return $this->sendPurgeRequest([
             'headers'  => $this->headers
@@ -82,7 +82,7 @@ class Varnish extends AbstractPurger implements CachePurgeInterface
     }
 
 
-    protected function sendPurgeRequest(array $options = [], $method = 'PURGE')
+    protected function sendPurgeRequest(array $options = [], $method = 'PURGE'): int
     {
         $success = true;
         $purgeUrls = explode(',', $this->purgeUrl);

@@ -14,7 +14,7 @@ class CacheControlBehavior extends Behavior
     /**
      * @var array
      */
-    protected $cacheControl = [];
+    protected array $cacheControl = [];
 
 
     /**
@@ -23,7 +23,7 @@ class CacheControlBehavior extends Behavior
      * @param string $key   The Cache-Control directive name
      * @param mixed  $value The Cache-Control directive value
      */
-    public function addCacheControlDirective(string $key, $value = true)
+    public function addCacheControlDirective(string $key, $value = true): void
     {
         $this->cacheControl[$key] = $value;
         $this->owner->getHeaders()->set('Cache-Control', $this->getCacheControlHeader());
@@ -34,7 +34,7 @@ class CacheControlBehavior extends Behavior
      *
      * @param string $key The Cache-Control directive
      */
-    public function removeCacheControlDirective(string $key)
+    public function removeCacheControlDirective(string $key): void
     {
         unset($this->cacheControl[$key]);
         $this->owner->getHeaders()->set('Cache-Control', $this->getCacheControlHeader());
@@ -48,7 +48,7 @@ class CacheControlBehavior extends Behavior
      *
      * @return bool true if the directive exists, false otherwise
      */
-    public function hasCacheControlDirective(string $key)
+    public function hasCacheControlDirective(string $key): bool
     {
         return array_key_exists($key, $this->cacheControl);
     }
@@ -60,7 +60,7 @@ class CacheControlBehavior extends Behavior
      *
      * @return mixed|null The directive value if defined, null otherwise
      */
-    public function getCacheControlDirective($key)
+    public function getCacheControlDirective($key): string|null
     {
         return array_key_exists($key, $this->cacheControl) ? $this->cacheControl[$key] : null;
     }
@@ -76,7 +76,7 @@ class CacheControlBehavior extends Behavior
      * @return int|null Number of seconds
      *
      */
-    public function getMaxAge()
+    public function getMaxAge(): int|null
     {
         if ($this->hasCacheControlDirective('s-maxage')) {
             return (int)$this->getCacheControlDirective('s-maxage');
@@ -100,7 +100,7 @@ class CacheControlBehavior extends Behavior
      *
      * @final since version 3.2
      */
-    public function setMaxAge($value)
+    public function setMaxAge($value): static
     {
         $this->addCacheControlDirective('max-age', $value);
 
@@ -119,7 +119,7 @@ class CacheControlBehavior extends Behavior
      *
      * @final since version 3.2
      */
-    public function setSharedMaxAge($value)
+    public function setSharedMaxAge($value): static
     {
         $this->addCacheControlDirective('public');
         $this->removeCacheControlDirective('private');
@@ -129,7 +129,7 @@ class CacheControlBehavior extends Behavior
         return $this;
     }
 
-    public function getCacheControl()
+    public function getCacheControl(): array
     {
         return $this->cacheControl;
     }
@@ -145,7 +145,7 @@ class CacheControlBehavior extends Behavior
         }
     }
 
-    protected function getCacheControlHeader()
+    protected function getCacheControlHeader(): string
     {
         $parts = array();
         ksort($this->cacheControl);

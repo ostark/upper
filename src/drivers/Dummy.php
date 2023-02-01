@@ -18,7 +18,7 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeTag(string $tag)
+    public function purgeTag(string $tag): bool
     {
         $this->log("Dummy::purgeTag($tag) was called.");
 
@@ -35,7 +35,7 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeUrls(array $urls)
+    public function purgeUrls(array $urls): bool
     {
         $joinedUrls = implode(',', $urls);
         $this->log("Dummy::purgeUrls([$joinedUrls]') was called.");
@@ -47,7 +47,7 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
     /**
      * @return bool
      */
-    public function purgeAll()
+    public function purgeAll(): bool
     {
         if ($this->useLocalTags) {
             $this->clearLocalCache();
@@ -62,7 +62,7 @@ class Dummy extends AbstractPurger implements CachePurgeInterface
     /**
      * @param string|null $message
      */
-    protected function log(string $message = null)
+    protected function log(string $message = null): void
     {
         if (!$this->logPurgeActions) {
             return;

@@ -16,11 +16,11 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
      */
     const API_ENDPOINT = 'https://api.keycdn.com/';
 
-    public $apiKey;
+    public string $apiKey;
 
-    public $zoneId;
+    public string $zoneId;
 
-    public $zoneUrl;
+    public string $zoneUrl;
 
 
     /**
@@ -28,7 +28,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeTag(string $tag)
+    public function purgeTag(string $tag): int
     {
         return $this->sendRequest('DELETE', 'purgetag', [
                 'tags' => [$tag]
@@ -41,7 +41,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeUrls(array $urls)
+    public function purgeUrls(array $urls): int
     {
         // prefix urls
         $zoneUrls = array_map(function ($url) {
@@ -58,7 +58,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
     /**
      * @return bool
      */
-    public function purgeAll()
+    public function purgeAll(): int
     {
         return $this->sendRequest('GET', 'purge', []);
     }
@@ -72,7 +72,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \ostark\upper\exceptions\KeycdnApiException
      */
-    protected function sendRequest($method = 'DELETE', string $type, array $params = [])
+    protected function sendRequest($method = 'DELETE', string $type, array $params = []): int
     {
         $token  = base64_encode("{$this->apiKey}:");
         $client = new Client([

@@ -15,9 +15,9 @@ class AbstractPurger extends BaseObject
     /**
      * @var bool
      */
-    public $useLocalTags;
+    public bool $useLocalTags;
 
-    public function __construct($config)
+    public function __construct(array $config = [])
     {
         // assign config to object properties
         parent::__construct($config);
@@ -29,7 +29,7 @@ class AbstractPurger extends BaseObject
      *
      * @return bool
      */
-    public function purgeUrlsByTag(string $tag)
+    public function purgeUrlsByTag(string $tag): bool
     {
         try {
             if ($urls = $this->getTaggedUrls($tag)) {
@@ -60,7 +60,7 @@ class AbstractPurger extends BaseObject
      * @return array
      * @throws \yii\db\Exception
      */
-    public function getTaggedUrls($tag)
+    public function getTaggedUrls($tag): array
     {
         // Use fulltext for mysql or array field for pgsql
         $sql = \Craft::$app->getDb()->getIsMysql()
@@ -93,7 +93,7 @@ class AbstractPurger extends BaseObject
      * @return int
      * @throws \yii\db\Exception
      */
-    public function invalidateLocalCache(array $uids)
+    public function invalidateLocalCache(array $uids): int
     {
         return \Craft::$app->getDb()->createCommand()
             ->delete(Plugin::CACHE_TABLE, ['uid' => $uids])
@@ -105,7 +105,7 @@ class AbstractPurger extends BaseObject
      * @return int
      * @throws \yii\db\Exception
      */
-    public function clearLocalCache()
+    public function clearLocalCache(): int
     {
         return \Craft::$app->getDb()->createCommand()
             ->delete(Plugin::CACHE_TABLE)

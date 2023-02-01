@@ -14,15 +14,15 @@ class PurgeCacheJob extends BaseJob
     /**
      * @var string tag
      */
-    public $tag;
+    public string $tag;
 
     /**
      * @inheritdoc
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
-        if (!$this->tag) {
-            return false;
+        if (!$this->tag ?? true) {
+            return;
         }
 
         // Get registered purger

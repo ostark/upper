@@ -20,7 +20,7 @@ class TagHeaderBehavior extends Behavior
      *
      * @return bool
      */
-    public function setTagHeader(string $name, array $tags, string $delimiter = null)
+    public function setTagHeader(string $name, array $tags, string $delimiter = null): bool
     {
         $headers = $this->owner->getHeaders();
 

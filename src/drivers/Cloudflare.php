@@ -19,15 +19,15 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
 
     const MAX_URLS_PER_PURGE = 30;
 
-    public $apiKey;
+    public string $apiKey;
 
-    public $apiEmail;
+    public string $apiEmail;
 
-    public $apiToken;
+    public string $apiToken;
 
-    public $zoneId;
+    public string $zoneId;
 
-    public $domain;
+    public string $domain;
 
 
     /**
@@ -35,7 +35,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeTag(string $tag)
+    public function purgeTag(string $tag): bool
     {
         if ($this->useLocalTags) {
             return $this->purgeUrlsByTag($tag);
@@ -53,7 +53,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \ostark\upper\exceptions\CloudflareApiException
      */
-    public function purgeUrls(array $urls)
+    public function purgeUrls(array $urls): bool
     {
         if (strpos($this->domain, 'http') !== 0) {
             throw new \InvalidArgumentException("'domain' must include the protocol, e.g. https://www.foo.com");
@@ -79,7 +79,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \yii\db\Exception
      */
-    public function purgeAll()
+    public function purgeAll(): bool
     {
         $success = $this->sendRequest('DELETE', 'purge_cache', [
             'purge_everything' => true
@@ -101,7 +101,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \ostark\upper\exceptions\CloudflareApiException
      */
-    protected function sendRequest($method = 'DELETE', string $type, array $params = [])
+    protected function sendRequest($method = 'DELETE', string $type, array $params = []): bool
     {
         $client = $this->getClient();
 
@@ -120,7 +120,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
         return true;
     }
 
-    private function getClient()
+    private function getClient(): Client
     {
         $headers = [
             'Content-Type' => 'application/json',
@@ -141,7 +141,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
         ]);
     }
 
-    private function usesLegacyApiKey()
+    private function usesLegacyApiKey(): bool
     {
         return !isset($this->apiToken) && isset($this->apiKey);
     }
