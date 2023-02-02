@@ -12,26 +12,26 @@ class CacheResponseEvent extends Event
     /**
      * @var array Array of tags
      */
-    public $tags = [];
+    public array $tags = [];
 
     /**
      * @var string
      */
-    public $requestUrl;
+    public string $requestUrl;
 
     /**
      * @var int Cache TTL in seconds
      */
-    public $maxAge = 0;
+    public int $maxAge = 0;
 
     /**
      * @var string
      */
-    public $output;
+    public string $output;
 
     /**
      * @var array Array of headers
      */
-    public $headers = [];
+    public array $headers = [];
 
 }

@@ -16,7 +16,7 @@ class CloudflareApiException extends \Exception
      *
      * @return static
      */
-    public static function create(RequestInterface $request, ResponseInterface $response = null)
+    public static function create(RequestInterface $request, ResponseInterface $response = null): static
     {
         $uri = $request->getUri();
 

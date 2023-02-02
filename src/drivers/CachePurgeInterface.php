@@ -13,19 +13,19 @@ interface CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeTag(string $tag);
+    public function purgeTag(string $tag): bool;
 
     /**
      * @param array $urls
      *
      * @return bool
      */
-    public function purgeUrls(array $urls);
+    public function purgeUrls(array $urls): bool;
 
 
     /**
      * @return bool
      */
-    public function purgeAll();
+    public function purgeAll(): bool;
 
 }

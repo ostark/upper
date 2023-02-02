@@ -1,4 +1,6 @@
-<?php namespace ostark\upper;
+<?php declare(strict_types=1);
+
+namespace ostark\upper;
 
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
@@ -11,7 +13,7 @@ class TwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return array An array of global variables
      */
-    public function getGlobals()
+    public function getGlobals(): array
     {
         return [
             'upper' => [

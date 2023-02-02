@@ -1,4 +1,7 @@
-<?php namespace ostark\upper;
+<?php declare(strict_types=1);
+
+namespace ostark\upper;
+
 
 use Psr\Log\InvalidArgumentException;
 use yii\base\Component;

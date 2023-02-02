@@ -15,6 +15,6 @@ class PurgeEvent extends Event
     /**
     * @var string tag
     */
-    public $tag;
+    public string $tag;
 
 }

@@ -32,22 +32,22 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
     /**
      * @var string
      */
-    public $apiToken;
+    public string $apiToken;
 
     /**
      * @var string
      */
-    public $serviceId;
+    public string $serviceId;
 
     /**
      * @var string
      */
-    public $domain;
+    public string $domain;
 
     /**
      * @var bool
      */
-    public $softPurge = false;
+    public bool $softPurge = false;
 
     /**
      * Purge cache by tag
@@ -56,7 +56,7 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeTag(string $tag)
+    public function purgeTag(string $tag): bool
     {
         return $this->sendRequest('POST', 'purge', [
                 'Surrogate-Key' => $tag
@@ -71,13 +71,13 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeUrls(array $urls)
+    public function purgeUrls(array $urls): bool
     {
-        if (strpos($this->domain, 'http') === false) {
+        if (!str_contains($this->domain, 'http')) {
             throw new \InvalidArgumentException("'domain' is not configured for fastly driver");
         }
 
-        if (strpos($this->domain, 'http') !== 0) {
+        if (!str_starts_with($this->domain, 'http')) {
             throw new \InvalidArgumentException("'domain' must include the protocol, e.g. http://www.foo.com");
         }
 
@@ -96,7 +96,7 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
      *
      * @return bool
      */
-    public function purgeAll()
+    public function purgeAll(): bool
     {
         return $this->sendRequest('POST', 'purge_all');
     }
@@ -111,7 +111,7 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \ostark\upper\exceptions\FastlyApiException
      */
-    protected function sendRequest(string $method = 'PURGE', string $uri, array $headers = [])
+    protected function sendRequest(string $method = 'PURGE', string $uri, array $headers = []): bool
     {
         $client = new Client([
             'base_uri' => self::API_ENDPOINT,
@@ -130,7 +130,9 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
 
         try {
 
-            $client->request($method, $uri);
+            $response = $client->request($method, $uri);
+            $body = $response->getBody();
+            $contents = $body->getContents();
 
         } catch (BadResponseException $e) {
 

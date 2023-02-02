@@ -1,4 +1,6 @@
-<?php namespace ostark\upper\models;
+<?php declare(strict_types=1);
+
+namespace ostark\upper\models;
 
 use Craft;
 use craft\base\Model;
@@ -28,7 +30,7 @@ class Settings extends Model
      *
      * @var string
      */
-    public $driver;
+    public string $driver;
 
 
     /**
@@ -36,33 +38,33 @@ class Settings extends Model
      *
      * @var array
      */
-    public $drivers;
+    public array $drivers = [];
 
     /**
      * Some field model attribute
      *
      * @var int
      */
-    public $defaultMaxAge = null;
+    public int|null $defaultMaxAge = null;
 
     /**
      * @var bool
      */
-    public $useLocalTags = true;
+    public bool $useLocalTags = true;
 
     /**
      * Key prefix
      *
      * @var string
      */
-    public $keyPrefix = '';
+    public string $keyPrefix = '';
 
     /**
      * Max kilobytes of the X-Cachetag header
      *
      * @var int
      */
-    public $maxBytesForCacheTagHeader = null;
+    public int|null $maxBytesForCacheTagHeader = null;
 
     // Public Methods
     // =========================================================================
@@ -77,7 +79,7 @@ class Settings extends Model
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['driver', 'drivers','keyPrefix'], 'required'],
@@ -87,7 +89,7 @@ class Settings extends Model
     /**
      * @return string
      */
-    public function getTagHeaderName()
+    public function getTagHeaderName(): string
     {
         return $this->drivers[$this->driver]['tagHeaderName'];
     }
@@ -95,7 +97,7 @@ class Settings extends Model
     /**
      * @return string
      */
-    public function getHeaderTagDelimiter()
+    public function getHeaderTagDelimiter(): string
     {
         return $this->drivers[$this->driver]['tagHeaderDelimiter'] ?? ' ';
     }
@@ -107,7 +109,7 @@ class Settings extends Model
      *
      * @return string
      */
-    public function getKeyPrefix()
+    public function getKeyPrefix(): string
     {
         if (!$this->keyPrefix) {
             return '';
@@ -120,7 +122,7 @@ class Settings extends Model
     /**
      * @return array
      */
-    public function getNoCacheElements()
+    public function getNoCacheElements(): array
     {
         return ['craft\elements\User', 'craft\elements\MatrixBlock', 'verbb\supertable\elements\SuperTableBlockElement'];
     }
@@ -130,7 +132,7 @@ class Settings extends Model
      *
      * @return bool
      */
-    public function isCachableElement(string $class)
+    public function isCachableElement(string $class): bool
     {
         return in_array($class, $this->getNoCacheElements()) ? false : true;
     }

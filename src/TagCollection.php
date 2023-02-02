@@ -1,4 +1,7 @@
-<?php namespace ostark\upper;
+<?php declare(strict_types=1);
+
+namespace ostark\upper;
+
 
 /**
  * Class TagCollection

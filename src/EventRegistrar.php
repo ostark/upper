@@ -1,4 +1,7 @@
-<?php namespace ostark\upper;
+<?php declare(strict_types=1);
+
+namespace ostark\upper;
+
 
 use craft\base\Element;
 use craft\elements\db\ElementQuery;
@@ -29,7 +32,7 @@ use yii\base\Event;
 class EventRegistrar
 {
 
-    public static function registerUpdateEvents()
+    public static function registerUpdateEvents(): void
     {
         Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, function ($event) {
             static::handleUpdateEvent($event);
@@ -49,7 +52,7 @@ class EventRegistrar
 
     }
 
-    public static function registerFrontendEvents()
+    public static function registerFrontendEvents(): bool
     {
         // No need to continue when in cli mode
         if (\Craft::$app instanceof \craft\console\Application) {
@@ -136,10 +139,11 @@ class EventRegistrar
             ));
         });
 
+        return true;
     }
 
 
-    public static function registerCpEvents()
+    public static function registerCpEvents(): void
     {
         // Register cache purge checkbox
         Event::on(
@@ -159,7 +163,7 @@ class EventRegistrar
     }
 
 
-    public static function registerFallback()
+    public static function registerFallback(): void
     {
 
         Event::on(Plugin::class, Plugin::EVENT_AFTER_SET_TAG_HEADER, function (CacheResponseEvent $event) {
@@ -209,7 +213,7 @@ class EventRegistrar
     /**
      * @param \yii\base\Event $event
      */
-    protected static function handleUpdateEvent(Event $event)
+    protected static function handleUpdateEvent(Event $event): void
     {
         $tags = [];
 
