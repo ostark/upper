@@ -19,10 +19,10 @@ class PurgeCacheJob extends BaseJob
     /**
      * @inheritdoc
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
         if (!$this->tag) {
-            return false;
+            return;
         }
 
         // Get registered purger

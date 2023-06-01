@@ -76,7 +76,7 @@ class EventRegistrar
         Event::on(ElementQuery::class, ElementQuery::EVENT_AFTER_POPULATE_ELEMENT, function (PopulateElementEvent $event) {
 
             // Don't collect MatrixBlock and User elements for now
-            if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
+            if (!Plugin::getInstance()->getSettings()->isCachableElement($event->element::class)) {
                 return;
             }
 
@@ -120,8 +120,8 @@ class EventRegistrar
             $response->setTagHeader($settings->getTagHeaderName(), $maxedTags, $settings->getHeaderTagDelimiter());
 
             // Flag truncation
-            if (count($tags) > count($maxedTags)) {
-                $headers->set(Plugin::TRUNCATED_HEADER_NAME, count($tags) - count($maxedTags));
+            if ((is_countable($tags) ? count($tags) : 0) > (is_countable($maxedTags) ? count($maxedTags) : 0)) {
+                $headers->set(Plugin::TRUNCATED_HEADER_NAME, (is_countable($tags) ? count($tags) : 0) - (is_countable($maxedTags) ? count($maxedTags) : 0));
             }
 
             $response->setSharedMaxAge($maxAge);
@@ -172,7 +172,7 @@ class EventRegistrar
             // fulltext or array
             $tags = \Craft::$app->getDb()->getIsMysql()
                 ? implode(" ", $event->tags)
-                : str_replace(['[', ']'], ['{', '}'], json_encode($event->tags) ?: '[]');
+                : str_replace(['[', ']'], ['{', '}'], json_encode($event->tags, JSON_THROW_ON_ERROR) ?: '[]');
 
             // in order to have a unique (collitions are possible) identifier by url with a fixed length
             $urlHash = md5($event->requestUrl);
@@ -192,12 +192,12 @@ class EventRegistrar
                             'urlHash' => $urlHash,
                             'url'     => $event->requestUrl,
                             'tags'    => $tags,
-                            'headers' => json_encode($event->headers),
+                            'headers' => json_encode($event->headers, JSON_THROW_ON_ERROR),
                             'siteId'  => \Craft::$app->getSites()->currentSite->id
                         ]
                     )
                     ->execute();
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 \Craft::warning("Failed to register fallback.", "upper");
             }
 
@@ -206,9 +206,6 @@ class EventRegistrar
     }
 
 
-    /**
-     * @param \yii\base\Event $event
-     */
     protected static function handleUpdateEvent(Event $event)
     {
         $tags = [];
@@ -216,7 +213,7 @@ class EventRegistrar
 
         if ($event instanceof ElementEvent) {
 
-            if (!Plugin::getInstance()->getSettings()->isCachableElement(get_class($event->element))) {
+            if (!Plugin::getInstance()->getSettings()->isCachableElement($event->element::class)) {
                 return;
             }
 

@@ -23,7 +23,7 @@ class CacheControlBehavior extends Behavior
      * @param string $key   The Cache-Control directive name
      * @param mixed  $value The Cache-Control directive value
      */
-    public function addCacheControlDirective(string $key, $value = true)
+    public function addCacheControlDirective(string $key, mixed $value = true)
     {
         $this->cacheControl[$key] = $value;
         $this->owner->getHeaders()->set('Cache-Control', $this->getCacheControlHeader());
@@ -147,13 +147,13 @@ class CacheControlBehavior extends Behavior
 
     protected function getCacheControlHeader()
     {
-        $parts = array();
+        $parts = [];
         ksort($this->cacheControl);
         foreach ($this->cacheControl as $key => $value) {
             if (true === $value) {
                 $parts[] = $key;
             } else {
-                if (preg_match('#[^a-zA-Z0-9._-]#', $value)) {
+                if (preg_match('#[^a-zA-Z0-9._-]#', (string) $value)) {
                     $value = '"' . $value . '"';
                 }
                 $parts[] = "$key=$value";

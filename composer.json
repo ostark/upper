@@ -24,7 +24,7 @@
     }
   ],
   "require": {
-    "craftcms/cms": "^3.2.0",
+    "craftcms/cms": "^4.0.0",
     "guzzlehttp/guzzle": "^6.5.5|^7.2.0"
   },
   "require-dev": {
@@ -45,5 +45,11 @@
     "hasCpSettings": false,
     "hasCpSection": false,
     "changelogUrl": "https://raw.githubusercontent.com/ostark/upper/master/CHANGELOG.md"
+  },
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
   }
 }

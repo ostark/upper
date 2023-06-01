@@ -11,9 +11,7 @@ class CloudflareApiException extends \Exception
     }
 
     /**
-     * @param \Psr\Http\Message\RequestInterface       $request
      * @param \Psr\Http\Message\ResponseInterface|null $response
-     *
      * @return static
      */
     public static function create(RequestInterface $request, ResponseInterface $response = null)
@@ -33,7 +31,7 @@ class CloudflareApiException extends \Exception
 
 
         // Error message
-        if (isset($json->errors) && count($json->errors) >= 1) {
+        if (isset($json->errors) && (is_countable($json->errors) ? count($json->errors) : 0) >= 1) {
             return new static($json->errors[0]->message . ", uri: '$uri'", $json->errors[0]->code);
         }
 
