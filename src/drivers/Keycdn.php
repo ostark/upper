@@ -72,7 +72,7 @@ class Keycdn extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \ostark\upper\exceptions\KeycdnApiException
      */
-    protected function sendRequest($method = 'DELETE', string $type, array $params = [])
+    protected function sendRequest($method = 'DELETE', string $type = 'purgetag', array $params = [])
     {
         $token  = base64_encode("{$this->apiKey}:");
         $client = new Client([

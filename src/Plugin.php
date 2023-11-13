@@ -41,7 +41,7 @@ class Plugin extends BasePlugin
     const INFO_HEADER_NAME = 'X-UPPER-CACHE';
     const TRUNCATED_HEADER_NAME = 'X-UPPER-CACHE-TRUNCATED';
 
-    public $schemaVersion = '1.0.1';
+    public string $schemaVersion = '1.0.1';
 
 
     /**
@@ -108,11 +108,9 @@ class Plugin extends BasePlugin
     // =========================================================================
 
     /**
-     * Creates and returns the model used to store the plugin’s settings.
-     *
-     * @return \craft\base\Model|null
+     * Creates and returns the model used to store the plugin’s settings
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): Settings
     {
         return new Settings();
     }
@@ -122,7 +120,7 @@ class Plugin extends BasePlugin
      * Is called after the plugin is installed.
      * Copies example config to project's config folder
      */
-    protected function afterInstall()
+    protected function afterInstall(): void
     {
         $configSourceFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.example.php';
         $configTargetFile = \Craft::$app->getConfig()->configDir . DIRECTORY_SEPARATOR . $this->handle . '.php';
