@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.0] - 2023-XX-XX
+- Prepare for Craft 4 compatibility
+- ...
+
 ## [1.9.2] - 2022-03-26
 - Fix issues with Supertable / exclude SuperTableBlockElement
 

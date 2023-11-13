@@ -24,11 +24,13 @@
     }
   ],
   "require": {
-    "craftcms/cms": "^3.2.0",
+    "craftcms/cms": "^4.1.0",
     "guzzlehttp/guzzle": "^6.5.5|^7.2.0"
   },
   "require-dev": {
-    "vimeo/psalm": "^4.4"
+    "vimeo/psalm": "^4.4",
+    "craftcms/rector": "dev-main",
+    "craftcms/phpstan": "dev-main"
   },
   "autoload": {
     "psr-4": {
@@ -45,5 +47,14 @@
     "hasCpSettings": false,
     "hasCpSection": false,
     "changelogUrl": "https://raw.githubusercontent.com/ostark/upper/master/CHANGELOG.md"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true,
+      "composer/package-versions-deprecated": true
+    }
   }
 }

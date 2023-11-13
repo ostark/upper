@@ -101,7 +101,7 @@ class Cloudflare extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \ostark\upper\exceptions\CloudflareApiException
      */
-    protected function sendRequest($method = 'DELETE', string $type, array $params = [])
+    protected function sendRequest($method = 'DELETE', string $type = 'purge_cache', array $params = [])
     {
         $client = $this->getClient();
 

@@ -111,7 +111,7 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
      * @return bool
      * @throws \ostark\upper\exceptions\FastlyApiException
      */
-    protected function sendRequest(string $method = 'PURGE', string $uri, array $headers = [])
+    protected function sendRequest(string $method = 'PURGE', string $uri = '', array $headers = [])
     {
         $client = new Client([
             'base_uri' => self::API_ENDPOINT,
