@@ -2,6 +2,8 @@
 
 
 use Craft;
+use craft\web\Application as WebApplication;
+use craft\base\Model;
 use craft\base\Plugin as BasePlugin;
 use ostark\upper\behaviors\CacheControlBehavior;
 use ostark\upper\behaviors\TagHeaderBehavior;
@@ -41,7 +43,7 @@ class Plugin extends BasePlugin
     const INFO_HEADER_NAME = 'X-UPPER-CACHE';
     const TRUNCATED_HEADER_NAME = 'X-UPPER-CACHE-TRUNCATED';
 
-    public $schemaVersion = '1.0.1';
+    public string $schemaVersion = '1.0.1';
 
 
     /**
@@ -76,7 +78,9 @@ class Plugin extends BasePlugin
         }
 
         // Register Twig extension
-        \Craft::$app->getView()->registerTwigExtension(new TwigExtension);
+        Craft::$app->on(WebApplication::EVENT_INIT, function() {
+            Craft::$app->view->registerTwigExtension(new TwigExtension);
+        });
     }
 
     // ServiceLocators
@@ -112,7 +116,7 @@ class Plugin extends BasePlugin
      *
      * @return \craft\base\Model|null
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?Model
     {
         return new Settings();
     }
@@ -122,7 +126,7 @@ class Plugin extends BasePlugin
      * Is called after the plugin is installed.
      * Copies example config to project's config folder
      */
-    protected function afterInstall()
+    protected function afterInstall(): void
     {
         $configSourceFile = __DIR__ . DIRECTORY_SEPARATOR . 'config.example.php';
         $configTargetFile = \Craft::$app->getConfig()->configDir . DIRECTORY_SEPARATOR . $this->handle . '.php';

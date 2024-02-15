@@ -41,4 +41,3 @@ class FastlyApiException extends \Exception
 
     }
 }
-

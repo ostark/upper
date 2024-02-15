@@ -143,8 +143,3 @@ class Fastly extends AbstractPurger implements CachePurgeInterface
         return true;
     }
 }
-
-
-
-
-
