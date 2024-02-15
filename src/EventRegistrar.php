@@ -34,9 +34,6 @@ class EventRegistrar
         Event::on(Elements::class, Elements::EVENT_AFTER_SAVE_ELEMENT, function ($event) {
             static::handleUpdateEvent($event);
         });
-        Event::on(Element::class, Element::EVENT_AFTER_MOVE_IN_STRUCTURE, function ($event) {
-            static::handleUpdateEvent($event);
-        });
         Event::on(Elements::class, Elements::EVENT_AFTER_DELETE_ELEMENT, function ($event) {
             static::handleUpdateEvent($event);
         });
