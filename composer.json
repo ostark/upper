@@ -1,5 +1,5 @@
 {
-  "name": "ostark/upper",
+  "name": "prediger/upper",
   "description": "A cache plugin for Craft - supporting multiple Edge Caches",
   "type": "craft-plugin",
   "version": "2.0.0",
